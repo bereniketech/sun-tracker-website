@@ -70,7 +70,7 @@
   - _Skills: /build-website-web-app, /code-writing-software-development_
   - **AC:** All sun data values display correctly. Compass renders with accurate markers. Shadow info shows direction and ratio. Panels collapse on mobile.
 
-- [ ] 8. Build photographer mode panel
+- [x] 8. Build photographer mode panel
   - Create `src/components/panels/PhotographerPanel.tsx` — toggleable mode
   - Golden hour and blue hour countdown timers (live)
   - Best direction indicator based on sun azimuth

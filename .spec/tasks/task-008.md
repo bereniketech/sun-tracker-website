@@ -1,7 +1,7 @@
 ---
 task: 008
 feature: sun-tracker-website
-status: pending
+status: completed
 depends_on: [005, 007]
 ---
 
@@ -69,15 +69,15 @@ _Skills: /build-website-web-app, /code-writing-software-development_
 ---
 
 ## Acceptance Criteria
-- [ ] Toggle enables/disables photographer mode
-- [ ] Golden hour countdown ticks every second and shows "NOW" when active
-- [ ] Blue hour countdown works identically
-- [ ] Best direction indicator points correctly based on sun azimuth
-- [ ] 7-day forecast shows correct golden/blue hour times for each day
-- [ ] Recommended days are highlighted
-- [ ] Compass is visible in photographer mode
-- [ ] All existing tests still pass
-- [ ] `/verify` passes
+- [x] Toggle enables/disables photographer mode
+- [x] Golden hour countdown ticks every second and shows "NOW" when active
+- [x] Blue hour countdown works identically
+- [x] Best direction indicator points correctly based on sun azimuth
+- [x] 7-day forecast shows correct golden/blue hour times for each day
+- [x] Recommended days are highlighted
+- [x] Compass is visible in photographer mode
+- [x] All existing tests still pass
+- [x] `/verify` passes
 
 ---
 

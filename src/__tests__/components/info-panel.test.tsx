@@ -116,4 +116,18 @@ describe("task 7 info panel components", () => {
     const panelContent = document.getElementById("sun-info-panel-content");
     expect(panelContent).toHaveClass("hidden");
   });
+
+  it("toggles photographer mode from the panel toolbar", () => {
+    render(<InfoPanel />);
+
+    const modeButton = screen.getByRole("button", { name: "Photographer Off" });
+    expect(modeButton).toBeInTheDocument();
+
+    fireEvent.click(modeButton);
+
+    expect(screen.getByRole("button", { name: "Photographer On" })).toBeInTheDocument();
+    expect(useSunTrackerStore.getState().photographerMode).toBe(true);
+    expect(screen.getByText("7-Day Lighting Forecast")).toBeInTheDocument();
+    expect(screen.getByLabelText("Sun direction compass")).toBeInTheDocument();
+  });
 });
