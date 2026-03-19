@@ -24,7 +24,9 @@ export const useSunTrackerStore = create<SunTrackerState>((set) => ({
     "golden-hour-arc",
     "blue-hour-arc",
     "sun-path",
+    "landmark-alignment",
   ]),
+  selectedLandmark: null,
   photographerMode: false,
   isMobile: false,
 
@@ -32,6 +34,7 @@ export const useSunTrackerStore = create<SunTrackerState>((set) => ({
     set((state) => ({
       location: { lat, lng },
       locationName: name ?? state.locationName,
+      selectedLandmark: null,
       sunData: withSunData(lat, lng, state.dateTime),
     }));
   },
@@ -69,6 +72,26 @@ export const useSunTrackerStore = create<SunTrackerState>((set) => ({
 
       return {
         activeOverlays: nextOverlays,
+      };
+    });
+  },
+
+  setSelectedLandmark: (landmark) => {
+    set((state) => {
+      if (!landmark) {
+        return {
+          selectedLandmark: null,
+        };
+      }
+
+      return {
+        selectedLandmark: landmark,
+        location: {
+          lat: landmark.lat,
+          lng: landmark.lng,
+        },
+        locationName: landmark.name,
+        sunData: withSunData(landmark.lat, landmark.lng, state.dateTime),
       };
     });
   },

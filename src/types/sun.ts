@@ -5,7 +5,27 @@ export type OverlayType =
   | "shadow"
   | "golden-hour-arc"
   | "blue-hour-arc"
-  | "sun-path";
+  | "sun-path"
+  | "landmark-alignment";
+
+export interface Landmark {
+  id: string;
+  name: string;
+  lat: number;
+  lng: number;
+  orientationAzimuth: number;
+}
+
+export interface AlignmentEvent {
+  id: string;
+  landmarkId: string;
+  landmarkName: string;
+  eventTime: Date;
+  matchType: "sunrise" | "sunset";
+  matchedAzimuth: number;
+  sunAzimuth: number;
+  differenceDegrees: number;
+}
 
 export interface TimeWindow {
   start: Date;
@@ -42,11 +62,13 @@ export interface SunTrackerState {
   isAnimating: boolean;
   sunData: SunData | null;
   activeOverlays: Set<OverlayType>;
+  selectedLandmark: Landmark | null;
   photographerMode: boolean;
   isMobile: boolean;
   setLocation: (lat: number, lng: number, name?: string) => void;
   setDateTime: (dateTime: Date) => void;
   setAnimating: (isAnimating: boolean) => void;
   toggleOverlay: (overlay: OverlayType) => void;
+  setSelectedLandmark: (landmark: Landmark | null) => void;
   togglePhotographerMode: () => void;
 }

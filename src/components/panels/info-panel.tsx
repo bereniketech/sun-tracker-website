@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Compass } from "@/components/compass/compass";
+import { LandmarkAlignmentPanel } from "@/components/panels/landmark-alignment-panel";
 import { ShadowInfo } from "@/components/panels/shadow-info";
 import { SunDataDisplay } from "@/components/panels/sun-data-display";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
@@ -87,6 +88,7 @@ export function InfoPanel() {
 
       <div id="sun-info-panel-content" className={`mt-3 space-y-3 ${isMobile && !isOpen ? "hidden" : "block"}`}>
         <PhotographerPanel />
+        <LandmarkAlignmentPanel />
         {photographerMode ? (
           <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-2">
             <Compass />

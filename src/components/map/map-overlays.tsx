@@ -28,6 +28,7 @@ const OVERLAY_OPTIONS: Array<{ id: OverlayType; label: string }> = [
   { id: "golden-hour-arc", label: "Golden hour arcs" },
   { id: "blue-hour-arc", label: "Blue hour arcs" },
   { id: "sun-path", label: "Sun path arc" },
+  { id: "landmark-alignment", label: "Landmark alignment line" },
 ];
 
 function toLatLngPairs(points: Coordinates[]): Array<[number, number]> {
@@ -286,6 +287,65 @@ function ShadowOverlay({ center }: { center: Coordinates }) {
   );
 }
 
+function LandmarkAlignmentOverlay() {
+  const activeOverlays = useSunTrackerStore((state) => state.activeOverlays);
+  const selectedLandmark = useSunTrackerStore((state) => state.selectedLandmark);
+
+  const positions = useMemo(() => {
+    if (!selectedLandmark || !activeOverlays.has("landmark-alignment")) {
+      return [] as Array<[number, number]>;
+    }
+
+    return toLatLngPairs(
+      createRay(
+        {
+          lat: selectedLandmark.lat,
+          lng: selectedLandmark.lng,
+        },
+        selectedLandmark.orientationAzimuth,
+        DIRECTION_LINE_DISTANCE_METERS,
+      ),
+    );
+  }, [activeOverlays, selectedLandmark]);
+
+  if (!selectedLandmark || positions.length === 0) {
+    return null;
+  }
+
+  return (
+    <>
+      <Polyline
+        positions={positions}
+        pathOptions={{
+          color: "#0284c7",
+          weight: 3,
+          opacity: 0.95,
+          dashArray: "12 6",
+        }}
+      >
+        <Tooltip direction="top" offset={[0, -8]}>
+          {selectedLandmark.name} alignment axis
+        </Tooltip>
+      </Polyline>
+
+      <CircleMarker
+        center={[selectedLandmark.lat, selectedLandmark.lng]}
+        radius={6}
+        pathOptions={{
+          color: "#075985",
+          fillColor: "#38bdf8",
+          fillOpacity: 0.95,
+          weight: 2,
+        }}
+      >
+        <Tooltip direction="top" offset={[0, -8]}>
+          {selectedLandmark.name}
+        </Tooltip>
+      </CircleMarker>
+    </>
+  );
+}
+
 export function MapOverlays() {
   const location = useSunTrackerStore((state) => state.location);
   const sunData = useSunTrackerStore((state) => state.sunData);
@@ -300,6 +360,7 @@ export function MapOverlays() {
       <HourArcOverlays center={location} />
       <ShadowOverlay center={location} />
       <SunPathArc center={location} />
+      <LandmarkAlignmentOverlay />
     </>
   );
 }

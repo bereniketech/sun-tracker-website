@@ -1,4 +1,5 @@
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
+import { LANDMARKS } from "@/lib/landmarks";
 
 describe("useSunTrackerStore", () => {
   beforeEach(() => {
@@ -16,7 +17,9 @@ describe("useSunTrackerStore", () => {
         "golden-hour-arc",
         "blue-hour-arc",
         "sun-path",
+        "landmark-alignment",
       ]),
+      selectedLandmark: null,
       photographerMode: false,
       isMobile: false,
     });
@@ -82,5 +85,17 @@ describe("useSunTrackerStore", () => {
 
     useSunTrackerStore.getState().togglePhotographerMode();
     expect(useSunTrackerStore.getState().photographerMode).toBe(false);
+  });
+
+  it("setSelectedLandmark recenters the map and keeps the landmark in state", () => {
+    const landmark = LANDMARKS[0];
+
+    useSunTrackerStore.getState().setSelectedLandmark(landmark);
+
+    const next = useSunTrackerStore.getState();
+    expect(next.selectedLandmark).toEqual(landmark);
+    expect(next.location).toEqual({ lat: landmark.lat, lng: landmark.lng });
+    expect(next.locationName).toBe(landmark.name);
+    expect(next.sunData).not.toBeNull();
   });
 });

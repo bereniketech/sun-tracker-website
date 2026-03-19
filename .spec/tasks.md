@@ -122,7 +122,7 @@
   - _Skills: /build-website-web-app, /security-review_
   - **AC:** All breakpoints render correctly. Panels collapse on mobile. WCAG AA contrast passes. All interactive elements keyboard-navigable. Lighthouse performance score > 80.
 
-- [ ] 13. Landmark alignment feature (stretch)
+- [x] 13. Landmark alignment feature (stretch)
   - Create landmark data model (name, lat, lng, orientation azimuth)
   - Calculate alignment dates: when sun azimuth matches landmark orientation
   - Display alignment dates on a calendar view

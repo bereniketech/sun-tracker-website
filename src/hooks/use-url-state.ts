@@ -13,6 +13,7 @@ const ALL_OVERLAY_KEYS: OverlayType[] = [
   "golden-hour-arc",
   "blue-hour-arc",
   "sun-path",
+  "landmark-alignment",
 ];
 
 function buildParams(
