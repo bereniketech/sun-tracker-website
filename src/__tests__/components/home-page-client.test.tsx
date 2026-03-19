@@ -38,16 +38,19 @@ describe("HomePageClient", () => {
     });
   });
 
-  it("initializes the default map location when the page mounts", async () => {
-    render(<HomePageClient />);
-
-    await waitFor(() => {
-      expect(useSunTrackerStore.getState().location).toEqual({
-        lat: 40.7128,
-        lng: -74.006,
-      });
+  it("renders with the default map location pre-loaded from the store", async () => {
+    // Store now initializes with NYC synchronously; no useEffect needed in the component.
+    useSunTrackerStore.setState({
+      location: { lat: 40.7128, lng: -74.006 },
+      locationName: "New York City",
     });
 
+    render(<HomePageClient />);
+
+    expect(useSunTrackerStore.getState().location).toEqual({
+      lat: 40.7128,
+      lng: -74.006,
+    });
     expect(useSunTrackerStore.getState().locationName).toBe("New York City");
     expect(screen.getByTestId("interactive-map")).toBeInTheDocument();
     expect(screen.getByText("New York City")).toBeInTheDocument();

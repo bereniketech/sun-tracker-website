@@ -21,6 +21,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<GeocodingA
   url.searchParams.set("format", "jsonv2");
   url.searchParams.set("addressdetails", "1");
   url.searchParams.set("limit", String(MAX_RESULTS));
+  url.searchParams.set("accept-language", "en");
 
   try {
     const response = await fetch(url, {

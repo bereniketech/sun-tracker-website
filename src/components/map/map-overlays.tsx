@@ -291,42 +291,43 @@ function LandmarkAlignmentOverlay() {
   const activeOverlays = useSunTrackerStore((state) => state.activeOverlays);
   const selectedLandmark = useSunTrackerStore((state) => state.selectedLandmark);
 
-  const positions = useMemo(() => {
+  const { positions, reversePositions } = useMemo(() => {
     if (!selectedLandmark || !activeOverlays.has("landmark-alignment")) {
-      return [] as Array<[number, number]>;
+      return {
+        positions: [] as Array<[number, number]>,
+        reversePositions: [] as Array<[number, number]>,
+      };
     }
 
-    return toLatLngPairs(
-      createRay(
-        {
-          lat: selectedLandmark.lat,
-          lng: selectedLandmark.lng,
-        },
-        selectedLandmark.orientationAzimuth,
-        DIRECTION_LINE_DISTANCE_METERS,
-      ),
-    );
+    const center = { lat: selectedLandmark.lat, lng: selectedLandmark.lng };
+    const reverseAzimuth = (selectedLandmark.orientationAzimuth + 180) % 360;
+
+    return {
+      positions: toLatLngPairs(createRay(center, selectedLandmark.orientationAzimuth, DIRECTION_LINE_DISTANCE_METERS)),
+      reversePositions: toLatLngPairs(createRay(center, reverseAzimuth, DIRECTION_LINE_DISTANCE_METERS)),
+    };
   }, [activeOverlays, selectedLandmark]);
 
   if (!selectedLandmark || positions.length === 0) {
     return null;
   }
 
+  const axisPathOptions = {
+    color: "#0284c7",
+    weight: 3,
+    opacity: 0.95,
+    dashArray: "12 6",
+  } as const;
+
   return (
     <>
-      <Polyline
-        positions={positions}
-        pathOptions={{
-          color: "#0284c7",
-          weight: 3,
-          opacity: 0.95,
-          dashArray: "12 6",
-        }}
-      >
+      <Polyline positions={positions} pathOptions={axisPathOptions}>
         <Tooltip direction="top" offset={[0, -8]}>
           {selectedLandmark.name} alignment axis
         </Tooltip>
       </Polyline>
+
+      <Polyline positions={reversePositions} pathOptions={axisPathOptions} />
 
       <CircleMarker
         center={[selectedLandmark.lat, selectedLandmark.lng]}
