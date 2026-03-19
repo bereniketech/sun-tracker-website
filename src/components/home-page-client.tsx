@@ -1,18 +1,26 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { AnimateButton } from "@/components/controls/animate-button";
 import { DatePicker } from "@/components/controls/date-picker";
 import { NowButton } from "@/components/controls/now-button";
 import { TimeSlider } from "@/components/controls/time-slider";
 import { InteractiveMap } from "@/components/map/interactive-map";
 import { InfoPanel } from "@/components/panels/info-panel";
+import { SharePanel } from "@/components/panels/share-panel";
 import { SearchBar } from "@/components/search-bar";
 import {
   DEFAULT_MAP_LOCATION,
   formatCoordinatePair,
 } from "@/components/map/location-utils";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
+import { useUrlState } from "@/hooks/use-url-state";
+
+/** Inner component so useSearchParams is inside a Suspense boundary. */
+function UrlStateSyncer() {
+  useUrlState();
+  return null;
+}
 
 function formatTime(value: Date | null): string {
   if (!value) {
@@ -48,6 +56,9 @@ export function HomePageClient() {
 
   return (
     <div className="flex h-full min-h-[50vh] flex-col gap-5">
+      <Suspense fallback={null}>
+        <UrlStateSyncer />
+      </Suspense>
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-3">
           <p className="text-sm font-medium uppercase tracking-[0.16em] text-amber-700">
@@ -111,6 +122,8 @@ export function HomePageClient() {
 
         <InfoPanel />
       </section>
+
+      <SharePanel />
 
       <InteractiveMap />
     </div>

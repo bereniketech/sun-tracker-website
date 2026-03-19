@@ -6,6 +6,12 @@ vi.mock("@/components/map/interactive-map", () => ({
   InteractiveMap: () => <div data-testid="interactive-map">Mock Map</div>,
 }));
 
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ replace: vi.fn() }),
+  usePathname: () => "/",
+  useSearchParams: () => new URLSearchParams(),
+}));
+
 describe("HomePageClient", () => {
   beforeEach(() => {
     useSunTrackerStore.setState({
