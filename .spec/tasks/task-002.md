@@ -1,7 +1,7 @@
 ---
 task: 002
 feature: sun-tracker-website
-status: pending
+status: complete
 depends_on: [001]
 ---
 
@@ -88,7 +88,30 @@ _Skills: /code-writing-software-development, /tdd-workflow_
 ## Handoff to Next Task
 > Fill via `/task-handoff` after completing this task.
 
-**Files changed:** _(fill via /task-handoff)_
-**Decisions made:** _(fill via /task-handoff)_
-**Context for next task:** _(fill via /task-handoff)_
-**Open questions:** _(fill via /task-handoff)_
+**Files changed:**
+- `src/types/sun.ts`
+- `src/lib/sun.ts`
+- `src/store/sun-tracker-store.ts`
+- `src/__tests__/lib/sun.test.ts`
+- `src/__tests__/store/sun-tracker-store.test.ts`
+- `eslint.config.mjs` (fixed flat-config compatibility for lint)
+- `.spec/tasks.md` (Task 2 marked complete)
+
+**Decisions made:**
+- Implemented a typed `SunData` + `SunTrackerState` contract in `src/types/sun.ts` based on `design.md`.
+- Built `computeSunData` in `src/lib/sun.ts` using `SunCalc.getTimes`, `SunCalc.getPosition`, and `SunCalc.getMoonPosition`.
+- Converted SunCalc azimuth to degrees-from-north and elevation to degrees.
+- Implemented blue-hour calculation (`-6°` to `-4°`) using altitude crossing search around sunrise/sunset.
+- Added polar fallback behavior for day length when sunrise/sunset are unavailable.
+- Implemented immutable Zustand actions for location, datetime, overlays, and photographer mode.
+
+**Context for next task:**
+- Store is ready for map integration:
+   - `setLocation(lat, lng, name?)` recomputes `sunData`
+   - `setDateTime(dt)` recomputes `sunData` when location is set
+   - `activeOverlays` is a `Set<OverlayType>` with defaults for sun/shadow/path layers
+- `sunData` now contains sunrise/sunset/noon, golden/blue windows, azimuth/elevation, shadow metrics, and day-length delta.
+- Tests are in place and passing for both `lib/sun.ts` and the store.
+
+**Open questions:**
+- None blocking for Task 3. The map layer can consume the existing store and sun data directly.

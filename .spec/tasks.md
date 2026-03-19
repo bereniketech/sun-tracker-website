@@ -1,6 +1,6 @@
 # Implementation Plan: Sun Tracker Website
 
-- [ ] 1. Initialize Next.js project, install dependencies, configure tooling
+- [x ] 1. Initialize Next.js project, install dependencies, configure tooling
   - Scaffold Next.js 15 with App Router, TypeScript, Tailwind CSS, ESLint
   - Install: `suncalc`, `zustand`, `react-leaflet`, `leaflet`, `@supabase/supabase-js`, `shadcn/ui`
   - Configure `tsconfig.json`, `tailwind.config.ts`, path aliases
@@ -10,7 +10,7 @@
   - _Skills: /build-website-web-app, /code-writing-software-development_
   - **AC:** `bun dev` starts without errors. Tailwind classes render. Vitest runs with a passing smoke test. Layout responsive at 320px–2560px.
 
-- [ ] 2. Build SunCalc wrapper and Zustand store
+- [x] 2. Build SunCalc wrapper and Zustand store
   - Create `src/lib/sun.ts` — wrapper around SunCalc returning `SunData` interface
   - Compute: sunrise, sunset, solar noon, golden/blue hours, azimuth, elevation, shadow direction, shadow length ratio, day length, day length change
   - Create `src/store/sun-tracker-store.ts` — Zustand store with all state and actions
