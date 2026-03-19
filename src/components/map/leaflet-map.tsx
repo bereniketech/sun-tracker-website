@@ -10,7 +10,7 @@ import {
   useMap,
   useMapEvents,
 } from "react-leaflet";
-import { Expand, Shrink } from "lucide-react";
+import { Copy, Check, Expand, Shrink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DEFAULT_MAP_LOCATION,
@@ -103,6 +103,7 @@ export function LeafletMap() {
   const mapShellRef = useRef<HTMLDivElement | null>(null);
   const [isFallbackFullscreen, setIsFallbackFullscreen] = useState(false);
   const [isNativeFullscreen, setIsNativeFullscreen] = useState(false);
+  const [coordsCopied, setCoordsCopied] = useState(false);
 
   const center = location ?? DEFAULT_MAP_LOCATION;
   const isFullscreen = isNativeFullscreen || isFallbackFullscreen;
@@ -176,9 +177,28 @@ export function LeafletMap() {
           <p className="text-sm font-semibold text-slate-900">
             {locationName || DEFAULT_MAP_LOCATION.name}
           </p>
-          <p className="text-sm text-slate-600">
-            {formatCoordinatePair(center.lat, center.lng)}
-          </p>
+          <div className="flex items-center gap-1.5">
+            <p className="text-sm text-slate-600">
+              {formatCoordinatePair(center.lat, center.lng)}
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                void navigator.clipboard.writeText(formatCoordinatePair(center.lat, center.lng)).then(() => {
+                  setCoordsCopied(true);
+                  setTimeout(() => setCoordsCopied(false), 2000);
+                });
+              }}
+              aria-label="Copy coordinates to clipboard"
+              className="rounded p-0.5 text-slate-400 transition hover:text-slate-700"
+            >
+              {coordsCopied ? (
+                <Check className="h-3.5 w-3.5 text-green-600" />
+              ) : (
+                <Copy className="h-3.5 w-3.5" />
+              )}
+            </button>
+          </div>
         </div>
 
         <div className="flex items-center gap-2 text-sm text-slate-600">

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { computeSunData } from "@/lib/sun";
+import { DEFAULT_MAP_LOCATION } from "@/components/map/location-utils";
 import type { SunTrackerState } from "@/types/sun";
 
 function withSunData(
@@ -10,12 +11,14 @@ function withSunData(
   return computeSunData(lat, lng, dateTime);
 }
 
+const INITIAL_DATE = new Date();
+
 export const useSunTrackerStore = create<SunTrackerState>((set) => ({
-  location: null,
-  locationName: "",
-  dateTime: new Date(),
+  location: { lat: DEFAULT_MAP_LOCATION.lat, lng: DEFAULT_MAP_LOCATION.lng },
+  locationName: DEFAULT_MAP_LOCATION.name,
+  dateTime: INITIAL_DATE,
   isAnimating: false,
-  sunData: null,
+  sunData: computeSunData(DEFAULT_MAP_LOCATION.lat, DEFAULT_MAP_LOCATION.lng, INITIAL_DATE),
   activeOverlays: new Set([
     "sun-position",
     "sunrise-line",

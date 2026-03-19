@@ -10,10 +10,11 @@
 @C:/Users/Hp/Desktop/Experiment/claude_kit/skills/data-backend/postgres-patterns/SKILL.md
 
 ## Active Feature
-Feature: initial build
-Tasks: .spec/tasks/
-Current task: .spec/tasks/task-001.md
-Branch: main
+Feature: issue-fixes
+Spec: .spec/issue-fixes/requirements.md, design.md
+Tasks: .spec/issue-fixes/tasks/
+Current task: .spec/issue-fixes/tasks/task-001.md
+Branch: feature/issue-fixes
 
 ## Start Here
 1. Read `## Active Feature` above — note the current task path.

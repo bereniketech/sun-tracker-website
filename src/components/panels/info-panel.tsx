@@ -71,7 +71,7 @@ export function InfoPanel() {
             onClick={togglePhotographerMode}
             aria-pressed={photographerMode}
           >
-            {photographerMode ? "Photographer On" : "Photographer Off"}
+            Photographer Mode
           </button>
 
           <button

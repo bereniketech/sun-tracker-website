@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { AnimateButton } from "@/components/controls/animate-button";
 import { DatePicker } from "@/components/controls/date-picker";
 import { NowButton } from "@/components/controls/now-button";
@@ -54,17 +54,18 @@ export function HomePageClient() {
   const locationName = useSunTrackerStore((state) => state.locationName);
   const sunData = useSunTrackerStore((state) => state.sunData);
 
-  useEffect(() => {
-    const state = useSunTrackerStore.getState();
+  const [showHint, setShowHint] = useState(false);
 
-    if (!state.location) {
-      state.setLocation(
-        DEFAULT_MAP_LOCATION.lat,
-        DEFAULT_MAP_LOCATION.lng,
-        DEFAULT_MAP_LOCATION.name,
-      );
+  useEffect(() => {
+    if (localStorage.getItem("sun-tracker:onboarded") === null) {
+      setShowHint(true);
     }
   }, []);
+
+  function handleDismissHint() {
+    localStorage.setItem("sun-tracker:onboarded", "1");
+    setShowHint(false);
+  }
 
   const coordinateLabel = location
     ? formatCoordinatePair(location.lat, location.lng)
@@ -75,6 +76,20 @@ export function HomePageClient() {
       <Suspense fallback={null}>
         <UrlStateSyncer />
       </Suspense>
+
+      {showHint && (
+        <div className="flex items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          <span>Click anywhere on the map or search for a place to explore sun data.</span>
+          <button
+            type="button"
+            onClick={handleDismissHint}
+            aria-label="Dismiss hint"
+            className="shrink-0 text-amber-600 hover:text-amber-800"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Stats strip */}
       <div className="grid grid-cols-3 gap-3">
