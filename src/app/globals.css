@@ -20,6 +20,54 @@ body {
   @apply bg-background text-foreground antialiased;
 }
 
+body[data-map-fullscreen="true"] {
+  overflow: hidden;
+}
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(180deg, #dbeafe 0%, #e2e8f0 100%);
+}
+
+.sun-tracker-pin {
+  position: relative;
+  display: block;
+  height: 24px;
+  width: 24px;
+  border-radius: 9999px;
+  border: 3px solid rgb(255 255 255);
+  background: rgb(234 88 12);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.28);
+}
+
+.sun-tracker-pin::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 8px;
+  width: 8px;
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  background: rgb(255 255 255);
+}
+
+.sun-tracker-map[data-expanded="true"] {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  height: 100vh;
+  width: 100vw;
+  border-radius: 0;
+}
+
+.sun-tracker-map:fullscreen {
+  height: 100vh;
+  width: 100vw;
+  border-radius: 0;
+}
+
 .app-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);

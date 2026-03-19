@@ -19,7 +19,7 @@
   - _Skills: /code-writing-software-development, /tdd-workflow_
   - **AC:** All SunCalc wrapper functions return correct values for known test cases (e.g., NYC on June 21). Zustand store actions update state correctly. 90%+ test coverage on `lib/sun.ts`.
 
-- [ ] 3. Implement interactive Leaflet map with location pin
+- [ x] 3. Implement interactive Leaflet map with location pin
   - Create `src/components/map/` — dynamic import of Leaflet (SSR-safe)
   - Render OSM tiles, draggable location pin
   - Click-to-place pin, drag pin → update Zustand store location
@@ -28,7 +28,7 @@
   - _Skills: /build-website-web-app, /code-writing-software-development_
   - **AC:** Map renders with OSM tiles. Pin is draggable. Clicking map places pin and updates store. Fullscreen works on mobile. No SSR errors.
 
-- [ ] 4. Build search bar with Nominatim geocoding and geolocation
+- [x] 4. Build search bar with Nominatim geocoding and geolocation
   - Create `src/components/SearchBar.tsx` — autocomplete search input
   - Integrate Nominatim API with 500ms debounce, session storage caching, User-Agent header
   - Add manual coordinate input (lat/lng fields)
