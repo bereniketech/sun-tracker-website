@@ -90,7 +90,7 @@
   - _Skills: /code-writing-software-development, /build-website-web-app_
   - **AC:** Changing state updates URL. Loading a shared URL restores exact view. CSV/JSON export downloads correct data. Share buttons open correct dialogs.
 
-- [ ] 10. Set up Supabase auth and favorites
+- [ x] 10. Set up Supabase auth and favorites
   - Configure Supabase client in `src/lib/supabase.ts`
   - Create auth UI (sign in/sign up modal) with Supabase Auth
   - Create `favorites` table with RLS policies
@@ -100,7 +100,7 @@
   - _Skills: /code-writing-software-development, /postgres-patterns, /security-review_
   - **AC:** Users can sign up/in. Saving a favorite persists to Supabase. Favorites list loads on auth. Delete works. RLS prevents cross-user access. Unauthenticated save shows login prompt.
 
-- [ ] 11. Build SEO city pages with ISR
+- [x] 11. Build SEO city pages with ISR
   - Seed `cities` table with top 100 cities (name, slug, lat, lng, timezone)
   - Create `src/app/city/[slug]/page.tsx` — SSR city page with precomputed sun data
   - Compute sunrise/sunset, golden/blue hour for each month
