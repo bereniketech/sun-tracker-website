@@ -1,7 +1,7 @@
 ---
 task: 007
 feature: sun-tracker-website
-status: pending
+status: completed
 depends_on: [002, 005]
 ---
 
@@ -70,21 +70,21 @@ _Skills: /build-website-web-app, /code-writing-software-development_
 ---
 
 ## Acceptance Criteria
-- [ ] All sun data values display correctly and match SunCalc output
-- [ ] Compass renders with N/S/E/W and all azimuth markers at correct angles
-- [ ] Compass markers update in real time when time slider moves
-- [ ] Shadow info shows direction and length ratio correctly
-- [ ] "No shadow" displayed when sun below horizon
-- [ ] Panel collapses on mobile (< 768px)
-- [ ] All existing tests still pass
-- [ ] `/verify` passes
+- [x] All sun data values display correctly and match SunCalc output
+- [x] Compass renders with N/S/E/W and all azimuth markers at correct angles
+- [x] Compass markers update in real time when time slider moves
+- [x] Shadow info shows direction and length ratio correctly
+- [x] "No shadow" displayed when sun below horizon
+- [x] Panel collapses on mobile (< 768px)
+- [x] All existing tests still pass
+- [x] `/verify` passes
 
 ---
 
 ## Handoff to Next Task
 > Fill via `/task-handoff` after completing this task.
 
-**Files changed:** _(fill via /task-handoff)_
-**Decisions made:** _(fill via /task-handoff)_
-**Context for next task:** _(fill via /task-handoff)_
-**Open questions:** _(fill via /task-handoff)_
+**Files changed:** `src/components/home-page-client.tsx`, `src/components/panels/info-panel.tsx`, `src/components/panels/sun-data-display.tsx`, `src/components/panels/shadow-info.tsx`, `src/components/compass/compass.tsx`, `src/__tests__/components/info-panel.test.tsx`
+**Decisions made:** Info panel is the right-side control card and is collapsible only on mobile widths under 768px; compass uses pure SVG marker rotation with CSS transitions.
+**Context for next task:** Photographer mode can reuse the new `Compass` component and sun-data formatting patterns from Task 7.
+**Open questions:** None.

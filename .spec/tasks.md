@@ -60,7 +60,7 @@
   - _Skills: /build-website-web-app, /code-writing-software-development_
   - **AC:** Each overlay renders correctly on the map. Toggling layers shows/hides them independently. Overlays update when time slider moves. Lines point in correct azimuth directions.
 
-- [ ] 7. Build info panel with sun data display and SVG compass
+- [x] 7. Build info panel with sun data display and SVG compass
   - Create `src/components/panels/SunDataDisplay.tsx` — formatted display of all sun values
   - Create `src/components/compass/Compass.tsx` — SVG compass with N/S/E/W, sunrise/sunset/sun/shadow markers
   - Create `src/components/panels/ShadowInfo.tsx` — shadow direction and length ratio

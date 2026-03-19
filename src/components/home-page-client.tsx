@@ -3,10 +3,10 @@
 import { useEffect } from "react";
 import { AnimateButton } from "@/components/controls/animate-button";
 import { DatePicker } from "@/components/controls/date-picker";
-import { DaylightInfo } from "@/components/controls/daylight-info";
 import { NowButton } from "@/components/controls/now-button";
 import { TimeSlider } from "@/components/controls/time-slider";
 import { InteractiveMap } from "@/components/map/interactive-map";
+import { InfoPanel } from "@/components/panels/info-panel";
 import { SearchBar } from "@/components/search-bar";
 import {
   DEFAULT_MAP_LOCATION,
@@ -109,7 +109,7 @@ export function HomePageClient() {
           </div>
         </div>
 
-        <DaylightInfo />
+        <InfoPanel />
       </section>
 
       <InteractiveMap />
