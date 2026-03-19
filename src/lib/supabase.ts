@@ -1,13 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-function requireEnv(name: string): string {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`Missing required environment variable: ${name}`);
-  }
-  return value;
-}
-
 let _browserClient: SupabaseClient | null = null;
 
 /**
@@ -17,8 +9,10 @@ let _browserClient: SupabaseClient | null = null;
  */
 export function getBrowserClient(): SupabaseClient {
   if (_browserClient) return _browserClient;
-  const url = requireEnv("NEXT_PUBLIC_SUPABASE_URL");
-  const anonKey = requireEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY");
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url) throw new Error("Missing required environment variable: NEXT_PUBLIC_SUPABASE_URL");
+  if (!anonKey) throw new Error("Missing required environment variable: NEXT_PUBLIC_SUPABASE_ANON_KEY");
   _browserClient = createClient(url, anonKey);
   return _browserClient;
 }
@@ -29,8 +23,10 @@ export function getBrowserClient(): SupabaseClient {
  * Use `supabase.auth.getUser(accessToken)` to verify the caller's identity.
  */
 export function createServerClient(authHeader: string | null): SupabaseClient {
-  const url = requireEnv("NEXT_PUBLIC_SUPABASE_URL");
-  const anonKey = requireEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY");
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url) throw new Error("Missing required environment variable: NEXT_PUBLIC_SUPABASE_URL");
+  if (!anonKey) throw new Error("Missing required environment variable: NEXT_PUBLIC_SUPABASE_ANON_KEY");
   const accessToken = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
   return createClient(url, anonKey, {
     global: {

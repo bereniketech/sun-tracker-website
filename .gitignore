@@ -25,3 +25,6 @@ out/
 
 # Logs
 *.log
+
+# Samples / screenshots
+samples/
