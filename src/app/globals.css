@@ -24,6 +24,11 @@ body[data-map-fullscreen="true"] {
   overflow: hidden;
 }
 
+:focus-visible {
+  outline: 3px solid rgb(251 191 36);
+  outline-offset: 2px;
+}
+
 .leaflet-container {
   height: 100%;
   width: 100%;

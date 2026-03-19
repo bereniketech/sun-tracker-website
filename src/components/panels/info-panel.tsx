@@ -1,8 +1,8 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Compass } from "@/components/compass/compass";
-import { PhotographerPanel } from "@/components/panels/photographer-panel";
 import { ShadowInfo } from "@/components/panels/shadow-info";
 import { SunDataDisplay } from "@/components/panels/sun-data-display";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
@@ -16,6 +16,17 @@ function isMobileViewport(): boolean {
 
   return window.innerWidth < MOBILE_WIDTH_PX;
 }
+
+const PhotographerPanel = dynamic(
+  () => import("@/components/panels/photographer-panel").then((module) => module.PhotographerPanel),
+  {
+    loading: () => (
+      <section className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900" role="status">
+        Loading photographer tools...
+      </section>
+    ),
+  },
+);
 
 export function InfoPanel() {
   const photographerMode = useSunTrackerStore((state) => state.photographerMode);
@@ -45,7 +56,7 @@ export function InfoPanel() {
   }, []);
 
   return (
-    <aside className="rounded-xl border border-slate-200 bg-white p-3">
+    <aside className="rounded-xl border border-slate-200 bg-white p-3" aria-label="Information panel">
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-800">Info Panel</h2>
         <div className="flex items-center gap-2">

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { Compass } from "@/components/compass/compass";
 import { InfoPanel } from "@/components/panels/info-panel";
 import { ShadowInfo } from "@/components/panels/shadow-info";
@@ -117,7 +117,7 @@ describe("task 7 info panel components", () => {
     expect(panelContent).toHaveClass("hidden");
   });
 
-  it("toggles photographer mode from the panel toolbar", () => {
+  it("toggles photographer mode from the panel toolbar", async () => {
     render(<InfoPanel />);
 
     const modeButton = screen.getByRole("button", { name: "Photographer Off" });
@@ -127,7 +127,11 @@ describe("task 7 info panel components", () => {
 
     expect(screen.getByRole("button", { name: "Photographer On" })).toBeInTheDocument();
     expect(useSunTrackerStore.getState().photographerMode).toBe(true);
-    expect(screen.getByText("7-Day Lighting Forecast")).toBeInTheDocument();
+    
+    // Wait for lazy-loaded PhotographerPanel to load
+    await waitFor(() => {
+      expect(screen.getByText("7-Day Lighting Forecast")).toBeInTheDocument();
+    });
     expect(screen.getByLabelText("Sun direction compass")).toBeInTheDocument();
   });
 });

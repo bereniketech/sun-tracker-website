@@ -108,6 +108,7 @@ export function FavoritesPanel() {
                 type="button"
                 className="rounded-lg border border-slate-300 px-2 py-0.5 text-xs font-medium text-slate-600 hover:bg-slate-50"
                 onClick={() => void signOut()}
+                aria-label="Sign out"
               >
                 Sign out
               </button>
@@ -117,13 +118,14 @@ export function FavoritesPanel() {
                 type="button"
                 className="rounded-lg border border-amber-400 bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-900"
                 onClick={() => setAuthModalOpen(true)}
+                aria-label="Sign in"
               >
                 Sign in
               </button>
             )}
             <button
               type="button"
-              className="ml-1 text-xs text-slate-400 hover:text-slate-700"
+              className="ml-1 text-xs text-slate-500 hover:text-slate-700"
               onClick={() => setIsOpen((o) => !o)}
               aria-expanded={isOpen}
               aria-label={isOpen ? "Collapse favorites" : "Expand favorites"}
@@ -138,6 +140,7 @@ export function FavoritesPanel() {
             <button
               type="button"
               disabled={!location || isSaving}
+              aria-label="Save current location to favorites"
               className="w-full rounded-lg border border-amber-400 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900 hover:bg-amber-100 disabled:opacity-40"
               onClick={() => void handleSave()}
             >

@@ -112,7 +112,7 @@
   - _Skills: /build-website-web-app, /code-writing-software-development, /postgres-patterns_
   - **AC:** `/city/new-york` renders SSR with correct sun data. JSON-LD present. Meta tags correct. Related city links work. Sitemap includes all city URLs. ISR revalidates every 24h.
 
-- [ ] 12. Mobile optimization, accessibility, and performance
+- [x ] 12. Mobile optimization, accessibility, and performance
   - Audit responsive layout at 320px, 375px, 768px, 1024px, 1440px
   - Implement collapsible panels on mobile
   - WCAG 2.1 AA audit: contrast, keyboard nav, aria labels, focus management

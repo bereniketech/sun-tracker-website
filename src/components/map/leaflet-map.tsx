@@ -58,6 +58,34 @@ function LocationEventHandlers({ onLocationSelect }: LocationEventHandlersProps)
   return null;
 }
 
+function MapKeyboardShortcuts(): null {
+  const map = useMap();
+
+  useEffect(() => {
+    const container = map.getContainer();
+
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (event.key === "+" || event.key === "=") {
+        event.preventDefault();
+        map.zoomIn();
+      }
+
+      if (event.key === "-") {
+        event.preventDefault();
+        map.zoomOut();
+      }
+    };
+
+    container.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      container.removeEventListener("keydown", onKeyDown);
+    };
+  }, [map]);
+
+  return null;
+}
+
 function extractMarkerCoordinates(event: LeafletEvent): Coordinates {
   const marker = event.target as LeafletMarker;
   const latLng = marker.getLatLng();
@@ -160,6 +188,9 @@ export function LeafletMap() {
           <span className="rounded-full bg-white px-3 py-1 shadow-sm ring-1 ring-slate-200">
             Drag pin for live updates
           </span>
+          <span className="rounded-full bg-white px-3 py-1 shadow-sm ring-1 ring-slate-200">
+            Focus map then use + or - to zoom
+          </span>
         </div>
       </div>
 
@@ -170,6 +201,7 @@ export function LeafletMap() {
           isFullscreen && "ring-0",
         )}
         data-expanded={isFullscreen ? "true" : "false"}
+        aria-label="Interactive map area"
       >
         <button
           type="button"
@@ -191,8 +223,10 @@ export function LeafletMap() {
           zoom={12}
           scrollWheelZoom
           touchZoom
+          keyboard
           zoomControl={false}
           className="h-full w-full"
+          aria-label="Map with location pin and sun overlays"
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -203,6 +237,7 @@ export function LeafletMap() {
 
           <ZoomControl position="bottomright" />
           <MapViewportController center={center} />
+          <MapKeyboardShortcuts />
           <LocationEventHandlers onLocationSelect={handleLocationSelect} />
           <Marker
             position={[center.lat, center.lng]}

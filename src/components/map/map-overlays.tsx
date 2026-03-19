@@ -326,6 +326,7 @@ export function LayerControl() {
               onChange={() => {
                 toggleOverlay(overlay.id);
               }}
+              aria-label={overlay.label}
               className="h-4 w-4 rounded border-slate-300 text-slate-900"
             />
             <span>{overlay.label}</span>

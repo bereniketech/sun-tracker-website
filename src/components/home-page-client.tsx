@@ -1,12 +1,12 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { Suspense, useEffect } from "react";
 import { AnimateButton } from "@/components/controls/animate-button";
 import { DatePicker } from "@/components/controls/date-picker";
 import { NowButton } from "@/components/controls/now-button";
 import { TimeSlider } from "@/components/controls/time-slider";
 import { InteractiveMap } from "@/components/map/interactive-map";
-import { FavoritesPanel } from "@/components/panels/favorites-panel";
 import { InfoPanel } from "@/components/panels/info-panel";
 import { SharePanel } from "@/components/panels/share-panel";
 import { SearchBar } from "@/components/search-bar";
@@ -16,6 +16,21 @@ import {
 } from "@/components/map/location-utils";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
 import { useUrlState } from "@/hooks/use-url-state";
+
+const FavoritesPanel = dynamic(
+  () => import("@/components/panels/favorites-panel").then((module) => module.FavoritesPanel),
+  {
+    loading: () => (
+      <section
+        className="rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-600"
+        role="status"
+        aria-live="polite"
+      >
+        Loading favorites...
+      </section>
+    ),
+  },
+);
 
 /** Inner component so useSearchParams is inside a Suspense boundary. */
 function UrlStateSyncer() {
@@ -123,6 +138,11 @@ export function HomePageClient() {
 
         <InfoPanel />
       </section>
+
+      <p className="sr-only" aria-live="polite">
+        Active location {locationName || DEFAULT_MAP_LOCATION.name}. Sunrise {formatTime(sunData?.sunrise ?? null)}.
+        Sunset {formatTime(sunData?.sunset ?? null)}.
+      </p>
 
       <SharePanel />
 

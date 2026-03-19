@@ -47,6 +47,8 @@ export function TimeSlider() {
           nextDateTime.setHours(nextHours, nextMinute, 0, 0);
           setDateTime(nextDateTime);
         }}
+        aria-label="Time of day slider"
+        aria-valuetext={formatMinuteLabel(value)}
         className="h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-amber-500"
       />
     </div>

@@ -229,6 +229,7 @@ export function SearchBar() {
                 }}
                 placeholder="Search for a city, neighborhood, or address"
                 autoComplete="off"
+                aria-label="Search city, landmark, or address"
                 className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-4 pr-11 text-sm text-slate-900 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100"
               />
               <Search className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -238,6 +239,7 @@ export function SearchBar() {
               type="button"
               onClick={handleUseCurrentLocation}
               disabled={isLocating}
+              aria-label="Use my location"
               className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
             >
               {isLocating ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <LocateFixed className="h-4 w-4" />}
@@ -268,6 +270,7 @@ export function SearchBar() {
                         onClick={() => {
                           handleSuggestionSelect(suggestion);
                         }}
+                        aria-label={`Select ${suggestion.displayName}`}
                         className="flex w-full flex-col rounded-xl px-3 py-2 text-left transition hover:bg-amber-50 focus:bg-amber-50 focus:outline-none"
                       >
                         <span className="text-sm font-medium text-slate-900">{suggestion.name}</span>
@@ -310,6 +313,7 @@ export function SearchBar() {
                   setLocationMessage("");
                 }}
                 placeholder="40.7128"
+                aria-label="Latitude"
                 className={cn(
                   "mt-2 h-11 w-full rounded-2xl border bg-white px-4 text-sm text-slate-900 outline-none transition focus:ring-4 focus:ring-amber-100",
                   coordinateError ? "border-rose-300 focus:border-rose-300" : "border-slate-200 focus:border-amber-400",
@@ -331,6 +335,7 @@ export function SearchBar() {
                   setLocationMessage("");
                 }}
                 placeholder="-74.0060"
+                aria-label="Longitude"
                 className={cn(
                   "mt-2 h-11 w-full rounded-2xl border bg-white px-4 text-sm text-slate-900 outline-none transition focus:ring-4 focus:ring-amber-100",
                   coordinateError ? "border-rose-300 focus:border-rose-300" : "border-slate-200 focus:border-amber-400",
@@ -341,6 +346,7 @@ export function SearchBar() {
 
           <button
             type="submit"
+            aria-label="Center map on coordinates"
             className="inline-flex h-11 items-center justify-center rounded-2xl bg-amber-500 px-4 text-sm font-semibold text-slate-950 transition hover:bg-amber-400"
           >
             Center map on coordinates
