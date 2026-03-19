@@ -183,13 +183,10 @@ export function LeafletMap() {
 
         <div className="flex items-center gap-2 text-sm text-slate-600">
           <span className="rounded-full bg-white px-3 py-1 shadow-sm ring-1 ring-slate-200">
-            Click map to place pin
+            Click to set location
           </span>
           <span className="rounded-full bg-white px-3 py-1 shadow-sm ring-1 ring-slate-200">
-            Drag pin for live updates
-          </span>
-          <span className="rounded-full bg-white px-3 py-1 shadow-sm ring-1 ring-slate-200">
-            Focus map then use + or - to zoom
+            Drag to adjust
           </span>
         </div>
       </div>

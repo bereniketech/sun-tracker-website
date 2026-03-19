@@ -77,10 +77,26 @@ export function AnimateButton() {
         onClick={() => {
           setAnimating(!isAnimating);
         }}
-        className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 text-sm font-medium text-white transition hover:bg-slate-800"
+        className={`relative inline-flex h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium transition ${
+          isAnimating
+            ? "bg-amber-500 text-slate-950 ring-2 ring-amber-300"
+            : "bg-slate-950 text-white hover:bg-slate-800"
+        }`}
+        aria-pressed={isAnimating}
+        aria-label={isAnimating ? "Pause animation" : "Animate sun movement"}
       >
-        {isAnimating ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-        {isAnimating ? "Pause" : "Animate"}
+        {isAnimating ? (
+          <>
+            <span className="h-2 w-2 rounded-full bg-white/80 animate-pulse" aria-hidden="true" />
+            <Pause className="h-4 w-4" />
+            Pause
+          </>
+        ) : (
+          <>
+            <Play className="h-4 w-4" />
+            Animate
+          </>
+        )}
       </button>
 
       <label className="flex items-center gap-2 text-sm text-slate-700">

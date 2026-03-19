@@ -73,21 +73,3 @@ body[data-map-fullscreen="true"] {
   border-radius: 0;
 }
 
-.app-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto 1fr;
-  min-height: 100vh;
-}
-
-@media (min-width: 768px) {
-  .app-grid {
-    grid-template-columns: minmax(0, 1fr) 22rem;
-  }
-}
-
-@media (min-width: 2560px) {
-  .app-grid {
-    grid-template-columns: minmax(0, 1fr) 28rem;
-  }
-}

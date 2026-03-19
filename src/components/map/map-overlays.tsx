@@ -21,14 +21,14 @@ const HOUR_ARC_OUTER_RADIUS_METERS = 3_200;
 const SUN_PATH_RADIUS_METERS = 6_000;
 
 const OVERLAY_OPTIONS: Array<{ id: OverlayType; label: string }> = [
-  { id: "sun-position", label: "Current sun direction" },
+  { id: "sun-position", label: "Sun direction" },
   { id: "sunrise-line", label: "Sunrise line" },
   { id: "sunset-line", label: "Sunset line" },
   { id: "shadow", label: "Shadow direction" },
   { id: "golden-hour-arc", label: "Golden hour arcs" },
   { id: "blue-hour-arc", label: "Blue hour arcs" },
-  { id: "sun-path", label: "Sun path arc" },
-  { id: "landmark-alignment", label: "Landmark alignment line" },
+  { id: "sun-path", label: "Sun path" },
+  { id: "landmark-alignment", label: "Landmark axis" },
 ];
 
 function toLatLngPairs(points: Coordinates[]): Array<[number, number]> {
@@ -375,7 +375,7 @@ export function LayerControl() {
       aria-label="Map overlay controls"
     >
       <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
-        Map Layers
+        Show on map
       </p>
 
       <div className="mt-2 space-y-2">

@@ -59,7 +59,7 @@ export function InfoPanel() {
   return (
     <aside className="rounded-xl border border-slate-200 bg-white p-3" aria-label="Information panel">
       <div className="flex items-center justify-between gap-2">
-        <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-800">Info Panel</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-800">Sun Data</h2>
         <div className="flex items-center gap-2">
           <button
             type="button"

@@ -40,7 +40,7 @@ function UrlStateSyncer() {
 
 function formatTime(value: Date | null): string {
   if (!value) {
-    return "Waiting for a map selection";
+    return "—";
   }
 
   return new Intl.DateTimeFormat("en", {
@@ -71,73 +71,63 @@ export function HomePageClient() {
     : formatCoordinatePair(DEFAULT_MAP_LOCATION.lat, DEFAULT_MAP_LOCATION.lng);
 
   return (
-    <div className="flex h-full min-h-[50vh] flex-col gap-5">
+    <div className="flex flex-col gap-4">
       <Suspense fallback={null}>
         <UrlStateSyncer />
       </Suspense>
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div className="space-y-3">
-          <p className="text-sm font-medium uppercase tracking-[0.16em] text-amber-700">
-            Interactive Sun Map
+
+      {/* Stats strip */}
+      <div className="grid grid-cols-3 gap-3">
+        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+          <p className="text-xs font-medium text-slate-500">Location</p>
+          <p className="mt-1 truncate text-sm font-semibold text-slate-900">
+            {locationName || DEFAULT_MAP_LOCATION.name}
           </p>
-          <div className="space-y-2">
-            <h1 className="max-w-4xl text-3xl font-semibold tracking-tight text-slate-950 md:text-4xl">
-              Search, geolocate, or enter coordinates and the map updates sun data instantly.
-            </h1>
-            <p className="max-w-3xl text-base text-slate-600">
-              Task 4 adds debounced Nominatim search, session caching, manual coordinates, and
-              browser geolocation on top of the interactive OpenStreetMap explorer.
-            </p>
-          </div>
+          <p className="text-xs text-slate-500">{coordinateLabel}</p>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-3 lg:min-w-[28rem]">
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-            <p className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">
-              Active Location
-            </p>
-            <p className="mt-2 text-sm font-semibold text-slate-900">
-              {locationName || DEFAULT_MAP_LOCATION.name}
-            </p>
-            <p className="text-sm text-slate-600">{coordinateLabel}</p>
-          </div>
+        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+          <p className="text-xs font-medium text-slate-500">Sunrise</p>
+          <p className="mt-1 text-sm font-semibold text-slate-900">
+            {formatTime(sunData?.sunrise ?? null)}
+          </p>
+        </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-            <p className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">
-              Sunrise
-            </p>
-            <p className="mt-2 text-sm font-semibold text-slate-900">
-              {formatTime(sunData?.sunrise ?? null)}
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-            <p className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">
-              Sunset
-            </p>
-            <p className="mt-2 text-sm font-semibold text-slate-900">
-              {formatTime(sunData?.sunset ?? null)}
-            </p>
-          </div>
+        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+          <p className="text-xs font-medium text-slate-500">Sunset</p>
+          <p className="mt-1 text-sm font-semibold text-slate-900">
+            {formatTime(sunData?.sunset ?? null)}
+          </p>
         </div>
       </div>
 
       <SearchBar />
 
-      <section className="grid gap-4 rounded-[1.5rem] border border-slate-200 bg-white/95 p-4 shadow-[0_18px_60px_rgba(15,23,42,0.06)] backdrop-blur md:p-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
-        <div className="space-y-4">
-          <TimeSlider />
-          <div className="grid gap-3 sm:grid-cols-2">
-            <DatePicker />
-            <div className="flex items-end gap-2">
-              <AnimateButton />
-              <NowButton />
-            </div>
-          </div>
+      {/* Map + controls: stacked on mobile, side-by-side on desktop */}
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
+        {/* Map — takes available width on desktop */}
+        <div className="min-w-0 lg:flex-1">
+          <InteractiveMap />
         </div>
 
-        <InfoPanel />
-      </section>
+        {/* Controls sidebar */}
+        <div className="flex flex-col gap-4 lg:w-80 lg:flex-shrink-0">
+          <div className="rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="space-y-4">
+              <TimeSlider />
+              <div className="grid grid-cols-2 gap-3">
+                <DatePicker />
+                <div className="flex items-end gap-2">
+                  <AnimateButton />
+                  <NowButton />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <InfoPanel />
+        </div>
+      </div>
 
       <p className="sr-only" aria-live="polite">
         Active location {locationName || DEFAULT_MAP_LOCATION.name}. Sunrise {formatTime(sunData?.sunrise ?? null)}.
@@ -145,10 +135,7 @@ export function HomePageClient() {
       </p>
 
       <SharePanel />
-
       <FavoritesPanel />
-
-      <InteractiveMap />
     </div>
   );
 }
