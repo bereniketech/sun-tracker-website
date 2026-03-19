@@ -80,7 +80,7 @@
   - _Skills: /build-website-web-app, /code-writing-software-development_
   - **AC:** Toggle enables photographer mode. Countdowns tick in real time. 7-day forecast shows correct times. Recommended days highlighted. Compass visible in this mode.
 
-- [ ] 9. Implement shareable URLs and data export
+- [x ] 9. Implement shareable URLs and data export
   - Encode location, date, time, active overlays in URL search params
   - Restore view state from URL on page load
   - CSV export: sun data for selected location + date range

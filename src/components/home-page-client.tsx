@@ -6,6 +6,7 @@ import { DatePicker } from "@/components/controls/date-picker";
 import { NowButton } from "@/components/controls/now-button";
 import { TimeSlider } from "@/components/controls/time-slider";
 import { InteractiveMap } from "@/components/map/interactive-map";
+import { FavoritesPanel } from "@/components/panels/favorites-panel";
 import { InfoPanel } from "@/components/panels/info-panel";
 import { SharePanel } from "@/components/panels/share-panel";
 import { SearchBar } from "@/components/search-bar";
@@ -124,6 +125,8 @@ export function HomePageClient() {
       </section>
 
       <SharePanel />
+
+      <FavoritesPanel />
 
       <InteractiveMap />
     </div>

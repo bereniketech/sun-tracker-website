@@ -6,6 +6,10 @@ vi.mock("@/components/map/interactive-map", () => ({
   InteractiveMap: () => <div data-testid="interactive-map">Mock Map</div>,
 }));
 
+vi.mock("@/components/panels/favorites-panel", () => ({
+  FavoritesPanel: () => <div data-testid="favorites-panel" />,
+}));
+
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ replace: vi.fn() }),
   usePathname: () => "/",
