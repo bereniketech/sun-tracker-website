@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --radius: 0.75rem;
+  --background: 0 0% 98%;
+  --foreground: 222 47% 11%;
+  --surface: 0 0% 100%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215 16% 47%;
+  --border: 214 32% 91%;
+}
+
+* {
+  @apply border-border;
+}
+
+body {
+  @apply bg-background text-foreground antialiased;
+}
+
+.app-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+}
+
+@media (min-width: 768px) {
+  .app-grid {
+    grid-template-columns: minmax(0, 1fr) 22rem;
+  }
+}
+
+@media (min-width: 2560px) {
+  .app-grid {
+    grid-template-columns: minmax(0, 1fr) 28rem;
+  }
+}
