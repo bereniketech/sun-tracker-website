@@ -21,6 +21,8 @@ export const useSunTrackerStore = create<SunTrackerState>((set) => ({
     "sunrise-line",
     "sunset-line",
     "shadow",
+    "golden-hour-arc",
+    "blue-hour-arc",
     "sun-path",
   ]),
   photographerMode: false,

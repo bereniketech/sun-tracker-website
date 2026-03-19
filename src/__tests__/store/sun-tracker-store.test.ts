@@ -13,6 +13,8 @@ describe("useSunTrackerStore", () => {
         "sunrise-line",
         "sunset-line",
         "shadow",
+        "golden-hour-arc",
+        "blue-hour-arc",
         "sun-path",
       ]),
       photographerMode: false,
@@ -58,18 +60,18 @@ describe("useSunTrackerStore", () => {
 
   it("toggleOverlay adds and removes overlay entries immutably", () => {
     const before = useSunTrackerStore.getState().activeOverlays;
-    expect(before.has("blue-hour-arc")).toBe(false);
-
-    useSunTrackerStore.getState().toggleOverlay("blue-hour-arc");
-    const afterAdd = useSunTrackerStore.getState().activeOverlays;
-
-    expect(afterAdd.has("blue-hour-arc")).toBe(true);
-    expect(afterAdd).not.toBe(before);
+    expect(before.has("blue-hour-arc")).toBe(true);
 
     useSunTrackerStore.getState().toggleOverlay("blue-hour-arc");
     const afterRemove = useSunTrackerStore.getState().activeOverlays;
 
     expect(afterRemove.has("blue-hour-arc")).toBe(false);
+    expect(afterRemove).not.toBe(before);
+
+    useSunTrackerStore.getState().toggleOverlay("blue-hour-arc");
+    const afterAdd = useSunTrackerStore.getState().activeOverlays;
+
+    expect(afterAdd.has("blue-hour-arc")).toBe(true);
   });
 
   it("togglePhotographerMode flips boolean state", () => {

@@ -19,6 +19,8 @@ describe("HomePageClient", () => {
         "sunrise-line",
         "sunset-line",
         "shadow",
+        "golden-hour-arc",
+        "blue-hour-arc",
         "sun-path",
       ]),
       photographerMode: false,

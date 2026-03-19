@@ -17,6 +17,7 @@ import {
   formatCoordinatePair,
   formatPinnedLocationName,
 } from "@/components/map/location-utils";
+import { LayerControl, MapOverlays } from "@/components/map/map-overlays";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
 import type { Coordinates } from "@/types/sun";
 
@@ -183,6 +184,8 @@ export function LeafletMap() {
           {isFullscreen ? "Exit fullscreen" : "Fullscreen"}
         </button>
 
+        <LayerControl />
+
         <MapContainer
           center={[center.lat, center.lng]}
           zoom={12}
@@ -195,6 +198,8 @@ export function LeafletMap() {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
+
+          <MapOverlays />
 
           <ZoomControl position="bottomright" />
           <MapViewportController center={center} />

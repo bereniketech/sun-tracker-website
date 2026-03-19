@@ -49,7 +49,7 @@
   - _Skills: /build-website-web-app, /code-writing-software-development_
   - **AC:** Moving time slider updates sun data and map overlays in real time. Date picker changes recalculate all data. Animation smoothly moves sun across the day. "Now" resets correctly.
 
-- [ ] 6. Implement map overlays (sun lines, arcs, shadow, sun path)
+- [x] 6. Implement map overlays (sun lines, arcs, shadow, sun path)
   - Create `SunDirectionLines` — polylines for sunrise/sunset/current sun azimuth
   - Create `HourArcOverlays` — arc polygons for golden/blue hour angular ranges
   - Create `ShadowOverlay` — shadow direction polyline
