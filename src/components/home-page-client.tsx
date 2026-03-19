@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
+import { AnimateButton } from "@/components/controls/animate-button";
+import { DatePicker } from "@/components/controls/date-picker";
+import { DaylightInfo } from "@/components/controls/daylight-info";
+import { NowButton } from "@/components/controls/now-button";
+import { TimeSlider } from "@/components/controls/time-slider";
 import { InteractiveMap } from "@/components/map/interactive-map";
 import { SearchBar } from "@/components/search-bar";
 import {
@@ -91,6 +96,21 @@ export function HomePageClient() {
       </div>
 
       <SearchBar />
+
+      <section className="grid gap-4 rounded-[1.5rem] border border-slate-200 bg-white/95 p-4 shadow-[0_18px_60px_rgba(15,23,42,0.06)] backdrop-blur md:p-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+        <div className="space-y-4">
+          <TimeSlider />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <DatePicker />
+            <div className="flex items-end gap-2">
+              <AnimateButton />
+              <NowButton />
+            </div>
+          </div>
+        </div>
+
+        <DaylightInfo />
+      </section>
 
       <InteractiveMap />
     </div>

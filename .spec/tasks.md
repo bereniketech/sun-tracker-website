@@ -38,7 +38,7 @@
   - _Skills: /build-website-web-app, /code-writing-software-development_
   - **AC:** Typing shows autocomplete suggestions. Selecting a suggestion centers map. Manual coords work. Geolocation button works (or shows fallback). Nominatim rate limit respected.
 
-- [ ] 5. Build time/date controls and sun animation
+- [x] 5. Build time/date controls and sun animation
   - Create `src/components/controls/TimeSlider.tsx` — minute-resolution range input
   - Create `src/components/controls/DatePicker.tsx` — calendar date selector
   - Create animate button — `requestAnimationFrame` loop advancing time

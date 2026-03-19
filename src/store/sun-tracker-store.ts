@@ -49,6 +49,12 @@ export const useSunTrackerStore = create<SunTrackerState>((set) => ({
     });
   },
 
+  setAnimating: (isAnimating) => {
+    set(() => ({
+      isAnimating,
+    }));
+  },
+
   toggleOverlay: (overlay) => {
     set((state) => {
       const nextOverlays = new Set(state.activeOverlays);

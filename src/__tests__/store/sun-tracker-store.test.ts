@@ -46,6 +46,16 @@ describe("useSunTrackerStore", () => {
     expect(firstSunData?.sunAzimuth).not.toBe(secondSunData?.sunAzimuth);
   });
 
+  it("setAnimating updates animation state", () => {
+    expect(useSunTrackerStore.getState().isAnimating).toBe(false);
+
+    useSunTrackerStore.getState().setAnimating(true);
+    expect(useSunTrackerStore.getState().isAnimating).toBe(true);
+
+    useSunTrackerStore.getState().setAnimating(false);
+    expect(useSunTrackerStore.getState().isAnimating).toBe(false);
+  });
+
   it("toggleOverlay adds and removes overlay entries immutably", () => {
     const before = useSunTrackerStore.getState().activeOverlays;
     expect(before.has("blue-hour-arc")).toBe(false);

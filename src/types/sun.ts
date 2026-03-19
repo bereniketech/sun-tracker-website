@@ -46,6 +46,7 @@ export interface SunTrackerState {
   isMobile: boolean;
   setLocation: (lat: number, lng: number, name?: string) => void;
   setDateTime: (dateTime: Date) => void;
+  setAnimating: (isAnimating: boolean) => void;
   toggleOverlay: (overlay: OverlayType) => void;
   togglePhotographerMode: () => void;
 }
