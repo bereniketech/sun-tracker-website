@@ -13,7 +13,7 @@
 Feature: sun-tracker-v2
 Spec: .spec/sun-tracker-v2/requirements.md, design.md
 Tasks: .spec/sun-tracker-v2/tasks/
-Current task: .spec/sun-tracker-v2/tasks/task-002.md
+Current task: .spec/sun-tracker-v2/tasks/task-003.md
 Branch: feature/sun-tracker-v2
 
 ## Start Here

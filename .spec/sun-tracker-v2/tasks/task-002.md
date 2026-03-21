@@ -1,7 +1,7 @@
 ---
 task: 002
 feature: sun-tracker-v2
-status: pending
+status: complete
 depends_on: [1]
 ---
 
@@ -151,9 +151,23 @@ _Skills: /build-website-web-app — React component patterns_
 ---
 
 ## Handoff to Next Task
-> Fill via `/task-handoff` after completing this task.
 
-**Files changed:** _(fill via /task-handoff)_
-**Decisions made:** _(fill via /task-handoff)_
-**Context for next task:** _(fill via /task-handoff)_
-**Open questions:** _(fill via /task-handoff)_
+**Files changed:**
+
+| File | What changed | State |
+|------|-------------|-------|
+| `src/components/panels/lighting-insight-card.tsx` | New pure presentational component; maps `LightingLabel` to colour scheme; renders badge, headline, shot suggestions list, optional warning chip | complete |
+| `src/components/panels/photographer-panel.tsx` | Imports `computeLightingInsight` + `LightingInsightCard`; derives insight from `sunData`/`dateTime`; renders card between `BestDirectionIndicator` and `WeeklyForecast` | complete |
+| `src/components/panels/info-panel.tsx` | Imports `computeLightingInsight` + `LightingInsightCard`; adds collapsible `<details>` "Lighting Tip" widget visible when `photographerMode` is off and `sunData` exists | complete |
+| `src/__tests__/components/lighting-insight-card.test.tsx` | Component tests: renders all 6 label variants, badge text, shot suggestions; asserts `warningMessage` chip only when provided | complete |
+
+**Decisions made:**
+- **`LightingInsightCard` is prop-only (no Zustand)** — keeps it pure/testable; callers (`PhotographerPanel`, `InfoPanel`) own the `computeLightingInsight` call.
+- **`<details>` element for InfoPanel widget** — lightweight collapse without additional state or JS; avoids visual noise when photographer mode is off.
+- **Colour token map keyed by `LightingLabel`** — single lookup object inside the component; avoids repeated conditional chains.
+
+**Context for next task:**
+`LightingInsightCard` is live at `@/components/panels/lighting-insight-card`. It accepts a `LightingInsight` prop and is already integrated into both `PhotographerPanel` (full card) and `InfoPanel` (collapsible tip). The underlying `computeLightingInsight` from `@/lib/lighting-insight` is tested and stable. Task-003 is independent (sky-path lib) and has no dependency on task-002 output.
+
+**Open questions:**
+- None.

@@ -1,7 +1,7 @@
 ---
 task: 003
 feature: sun-tracker-v2
-status: pending
+status: complete
 depends_on: []
 ---
 
@@ -68,12 +68,25 @@ import SunCalc from "suncalc";
 ---
 
 ## Handoff from Previous Task
-> Empty for task-003 (parallel with task-001).
 
-**Files changed by previous task:** _(none)_
-**Decisions made:** _(none)_
-**Context for this task:** _(none)_
-**Open questions left:** _(none)_
+**Files changed by previous task:**
+
+| File | What changed |
+|------|-------------|
+| `src/components/panels/lighting-insight-card.tsx` | New pure presentational component; maps `LightingLabel` to colour scheme; renders badge, headline, shot suggestions list, optional warning chip |
+| `src/components/panels/photographer-panel.tsx` | Integrated `LightingInsightCard` between `BestDirectionIndicator` and `WeeklyForecast` |
+| `src/components/panels/info-panel.tsx` | Added collapsible `<details>` "Lighting Tip" widget visible when photographer mode is off |
+| `src/__tests__/components/lighting-insight-card.test.tsx` | Component tests for all 6 label variants and warning chip conditional rendering |
+
+**Decisions made in previous task:**
+- **`LightingInsightCard` is prop-only (no Zustand)** — pure/testable; callers own the `computeLightingInsight` call.
+- **`<details>` element for InfoPanel widget** — lightweight collapse without extra state.
+
+**Context for this task:**
+`computeLightingInsight` from `@/lib/lighting-insight` and `LightingInsightCard` are complete and integrated. Task-003 is independent — create `src/lib/sky-path.ts` with `computeSkyPath` returning `SkyPathResult`. Use `SunCalc.getPosition` directly (not `computeSunData`). This lib will later feed a sun-path chart component.
+
+**Open questions left by previous task:**
+- None.
 
 ---
 
@@ -117,11 +130,11 @@ _Skills: /code-writing-software-development — pure function; /tdd-workflow —
 ---
 
 ## Acceptance Criteria
-- [ ] `src/lib/sky-path.ts` exports `computeSkyPath`, `SkyPathPoint`, `SkyPathResult`.
-- [ ] Default 10-min interval returns 144 or 145 points (midnight to midnight inclusive).
-- [ ] `isPolarNight` is `true` for Tromsø in December.
-- [ ] `isMidnightSun` is `true` for Tromsø in June.
-- [ ] `isGolden` flags correctly identify golden hour points.
+- [x] `src/lib/sky-path.ts` exports `computeSkyPath`, `SkyPathPoint`, `SkyPathResult`.
+- [x] Default 10-min interval returns 144 or 145 points (midnight to midnight inclusive).
+- [x] `isPolarNight` is `true` for Tromsø in December.
+- [x] `isMidnightSun` is `true` for Tromsø in June.
+- [x] `isGolden` flags correctly identify golden hour points.
 - [ ] `vitest run` passes.
 - [ ] `/verify` passes.
 
@@ -130,7 +143,21 @@ _Skills: /code-writing-software-development — pure function; /tdd-workflow —
 ## Handoff to Next Task
 > Fill via `/task-handoff` after completing this task.
 
-**Files changed:** _(fill via /task-handoff)_
-**Decisions made:** _(fill via /task-handoff)_
-**Context for next task:** _(fill via /task-handoff)_
-**Open questions:** _(fill via /task-handoff)_
+**Files changed:**
+
+| File | What changed | State |
+|------|-------------|-------|
+| `src/lib/sky-path.ts` | New pure sky-path utility; samples SunCalc positions across a day, converts azimuth/elevation to app-friendly degrees, derives golden/blue hour flags, and reports polar-night/midnight-sun metadata | complete |
+| `src/__tests__/lib/sky-path.test.ts` | New unit tests covering London summer-solstice sampling, Tromsø polar-night and midnight-sun edge cases, default/custom interval counts, and point ordering/object creation | complete |
+
+**Decisions made:**
+- **Default sampling is midnight-inclusive and end-exclusive** — loop runs from local midnight in `intervalMinutes` steps while `minuteOffset < 1440`, producing 144 points at the default 10-minute interval and 48 points at 30 minutes.
+- **Blue hour uses SunCalc times plus direct altitude search** — `dawn`/`sunrise` and `sunset`/`dusk` bracket the `-4°` crossing, so the lib stays independent of `computeSunData` while still matching the feature definition.
+- **Polar flags come from sampled elevations, not rise/set timestamps** — avoids depending on invalid sunrise/sunset dates in high-latitude cases.
+
+**Context for next task:**
+`computeSkyPath(lat, lng, date, intervalMinutes?)` is now available at `@/lib/sky-path` and returns `{ points, isPolarNight, isMidnightSun }`. Each point contains `time`, `elevation`, `azimuth`, `isGolden`, and `isBlue`. The output is ready for a client-side SVG sky-path diagram without needing `computeSunData` or additional store work.
+
+**Open questions:**
+- Full `vitest run` is currently blocked by unrelated existing failures in `src/__tests__/components/time-controls.test.tsx`, `src/__tests__/components/search-bar.test.tsx`, and `src/__tests__/components/info-panel.test.tsx`.
+- `/verify` could not be confirmed end-to-end for the same reason; the targeted sky-path tests pass and `npm run build` succeeds.
