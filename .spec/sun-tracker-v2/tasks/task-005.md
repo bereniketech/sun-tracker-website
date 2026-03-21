@@ -1,7 +1,7 @@
 ---
 task: 005
 feature: sun-tracker-v2
-status: pending
+status: completed
 depends_on: []
 ---
 
@@ -157,13 +157,13 @@ _Skills: /code-writing-software-development — Zustand patterns, URL encoding_
 ---
 
 ## Acceptance Criteria
-- [ ] `src/types/comparison.ts` exists with `ComparisonLocation` and `ComparisonSnapshot`.
-- [ ] `SunTrackerState` includes all 4 new fields/actions.
-- [ ] Store enforces max 3 comparison locations.
-- [ ] URL `compare` param round-trips correctly (encode on change, decode on mount).
-- [ ] Invalid lat/lng in URL param are silently ignored.
-- [ ] All existing store tests still pass.
-- [ ] New store tests pass.
+- [x] `src/types/comparison.ts` exists with `ComparisonLocation` and `ComparisonSnapshot`.
+- [x] `SunTrackerState` includes all 4 new fields/actions.
+- [x] Store enforces max 3 comparison locations.
+- [x] URL `compare` param round-trips correctly (encode on change, decode on mount).
+- [x] Invalid lat/lng in URL param are silently ignored.
+- [x] All existing store tests still pass.
+- [x] New store tests pass.
 - [ ] `/verify` passes.
 
 ---
@@ -171,7 +171,25 @@ _Skills: /code-writing-software-development — Zustand patterns, URL encoding_
 ## Handoff to Next Task
 > Fill via `/task-handoff` after completing this task.
 
-**Files changed:** _(fill via /task-handoff)_
-**Decisions made:** _(fill via /task-handoff)_
-**Context for next task:** _(fill via /task-handoff)_
-**Open questions:** _(fill via /task-handoff)_
+**Files changed:**
+
+| File | What changed |
+|------|-------------|
+| `src/types/comparison.ts` | Added `ComparisonLocation` and `ComparisonSnapshot` interfaces for multi-location comparison data |
+| `src/types/sun.ts` | Extended `SunTrackerState` with `comparisonLocations` and comparison actions |
+| `src/store/sun-tracker-store.ts` | Added comparison slice state plus immutable `add/remove/clear` actions with a hard max of 3 entries |
+| `src/hooks/use-url-state.ts` | Added `compare` URL serialization/deserialization with float validation and safe decode handling |
+| `src/__tests__/store/sun-tracker-store.test.ts` | Added tests for add cap, remove by index, and clear behavior |
+
+**Decisions made:**
+- Comparison list cap is enforced in the store action (`addComparisonLocation`) as the source of truth.
+- URL format uses `lat,lng,name|...` with encoded names and six-decimal coordinates for stable share links.
+- URL restore clears existing comparison entries before parsing `compare` to avoid stale/duplicate state.
+- Malformed percent-encoding in names is tolerated via safe decode fallback to keep restore resilient.
+
+**Context for next task:**
+Task 005 delivers comparison state foundations and URL persistence required by Task 006. The `LocationComparison` modal can now rely on store actions (`addComparisonLocation`, `removeComparisonLocation`, `clearComparisonLocations`) and URL round-tripping through `useUrlState`.
+
+**Open questions:**
+- Full `vitest run` remains red due pre-existing unrelated failures in `src/__tests__/components/time-controls.test.tsx` and `src/__tests__/components/search-bar.test.tsx`.
+- Lint has an unrelated warning in `src/__tests__/components/home-page-client.test.tsx` (`waitFor` unused).

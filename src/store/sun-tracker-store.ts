@@ -19,6 +19,7 @@ export const useSunTrackerStore = create<SunTrackerState>((set) => ({
   dateTime: INITIAL_DATE,
   isAnimating: false,
   sunData: computeSunData(DEFAULT_MAP_LOCATION.lat, DEFAULT_MAP_LOCATION.lng, INITIAL_DATE),
+  comparisonLocations: [],
   activeOverlays: new Set([
     "sun-position",
     "sunrise-line",
@@ -60,6 +61,30 @@ export const useSunTrackerStore = create<SunTrackerState>((set) => ({
   setAnimating: (isAnimating) => {
     set(() => ({
       isAnimating,
+    }));
+  },
+
+  addComparisonLocation: (loc) => {
+    set((state) => {
+      if (state.comparisonLocations.length >= 3) {
+        return state;
+      }
+
+      return {
+        comparisonLocations: [...state.comparisonLocations, loc],
+      };
+    });
+  },
+
+  removeComparisonLocation: (index) => {
+    set((state) => ({
+      comparisonLocations: state.comparisonLocations.filter((_, i) => i !== index),
+    }));
+  },
+
+  clearComparisonLocations: () => {
+    set(() => ({
+      comparisonLocations: [],
     }));
   },
 

@@ -9,6 +9,7 @@ describe("useSunTrackerStore", () => {
       dateTime: new Date("2025-06-21T12:00:00.000Z"),
       isAnimating: false,
       sunData: null,
+      comparisonLocations: [],
       activeOverlays: new Set([
         "sun-position",
         "sunrise-line",
@@ -97,5 +98,52 @@ describe("useSunTrackerStore", () => {
     expect(next.location).toEqual({ lat: landmark.lat, lng: landmark.lng });
     expect(next.locationName).toBe(landmark.name);
     expect(next.sunData).not.toBeNull();
+  });
+
+  it("addComparisonLocation adds up to 3 locations and ignores the fourth", () => {
+    const store = useSunTrackerStore.getState();
+
+    store.addComparisonLocation({ lat: 40.7128, lng: -74.006, name: "New York" });
+    store.addComparisonLocation({ lat: 34.0522, lng: -118.2437, name: "Los Angeles" });
+    store.addComparisonLocation({ lat: 51.5074, lng: -0.1278, name: "London" });
+    store.addComparisonLocation({ lat: 35.6762, lng: 139.6503, name: "Tokyo" });
+
+    const next = useSunTrackerStore.getState();
+    expect(next.comparisonLocations).toHaveLength(3);
+    expect(next.comparisonLocations.map((location) => location.name)).toEqual([
+      "New York",
+      "Los Angeles",
+      "London",
+    ]);
+  });
+
+  it("removeComparisonLocation removes the entry at the specified index", () => {
+    const store = useSunTrackerStore.getState();
+
+    store.addComparisonLocation({ lat: 40.7128, lng: -74.006, name: "New York" });
+    store.addComparisonLocation({ lat: 34.0522, lng: -118.2437, name: "Los Angeles" });
+    store.addComparisonLocation({ lat: 51.5074, lng: -0.1278, name: "London" });
+
+    store.removeComparisonLocation(1);
+
+    const next = useSunTrackerStore.getState();
+    expect(next.comparisonLocations).toHaveLength(2);
+    expect(next.comparisonLocations.map((location) => location.name)).toEqual([
+      "New York",
+      "London",
+    ]);
+  });
+
+  it("clearComparisonLocations empties the comparison locations array", () => {
+    const store = useSunTrackerStore.getState();
+
+    store.addComparisonLocation({ lat: 40.7128, lng: -74.006, name: "New York" });
+    store.addComparisonLocation({ lat: 34.0522, lng: -118.2437, name: "Los Angeles" });
+
+    expect(useSunTrackerStore.getState().comparisonLocations).toHaveLength(2);
+
+    store.clearComparisonLocations();
+
+    expect(useSunTrackerStore.getState().comparisonLocations).toEqual([]);
   });
 });
