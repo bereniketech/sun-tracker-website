@@ -1,0 +1,137 @@
+# Implementation Plan: Sun Tracker v2 — Enhanced Features
+
+- [ ] 1. Lighting insight lib + tests
+  - Create `src/lib/lighting-insight.ts` with `computeLightingInsight(sunData, dateTime)` pure function.
+  - Implement the 6-label classification table (GOLDEN > BLUE > TWILIGHT > NIGHT > HARSH > SOFT priority).
+  - Define `LightingLabel`, `ShotSuggestion`, `LightingInsight` types in the same file.
+  - Add shot suggestions and warning messages for each label (at least 2 suggestions per label).
+  - Write `src/__tests__/lib/lighting-insight.test.ts` with parametrized tests covering all 6 labels and boundary elevations.
+  - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
+  - _Skills: /code-writing-software-development, /tdd-workflow_
+  - **AC:** All 6 label paths covered by tests. `computeLightingInsight` is a pure function with no side effects. 80%+ coverage. `vitest run` passes.
+
+- [ ] 2. LightingInsightCard component + InfoPanel integration
+  - Create `src/components/panels/lighting-insight-card.tsx` consuming `LightingInsight` as a prop.
+  - Render: colour-coded label badge, headline string, shot suggestions list, optional warning chip.
+  - Integrate into `PhotographerPanel` between `BestDirectionIndicator` and `WeeklyForecast`.
+  - Add a collapsed `<details>` "Lighting Tip" widget in `InfoPanel` for when photographer mode is off (Req 1.7).
+  - Write `src/__tests__/components/lighting-insight-card.test.tsx` with RTL render tests for each label variant.
+  - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7_
+  - _Skills: /build-website-web-app, /code-writing-software-development_
+  - **AC:** Component renders all 6 label variants without error. Integrates into PhotographerPanel and InfoPanel. Time slider update causes re-render. Tests pass.
+
+- [ ] 3. Sky path lib + tests
+  - Create `src/lib/sky-path.ts` with `computeSkyPath(lat, lng, date, intervalMinutes?)` returning `SkyPathPoint[]`.
+  - Define `SkyPathPoint` type: `{ time, elevation, azimuth, isGolden, isBlue }`.
+  - Use `SunCalc.getPosition` directly (not `computeSunData`) for performance; generate points from midnight to midnight.
+  - Handle polar edge cases: return flat-line array when sun never rises; full-arc array when sun never sets.
+  - Write `src/__tests__/lib/sky-path.test.ts` verifying point count, elevation clamping, and golden/blue flags at known times.
+  - _Requirements: 2.1, 2.2, 2.7, 2.8_
+  - _Skills: /code-writing-software-development, /tdd-workflow_
+  - **AC:** Returns correct point count for default 10-min interval (144 points). Polar night and midnight sun edge cases handled. Tests pass.
+
+- [ ] 4. SkyPathDiagram SVG component + InfoPanel integration
+  - Create `src/components/panels/sky-path-diagram.tsx` as a pure SVG component.
+  - X-axis: time (0 h → 24 h). Y-axis: elevation from −6° to peak.
+  - Render horizon line, sun path polyline, golden hour filled bands (amber), blue hour filled bands (sky-blue), solar noon dashed vertical, animated current-position dot (CSS transition).
+  - Use `viewBox` + `width="100%"` for responsiveness. Min width 280 px.
+  - Show polar edge case labels ("Polar night" / "Midnight sun") when applicable.
+  - `useMemo` keyed on `lat + lng + date.toDateString()` for the path computation.
+  - Add to `InfoPanel` as a collapsible section above `ShadowInfo`.
+  - Write `src/__tests__/components/sky-path-diagram.test.tsx` with RTL tests (render, polar cases).
+  - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8_
+  - _Skills: /build-website-web-app, /presentations-ui-design_
+  - **AC:** SVG renders without error for standard, polar-night, and midnight-sun inputs. Dot updates when dateTime changes. Tests pass.
+
+- [ ] 5. Comparison store slice + types + URL state extension
+  - Add `src/types/comparison.ts` with `ComparisonLocation` and `ComparisonSnapshot` interfaces.
+  - Extend `SunTrackerState` in `src/types/sun.ts` with `comparisonLocations`, `addComparisonLocation`, `removeComparisonLocation`, `clearComparisonLocations`.
+  - Implement the three actions in `src/store/sun-tracker-store.ts`; enforce max-3 cap in `addComparisonLocation`.
+  - Extend `src/hooks/use-url-state.ts`: read/write `compare` param using pipe+comma encoding (`lat,lng,name|lat,lng,name`); validate floats; restore store on mount.
+  - Write `src/__tests__/store/sun-tracker-store.test.ts` additions for comparison slice (add, remove, cap enforcement).
+  - _Requirements: 3.1, 3.4, 3.7_
+  - _Skills: /code-writing-software-development_
+  - **AC:** Store enforces max 3 locations. URL round-trips comparison state correctly. Existing store tests still pass. New tests pass.
+
+- [ ] 6. LocationComparison modal component
+  - Create `src/components/panels/location-comparison.tsx`.
+  - Desktop: fixed-centre modal overlay. Mobile: bottom sheet (translate-y transition).
+  - Embed existing `SearchBar` for adding locations. Show placeholder when < 2 locations.
+  - Compute `ComparisonSnapshot[]` client-side via `computeSunData()` for each location + current `dateTime`; update when `dateTime` changes.
+  - Render columns: location name, sunrise, sunset, golden hour start/end, day length, current elevation.
+  - "Share" button writes `compare` param to URL via store + router.
+  - "Close" button calls `clearComparisonLocations` and closes modal.
+  - Add "Compare" trigger button in `InfoPanel`.
+  - Write `src/__tests__/components/location-comparison.test.tsx`.
+  - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8_
+  - _Skills: /build-website-web-app, /code-writing-software-development_
+  - **AC:** Modal opens/closes. Up to 3 locations can be added/removed. Snapshots update on date change. Share URL includes `compare` param. Tests pass.
+
+- [ ] 7. Seasonal insights lib + tests
+  - Create `src/lib/seasonal-insights.ts` with `computeSeasonalData(lat, lng, year)` returning `MonthlySnapshot[]` (12 entries).
+  - Define `MonthlySnapshot` type: `{ month, monthName, sunrise, sunset, goldenHourStart, dayLengthSeconds, peakElevation }`.
+  - Use reference date of the 21st of each month at solar noon.
+  - Call existing `computeSunData()` for each reference date.
+  - Write `src/__tests__/lib/seasonal-insights.test.ts` verifying 12 entries, correct longest/shortest months for London (51.5°N).
+  - _Requirements: 4.1, 4.2, 4.5, 4.7_
+  - _Skills: /code-writing-software-development, /tdd-workflow_
+  - **AC:** Returns exactly 12 entries. Longest day is June/July for northern hemisphere. Tests pass.
+
+- [ ] 8. SeasonalInsights SVG chart + InfoPanel and city page integration
+  - Create `src/components/panels/seasonal-insights.tsx` as a pure SVG chart.
+  - X-axis: 12 months. Y-axis: day length in hours.
+  - Render a bar per month with upper = sunrise, lower = sunset. Highlight longest/shortest bars.
+  - `<title>` tooltip per bar: sunrise time, sunset time, golden hour start, day length.
+  - `useMemo` keyed on `lat + lng + year`.
+  - Add to `InfoPanel` as collapsible section.
+  - Import and render in `src/app/city/[slug]/page.tsx` using precomputed city coordinates.
+  - Write `src/__tests__/components/seasonal-insights.test.tsx`.
+  - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6_
+  - _Skills: /build-website-web-app, /presentations-ui-design_
+  - **AC:** SVG renders 12 bars. Longest bar highlighted. City page renders chart without error. Tests pass.
+
+- [ ] 9. Golden hour notification hook + tests
+  - Create `src/hooks/use-golden-hour-notifications.ts` implementing `useGoldenHourNotifications(sunData, locationName)`.
+  - Define `NotificationPermissionState` type and `UseGoldenHourNotificationsReturn` interface per design.
+  - On `requestAndSchedule`: call `Notification.requestPermission()`, then schedule `setTimeout` 30 min before next golden hour event. Store timer ID in `useRef`.
+  - On `cancel`: `clearTimeout` stored ID.
+  - On `sunData` / `locationName` change: cancel previous timer and reschedule if `isScheduled`.
+  - Feature-detect `"Notification" in window`; return `"unsupported"` if absent.
+  - Write `src/__tests__/hooks/use-golden-hour-notifications.test.ts` mocking `Notification` and `setTimeout`.
+  - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 5.9_
+  - _Skills: /code-writing-software-development, /tdd-workflow_
+  - **AC:** Schedules correctly when permission granted. Cancels on cleanup. Unsupported state returned when API absent. Tests pass.
+
+- [ ] 10. NotificationSettings component + InfoPanel integration
+  - Create `src/components/panels/notification-settings.tsx` consuming `UseGoldenHourNotificationsReturn`.
+  - Show: permission chip, "Notify me at golden hour" button (hidden when unsupported or already scheduled), "Disable reminders" button (shown when `isScheduled`), inline guidance when denied.
+  - Truncate `locationName` to 100 chars before passing to hook (XSS mitigation per design).
+  - Add to `InfoPanel` as a small widget above the Share panel.
+  - Write `src/__tests__/components/notification-settings.test.tsx`.
+  - _Requirements: 5.1, 5.5, 5.8, 5.9_
+  - _Skills: /build-website-web-app_
+  - **AC:** All permission states render the correct UI. "Notify me" button absent when API unsupported. Tests pass.
+
+- [ ] 11. Educational content + dismissal hook + tests
+  - Create `src/lib/educational-content.ts` with `EDUCATIONAL_ENTRIES` record covering 6 terms: `golden-hour`, `blue-hour`, `solar-noon`, `shadow-ratio`, `azimuth`, `elevation`.
+  - Each entry: `{ term, shortDefinition, fullExplanation, photographyTip? }`.
+  - Create `src/hooks/use-educational-dismissal.ts` with `isDismissed(term)`, `dismiss(term)`, `resetAll()` backed by `localStorage` key `"edu-dismissed"`.
+  - Wrap `localStorage` access in try/catch for SSR and private-mode safety.
+  - Write `src/__tests__/hooks/use-educational-dismissal.test.ts` mocking `localStorage`.
+  - _Requirements: 6.2, 6.4, 6.5, 6.7_
+  - _Skills: /code-writing-software-development, /tdd-workflow_
+  - **AC:** All 6 entries present and complete. `dismiss` persists across hook re-renders. `localStorage` failure returns `isDismissed = false` without error. Tests pass.
+
+- [ ] 12. EducationalTooltip component + InfoPanel data label integration
+  - Create `src/components/panels/educational-tooltip.tsx` wrapping any data label in a clickable popover.
+  - Props: `term: string` (key into `EDUCATIONAL_ENTRIES`), `children: ReactNode`.
+  - Popover: `shortDefinition` always visible, `fullExplanation` behind expand toggle.
+  - Dismiss button calls `dismiss(term)`; dismissed terms render children only.
+  - ARIA: `role="button"`, `aria-expanded`, `aria-describedby` on the popover panel.
+  - Keyboard: Enter/Space opens, Escape closes.
+  - Wrap existing data labels in `SunDataDisplay` and `ShadowInfo` with `EducationalTooltip` for: azimuth, elevation, shadow ratio, solar noon.
+  - Add "Learn more" link in `InfoPanel` that opens a modal listing all 6 entries (Req 6.6).
+  - Write `src/__tests__/components/educational-tooltip.test.tsx`.
+  - _Requirements: 6.1, 6.2, 6.3, 6.5, 6.6, 6.7_
+  - _Skills: /build-website-web-app, /code-writing-software-development_
+  - **AC:** Popover opens on click and keyboard. Dismissed term renders children only. ARIA attributes correct. Tests pass.

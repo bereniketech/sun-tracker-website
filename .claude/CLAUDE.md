@@ -10,11 +10,11 @@
 @C:/Users/Hp/Desktop/Experiment/claude_kit/skills/data-backend/postgres-patterns/SKILL.md
 
 ## Active Feature
-Feature: issue-fixes
-Spec: .spec/issue-fixes/requirements.md, design.md
-Tasks: .spec/issue-fixes/tasks/
-Current task: .spec/issue-fixes/tasks/task-001.md
-Branch: feature/issue-fixes
+Feature: sun-tracker-v2
+Spec: .spec/sun-tracker-v2/requirements.md, design.md
+Tasks: .spec/sun-tracker-v2/tasks/
+Current task: .spec/sun-tracker-v2/tasks/task-001.md
+Branch: feature/sun-tracker-v2
 
 ## Start Here
 1. Read `## Active Feature` above — note the current task path.

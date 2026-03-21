@@ -1,0 +1,134 @@
+---
+task: 006
+feature: sun-tracker-v2
+status: pending
+depends_on: [5]
+---
+
+# Task 006: LocationComparison Modal Component
+
+## Session Bootstrap
+> Load these before reading anything else. Do not load skills not listed here.
+
+Skills: /build-website-web-app, /code-writing-software-development
+Commands: /verify, /task-handoff
+
+---
+
+## Objective
+Create the `LocationComparison` modal component that lets users add up to 3 locations and see side-by-side sun snapshots for the current date. Add a "Compare" trigger button in `InfoPanel`.
+
+---
+
+## Codebase Context
+> Pre-populated by Task Enrichment. No file reading required.
+
+### Key Code Snippets
+
+```typescript
+// [ComparisonLocation + ComparisonSnapshot — from src/types/comparison.ts (task-005)]
+export interface ComparisonLocation { lat: number; lng: number; name: string; }
+export interface ComparisonSnapshot {
+  location: ComparisonLocation;
+  sunrise: Date; sunset: Date;
+  goldenHourStart: Date; goldenHourEnd: Date;
+  dayLengthSeconds: number; currentElevation: number;
+}
+```
+
+```typescript
+// [Store comparison actions — from src/store/sun-tracker-store.ts (task-005)]
+const comparisonLocations = useSunTrackerStore((state) => state.comparisonLocations);
+const addComparisonLocation = useSunTrackerStore((state) => state.addComparisonLocation);
+const removeComparisonLocation = useSunTrackerStore((state) => state.removeComparisonLocation);
+const clearComparisonLocations = useSunTrackerStore((state) => state.clearComparisonLocations);
+```
+
+```typescript
+// [computeSunData signature — from src/lib/sun.ts:107]
+export function computeSunData(lat: number, lng: number, dateTime: Date): SunData
+// Use this to compute each ComparisonSnapshot — extract sunrise, sunset, goldenHour, dayLength fields.
+```
+
+```typescript
+// [SearchBar component — from src/components/search-bar.tsx]
+// Already accepts onLocationSelect callback. Reuse for adding comparison locations.
+// Import: import { SearchBar } from "@/components/search-bar";
+```
+
+### Key Patterns in Use
+- **Modal pattern:** Fixed overlay `z-50`, backdrop `bg-black/40`, panel `bg-white rounded-xl`. Desktop: centred. Mobile: bottom sheet (`translate-y` toggle).
+- **`"use client"`:** Required for all interactive components.
+- **`useMemo` for snapshots:** `useMemo(() => comparisonLocations.map(loc => buildSnapshot(loc, dateTime)), [comparisonLocations, dateTime])`.
+- **No new API routes:** All computation is client-side via `computeSunData`.
+
+### Architecture Decisions Affecting This Task
+- Modal is self-contained (open state managed locally with `useState`).
+- "Compare" button in InfoPanel sets `isOpen = true`; "Close" calls `clearComparisonLocations` + `setIsOpen(false)`.
+- Columns scroll horizontally on narrow screens (`overflow-x-auto`).
+- Placeholder shown when < 2 locations added.
+
+---
+
+## Handoff from Previous Task
+> Populated by /task-handoff after task-005 completes.
+
+**Files changed by previous task:** _(none yet)_
+**Decisions made:** _(none yet)_
+**Context for this task:** _(none yet)_
+**Open questions left:** _(none yet)_
+
+---
+
+## Implementation Steps
+
+1. Create `src/components/panels/location-comparison.tsx`:
+   - Props: `isOpen: boolean`, `onClose: () => void`.
+   - Read `comparisonLocations`, `dateTime` from store.
+   - Compute snapshots with `useMemo`.
+   - Render modal overlay + panel.
+   - Inside panel: title "Compare Locations", `SearchBar` (calls `addComparisonLocation` on select), columns grid (one per location with remove button), placeholder when < 2 locations, "Share" button, "Close" button.
+   - "Share" button: constructs the URL with the compare param and copies to clipboard (or opens native share if available).
+
+2. Helper: `buildComparisonSnapshot(loc: ComparisonLocation, dateTime: Date): ComparisonSnapshot`:
+   - Calls `computeSunData(loc.lat, loc.lng, dateTime)`.
+   - Extracts: `sunrise`, `sunset`, `goldenHour.start` as `goldenHourStart`, `goldenHourEvening.end` as `goldenHourEnd`, `dayLength` as `dayLengthSeconds`, `sunElevation` as `currentElevation`.
+   - Pure function — place in same file or in `src/lib/comparison.ts`.
+
+3. Edit `src/components/panels/info-panel.tsx`:
+   - Add `useState<boolean>(false)` for modal open state.
+   - Add "Compare" button in the panel header area.
+   - Render `<LocationComparison isOpen={isOpen} onClose={() => { clearComparisonLocations(); setIsOpen(false); }} />`.
+
+4. Create `src/__tests__/components/location-comparison.test.tsx`:
+   - Render with `isOpen=true`.
+   - Assert placeholder shown when 0 locations.
+   - Mock store with 2 locations; assert 2 columns rendered.
+   - Assert "Close" button calls `onClose`.
+
+_Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8_
+_Skills: /build-website-web-app — modal/overlay pattern_
+
+---
+
+## Acceptance Criteria
+- [ ] Modal renders when `isOpen=true`; hidden when `false`.
+- [ ] Up to 3 locations can be added via `SearchBar`.
+- [ ] 4th add attempt is silently blocked (store cap).
+- [ ] Each column shows: name, sunrise, sunset, golden hour start/end, day length, elevation.
+- [ ] Date change updates all snapshot columns.
+- [ ] Placeholder shown when < 2 locations.
+- [ ] Close button calls `onClose`.
+- [ ] "Compare" button in InfoPanel opens the modal.
+- [ ] `vitest run` passes.
+- [ ] `/verify` passes.
+
+---
+
+## Handoff to Next Task
+> Fill via `/task-handoff` after completing this task.
+
+**Files changed:** _(fill via /task-handoff)_
+**Decisions made:** _(fill via /task-handoff)_
+**Context for next task:** _(fill via /task-handoff)_
+**Open questions:** _(fill via /task-handoff)_
