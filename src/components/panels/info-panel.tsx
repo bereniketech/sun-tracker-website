@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Compass } from "@/components/compass/compass";
 import { LightingInsightCard } from "@/components/panels/lighting-insight-card";
 import { LandmarkAlignmentPanel } from "@/components/panels/landmark-alignment-panel";
+import { LocationComparison } from "@/components/panels/location-comparison";
 import { SkyPathDiagram } from "@/components/panels/sky-path-diagram";
 import { ShadowInfo } from "@/components/panels/shadow-info";
 import { SunDataDisplay } from "@/components/panels/sun-data-display";
@@ -35,10 +36,12 @@ const PhotographerPanel = dynamic(
 export function InfoPanel() {
   const photographerMode = useSunTrackerStore((state) => state.photographerMode);
   const togglePhotographerMode = useSunTrackerStore((state) => state.togglePhotographerMode);
+  const clearComparisonLocations = useSunTrackerStore((state) => state.clearComparisonLocations);
   const sunData = useSunTrackerStore((state) => state.sunData);
   const dateTime = useSunTrackerStore((state) => state.dateTime);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(true);
+  const [isComparisonOpen, setIsComparisonOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const syncViewportState = () => {
@@ -61,11 +64,25 @@ export function InfoPanel() {
     };
   }, []);
 
+  const handleComparisonClose = (): void => {
+    clearComparisonLocations();
+    setIsComparisonOpen(false);
+  };
+
   return (
-    <aside className="rounded-xl border border-slate-200 bg-white p-3" aria-label="Information panel">
+    <>
+      <aside className="rounded-xl border border-slate-200 bg-white p-3" aria-label="Information panel">
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-800">Sun Data</h2>
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="rounded-lg border border-slate-300 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-slate-700"
+            onClick={() => setIsComparisonOpen(true)}
+          >
+            Compare
+          </button>
+
           <button
             type="button"
             className={`rounded-lg border px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] ${
@@ -122,6 +139,9 @@ export function InfoPanel() {
         </details>
         <ShadowInfo />
       </div>
-    </aside>
+      </aside>
+
+      <LocationComparison isOpen={isComparisonOpen} onClose={handleComparisonClose} />
+    </>
   );
 }

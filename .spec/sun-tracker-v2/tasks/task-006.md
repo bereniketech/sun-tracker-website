@@ -71,12 +71,29 @@ export function computeSunData(lat: number, lng: number, dateTime: Date): SunDat
 ---
 
 ## Handoff from Previous Task
-> Populated by /task-handoff after task-005 completes.
 
-**Files changed by previous task:** _(none yet)_
-**Decisions made:** _(none yet)_
-**Context for this task:** _(none yet)_
-**Open questions left:** _(none yet)_
+**Files changed by previous task:**
+
+| File | What changed |
+|------|-------------|
+| `src/types/comparison.ts` | Added `ComparisonLocation` and `ComparisonSnapshot` interfaces for multi-location comparison data |
+| `src/types/sun.ts` | Extended `SunTrackerState` with `comparisonLocations` and comparison actions |
+| `src/store/sun-tracker-store.ts` | Added comparison slice state plus immutable `add/remove/clear` actions with a hard max of 3 entries |
+| `src/hooks/use-url-state.ts` | Added `compare` URL serialization/deserialization with float validation and safe decode handling |
+| `src/__tests__/store/sun-tracker-store.test.ts` | Added tests for add cap, remove by index, and clear behavior |
+
+**Decisions made in previous task:**
+- **Comparison list cap enforced in store action** — `addComparisonLocation` is the source of truth for the 3-entry max.
+- **URL format: `lat,lng,name|...`** — encoded names with six-decimal coordinates for stable share links.
+- **URL restore clears existing entries first** — prevents stale/duplicate state on mount.
+- **Malformed percent-encoding tolerated** — safe decode fallback keeps URL restore resilient.
+
+**Context for this task:**
+Task 005 delivers comparison state foundations and URL persistence required by Task 006. The `LocationComparison` modal can now rely on store actions (`addComparisonLocation`, `removeComparisonLocation`, `clearComparisonLocations`) and URL round-tripping through `useUrlState`.
+
+**Open questions left by previous task:**
+- Full `vitest run` remains red due to pre-existing unrelated failures in `src/__tests__/components/time-controls.test.tsx` and `src/__tests__/components/search-bar.test.tsx`.
+- Lint has an unrelated warning in `src/__tests__/components/home-page-client.test.tsx` (`waitFor` unused).
 
 ---
 
