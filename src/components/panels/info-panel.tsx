@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Compass } from "@/components/compass/compass";
 import { LightingInsightCard } from "@/components/panels/lighting-insight-card";
 import { LandmarkAlignmentPanel } from "@/components/panels/landmark-alignment-panel";
+import { SkyPathDiagram } from "@/components/panels/sky-path-diagram";
 import { ShadowInfo } from "@/components/panels/shadow-info";
 import { SunDataDisplay } from "@/components/panels/sun-data-display";
 import { computeLightingInsight } from "@/lib/lighting-insight";
@@ -111,6 +112,14 @@ export function InfoPanel() {
           <Compass />
         )}
         <SunDataDisplay />
+        <details className="rounded-lg border border-slate-200 bg-slate-50 p-2">
+          <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[0.12em] text-slate-700 select-none">
+            Sky Path
+          </summary>
+          <div className="mt-2">
+            <SkyPathDiagram />
+          </div>
+        </details>
         <ShadowInfo />
       </div>
     </aside>
