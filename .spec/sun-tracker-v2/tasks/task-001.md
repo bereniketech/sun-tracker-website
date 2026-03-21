@@ -1,7 +1,7 @@
 ---
 task: 001
 feature: sun-tracker-v2
-status: pending
+status: complete
 depends_on: []
 ---
 
@@ -122,9 +122,21 @@ _Skills: /code-writing-software-development — pure function patterns; /tdd-wor
 ---
 
 ## Handoff to Next Task
-> Fill via `/task-handoff` after completing this task.
 
-**Files changed:** _(fill via /task-handoff)_
-**Decisions made:** _(fill via /task-handoff)_
-**Context for next task:** _(fill via /task-handoff)_
-**Open questions:** _(fill via /task-handoff)_
+**Files changed:**
+
+| File | What changed | State |
+|------|-------------|-------|
+| `src/lib/lighting-insight.ts` | New pure TS lib: exports `computeLightingInsight`, `LightingLabel`, `ShotSuggestion`, `LightingInsight` types, full shot-suggestion map and headline/warning constants | complete |
+| `src/__tests__/lib/lighting-insight.test.ts` | 17 unit tests covering all 6 label paths, boundary elevations, GOLDEN priority, purity, and no-mutation guarantee | complete |
+
+**Decisions made:**
+- **GOLDEN/BLUE checked via `dateTime` window membership, not elevation** — per architecture: window-based labels take precedence; elevation-only classification is the fallback.
+- **Shot suggestions as a compile-time constant map** — avoids repeated allocation; immutability preserved by returning the same array reference (read-only in practice).
+- **`warningMessage` omitted from return when not applicable** — field is `undefined` rather than `null` or empty string, keeping output clean.
+
+**Context for next task:**
+`computeLightingInsight(sunData, dateTime)` is now available at `@/lib/lighting-insight`. It returns a `LightingInsight` object with `label`, `headline`, optional `warningMessage`, and `shotSuggestions[]`. The function is pure and side-effect free. Task 002 should import this function directly into `LightingInsightCard` and the panel integrations — no additional lib work needed.
+
+**Open questions:**
+- None.

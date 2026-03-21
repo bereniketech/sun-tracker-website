@@ -3,9 +3,11 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Compass } from "@/components/compass/compass";
+import { LightingInsightCard } from "@/components/panels/lighting-insight-card";
 import { LandmarkAlignmentPanel } from "@/components/panels/landmark-alignment-panel";
 import { ShadowInfo } from "@/components/panels/shadow-info";
 import { SunDataDisplay } from "@/components/panels/sun-data-display";
+import { computeLightingInsight } from "@/lib/lighting-insight";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
 
 const MOBILE_WIDTH_PX = 768;
@@ -32,6 +34,8 @@ const PhotographerPanel = dynamic(
 export function InfoPanel() {
   const photographerMode = useSunTrackerStore((state) => state.photographerMode);
   const togglePhotographerMode = useSunTrackerStore((state) => state.togglePhotographerMode);
+  const sunData = useSunTrackerStore((state) => state.sunData);
+  const dateTime = useSunTrackerStore((state) => state.dateTime);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(true);
 
@@ -88,6 +92,16 @@ export function InfoPanel() {
 
       <div id="sun-info-panel-content" className={`mt-3 space-y-3 ${isMobile && !isOpen ? "hidden" : "block"}`}>
         <PhotographerPanel />
+        {!photographerMode && sunData && (
+          <details className="rounded-lg border border-slate-200 bg-slate-50 p-2">
+            <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[0.12em] text-slate-700 select-none">
+              Lighting Tip
+            </summary>
+            <div className="mt-2">
+              <LightingInsightCard insight={computeLightingInsight(sunData, dateTime)} />
+            </div>
+          </details>
+        )}
         <LandmarkAlignmentPanel />
         {photographerMode ? (
           <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-2">

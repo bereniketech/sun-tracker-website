@@ -81,11 +81,24 @@ export interface LightingInsight {
 ---
 
 ## Handoff from Previous Task
-> Populated by /task-handoff after task-001 completes.
 
-**Files changed by previous task:** _(none yet)_
-**Decisions made:** _(none yet)_
-**Context for this task:** _(none yet)_
+**Files changed by previous task:**
+
+| File | What changed |
+|------|-------------|
+| `src/lib/lighting-insight.ts` | New pure TS lib: exports `computeLightingInsight`, `LightingLabel`, `ShotSuggestion`, `LightingInsight` types, full shot-suggestion map and headline/warning constants |
+| `src/__tests__/lib/lighting-insight.test.ts` | 17 unit tests covering all 6 label paths, boundary elevations, GOLDEN priority, purity, and no-mutation guarantee |
+
+**Decisions made in previous task:**
+- **GOLDEN/BLUE checked via `dateTime` window membership, not elevation** — per architecture: window-based labels take precedence; elevation-only classification is the fallback.
+- **Shot suggestions as a compile-time constant map** — avoids repeated allocation; immutability preserved by returning the same array reference (read-only in practice).
+- **`warningMessage` omitted when not applicable** — field is `undefined` rather than `null` or empty string, keeping output clean.
+
+**Context for this task:**
+`computeLightingInsight(sunData, dateTime)` is now available at `@/lib/lighting-insight`. It returns a `LightingInsight` object with `label`, `headline`, optional `warningMessage`, and `shotSuggestions[]`. The function is pure and side-effect free. Import it directly into `LightingInsightCard` and the panel integrations — no additional lib work needed.
+
+**Open questions left by previous task:**
+- None.
 **Open questions left:** _(none yet)_
 
 ---
