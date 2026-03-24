@@ -1,7 +1,7 @@
 ---
 task: 009
 feature: sun-tracker-v2
-status: pending
+status: complete
 depends_on: []
 ---
 
@@ -122,9 +122,21 @@ _Skills: /code-writing-software-development — hook patterns; /tdd-workflow —
 ---
 
 ## Handoff to Next Task
-> Fill via `/task-handoff` after completing this task.
 
-**Files changed:** _(fill via /task-handoff)_
-**Decisions made:** _(fill via /task-handoff)_
-**Context for next task:** _(fill via /task-handoff)_
-**Open questions:** _(fill via /task-handoff)_
+**Files changed:**
+- `src/hooks/use-golden-hour-notifications.ts` (new)
+- `src/__tests__/hooks/use-golden-hour-notifications.test.ts` (new)
+
+**Decisions made:**
+- Used `useRef` to store setTimeout ID for proper cleanup across re-renders
+- Implemented scheduleNext() to find the sooner of morning or evening golden hour start time, then schedule 30 minutes before
+- All error handling delegated to console.error (no silent failures)
+- Feature detection on mount; permission state synced from window.Notification.permission
+- locationName truncated to 100 chars for security via slice(0, 100)
+
+**Context for next task:**
+- Hook exports `useGoldenHourNotifications(sunData, locationName)` returning { permissionState, isScheduled, requestAndSchedule(), cancel() }
+- Task-010 will create NotificationSettings component integrating this hook into InfoPanel
+- All 8 tests pass; 145 total tests pass; build and linting clean
+
+**Open questions:** None — ready for task-010
