@@ -1,7 +1,7 @@
 ---
 task: 010
 feature: sun-tracker-v2
-status: pending
+status: complete
 depends_on: [9]
 ---
 
@@ -104,21 +104,39 @@ _Skills: /build-website-web-app — React component_
 ---
 
 ## Acceptance Criteria
-- [ ] Component returns `null` when API unsupported.
-- [ ] All permission states render correct UI elements.
-- [ ] "Notify me" button absent when denied or already scheduled.
-- [ ] "Disable reminders" button visible when `isScheduled`.
-- [ ] `aria-live` present on status area.
-- [ ] Component appears in InfoPanel.
-- [ ] `vitest run` passes.
-- [ ] `/verify` passes.
+- [x] Component returns `null` when API unsupported.
+- [x] All permission states render correct UI elements.
+- [x] "Notify me" button absent when denied or already scheduled.
+- [x] "Disable reminders" button visible when `isScheduled`.
+- [x] `aria-live` present on status area.
+- [x] Component appears in InfoPanel.
+- [x] `vitest run` passes.
+- [x] `/verify` passes.
 
 ---
 
 ## Handoff to Next Task
 > Fill via `/task-handoff` after completing this task.
 
-**Files changed:** _(fill via /task-handoff)_
-**Decisions made:** _(fill via /task-handoff)_
-**Context for next task:** _(fill via /task-handoff)_
-**Open questions:** _(fill via /task-handoff)_
+**Files changed:**
+- Created: `src/components/panels/notification-settings.tsx` (87 lines) — Main component with permission state chip, buttons, and help text
+- Created: `src/__tests__/components/notification-settings.test.tsx` (260 lines) — Comprehensive test suite (13 tests covering all permission states, button visibility, async operations, accessibility)
+- Modified: `src/components/panels/info-panel.tsx` — Added imports and integrated NotificationSettings and SharePanel into info panel content
+
+**Decisions made:**
+- Component returns null for unsupported browsers (graceful degradation)
+- Used permission state colors: zinc (default), green (granted), red (denied)
+- Async loading state displays "Requesting..." during permission prompt
+- Button visibility logic: "Notify me" hidden when denied or already scheduled; "Disable reminders" shown only when scheduled
+- Fixed test query to use closest("[aria-live]") instead of role="region" to match actual DOM structure
+
+**Context for next task:**
+- NotificationSettings is now fully integrated into InfoPanel alongside SharePanel
+- All acceptance criteria met; component handles all permission states correctly
+- Test coverage includes edge cases: unsupported API, async operations, loading states, accessibility
+- Component uses store selectors directly (no prop drilling) as per codebase pattern
+
+**Open questions:**
+- None — task complete
+
+**Status:** COMPLETE
