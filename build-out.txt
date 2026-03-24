@@ -3,9 +3,10 @@
 > next build
 
    ▲ Next.js 15.5.13
+   - Environments: .env.production
 
    Creating an optimized production build ...
- ✓ Compiled successfully in 5.6s
+ ✓ Compiled successfully in 15.6s
    Linting and checking validity of types ...
    Collecting page data ...
    Generating static pages (0/124) ...
@@ -17,24 +18,24 @@
    Collecting build traces ...
 
 Route (app)                                 Size  First Load JS  Revalidate  Expire
-┌ ○ /                                    76.7 kB         179 kB
+┌ ○ /                                    29.1 kB         134 kB
 ├ ○ /_not-found                            996 B         103 kB
 ├ ƒ /api/cities                            140 B         102 kB
 ├ ƒ /api/cities/[slug]                     140 B         102 kB
 ├ ƒ /api/favorites                         140 B         102 kB
 ├ ƒ /api/favorites/[id]                    140 B         102 kB
 ├ ƒ /api/geocode                           140 B         102 kB
-├ ○ /city                                  165 B         106 kB          1d      1y
-├ ● /city/[slug]                           165 B         106 kB          1d      1y
-├   ├ /city/tokyo                                                        1d      1y
-├   ├ /city/delhi                                                        1d      1y
-├   ├ /city/shanghai                                                     1d      1y
+├ ○ /city                                  162 B         106 kB          1d      1y
+├ ● /city/[slug]                         1.98 kB         111 kB          1d      1y
+├   ├ /city/algiers                                                      1d      1y
+├   ├ /city/luanda                                                       1d      1y
+├   ├ /city/buenos-aires                                                 1d      1y
 ├   └ [+111 more paths]
 └ ○ /sitemap.xml                           140 B         102 kB
 + First Load JS shared by all             102 kB
   ├ chunks/255-3991756713d22f05.js         46 kB
   ├ chunks/4bd1b696-c023c6e3521b1417.js  54.2 kB
-  └ other shared chunks (total)          2.07 kB
+  └ other shared chunks (total)          2.13 kB
 
 
 ○  (Static)   prerendered as static content

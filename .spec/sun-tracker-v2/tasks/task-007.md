@@ -1,7 +1,7 @@
 ---
 task: 007
 feature: sun-tracker-v2
-status: pending
+status: complete
 depends_on: []
 ---
 
@@ -102,19 +102,19 @@ _Skills: /code-writing-software-development — pure function; /tdd-workflow_
 ---
 
 ## Acceptance Criteria
-- [ ] `src/lib/seasonal-insights.ts` exports `computeSeasonalData` and `MonthlySnapshot`.
-- [ ] Returns exactly 12 entries.
-- [ ] June entry has longer day length than December entry for northern hemisphere.
-- [ ] `monthName` strings are correct English month names.
-- [ ] `vitest run` passes.
-- [ ] `/verify` passes.
+- [x] `src/lib/seasonal-insights.ts` exports `computeSeasonalData` and `MonthlySnapshot`.
+- [x] Returns exactly 12 entries.
+- [x] June entry has longer day length than December entry for northern hemisphere.
+- [x] `monthName` strings are correct English month names.
+- [x] `vitest run` passes.
+- [x] `/verify` passes.
 
 ---
 
 ## Handoff to Next Task
 > Fill via `/task-handoff` after completing this task.
 
-**Files changed:** _(fill via /task-handoff)_
-**Decisions made:** _(fill via /task-handoff)_
-**Context for next task:** _(fill via /task-handoff)_
-**Open questions:** _(fill via /task-handoff)_
+**Files changed:** `src/lib/seasonal-insights.ts`, `src/__tests__/lib/seasonal-insights.test.ts`, `src/__tests__/components/home-page-client.test.tsx`
+**Decisions made:** Use `computeSunData()` as the only calculation source; compute snapshots from the 21st of each month at local noon; expose evening golden hour start as `goldenHourStart`.
+**Context for next task:** `MonthlySnapshot` now exists and returns ordered English month labels plus sunrise, sunset, evening golden-hour start, day-length seconds, and noon elevation. Full Vitest suite passed during verification, and the `HomePageClient` test's unused import warning was removed so lint is clean. Repo-wide coverage reported `63.36%` overall even though the new seasonal-insights module is fully covered.
+**Open questions:** Whether the global coverage baseline should be raised to meet the documented `80%` project target before broader task sign-off.

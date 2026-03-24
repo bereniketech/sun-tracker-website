@@ -6,6 +6,7 @@ import { Compass } from "@/components/compass/compass";
 import { LightingInsightCard } from "@/components/panels/lighting-insight-card";
 import { LandmarkAlignmentPanel } from "@/components/panels/landmark-alignment-panel";
 import { LocationComparison } from "@/components/panels/location-comparison";
+import { SeasonalInsights } from "@/components/panels/seasonal-insights";
 import { SkyPathDiagram } from "@/components/panels/sky-path-diagram";
 import { ShadowInfo } from "@/components/panels/shadow-info";
 import { SunDataDisplay } from "@/components/panels/sun-data-display";
@@ -135,6 +136,14 @@ export function InfoPanel() {
           </summary>
           <div className="mt-2">
             <SkyPathDiagram />
+          </div>
+        </details>
+        <details className="rounded-lg border border-slate-200 bg-slate-50 p-2">
+          <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[0.12em] text-slate-700 select-none">
+            Seasonal Insights
+          </summary>
+          <div className="mt-2">
+            <SeasonalInsights />
           </div>
         </details>
         <ShadowInfo />

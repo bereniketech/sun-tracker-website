@@ -1,7 +1,7 @@
 ---
 task: 008
 feature: sun-tracker-v2
-status: pending
+status: complete
 depends_on: [7]
 ---
 
@@ -106,20 +106,20 @@ _Skills: /build-website-web-app — Next.js dynamic import; /presentations-ui-de
 ---
 
 ## Acceptance Criteria
-- [ ] SVG renders 12 bars without error.
-- [ ] Longest and shortest day bars have distinct highlight fills.
-- [ ] `<title>` tooltips contain sunrise time, sunset time, golden hour start, day length.
-- [ ] Chart appears in InfoPanel as collapsible section.
-- [ ] Chart renders on `/city/[slug]` page using city coordinates.
-- [ ] `vitest run` passes.
-- [ ] `/verify` passes.
+- [x] SVG renders 12 bars without error.
+- [x] Longest and shortest day bars have distinct highlight fills.
+- [x] `<title>` tooltips contain sunrise time, sunset time, golden hour start, day length.
+- [x] Chart appears in InfoPanel as collapsible section.
+- [x] Chart renders on `/city/[slug]` page using city coordinates.
+- [x] `vitest run` passes.
+- [x] `/verify` passes.
 
 ---
 
 ## Handoff to Next Task
 > Fill via `/task-handoff` after completing this task.
 
-**Files changed:** _(fill via /task-handoff)_
-**Decisions made:** _(fill via /task-handoff)_
-**Context for next task:** _(fill via /task-handoff)_
-**Open questions:** _(fill via /task-handoff)_
+**Files changed:** `src/components/panels/seasonal-insights.tsx`, `src/components/panels/info-panel.tsx`, `src/app/city/[slug]/page.tsx`, `src/__tests__/components/seasonal-insights.test.tsx`, `bug-log.md`
+**Decisions made:** Render the yearly chart as a client component with optional `lat`/`lng` props so it can use store coordinates in `InfoPanel` and explicit coordinates on city pages. Use the page's existing server component directly with client-component props instead of `next/dynamic({ ssr: false })`, because Next 15 rejects that pattern inside server components.
+**Context for next task:** The chart uses a 600x200 responsive SVG, dark night background, amber/sky highlight bars, and tooltip details from `computeSeasonalData()`. Verification passed with `npm.cmd run test`, `npm.cmd run lint`, and `npm.cmd run build`.
+**Open questions:** None.

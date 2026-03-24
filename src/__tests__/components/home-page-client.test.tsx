@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { HomePageClient } from "@/components/home-page-client";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
 
