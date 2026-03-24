@@ -92,7 +92,7 @@ export function HomePageClient() {
       )}
 
       {/* Stats strip */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
           <p className="text-xs font-medium text-slate-500">Location</p>
           <p className="mt-1 truncate text-sm font-semibold text-slate-900">
