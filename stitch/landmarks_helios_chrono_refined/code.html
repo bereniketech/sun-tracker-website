@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Helios Chrono | Celestial Landmarks</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-high": "#dce9ff",
+              "on-tertiary-fixed-variant": "#38485d",
+              "on-primary-container": "#582200",
+              "surface-container-low": "#eff4ff",
+              "on-primary": "#ffffff",
+              "on-surface-variant": "#584237",
+              "surface-dim": "#cbdbf5",
+              "on-tertiary-fixed": "#0b1c30",
+              "surface-container-highest": "#d3e4fe",
+              "outline-variant": "#e0c0b1",
+              "tertiary": "#505f76",
+              "primary-fixed": "#ffdbca",
+              "secondary-container": "#dae2fd",
+              "on-error": "#ffffff",
+              "secondary-fixed-dim": "#bec6e0",
+              "primary-container": "#f97316",
+              "on-secondary": "#ffffff",
+              "on-primary-fixed-variant": "#783200",
+              "surface-bright": "#f8f9ff",
+              "error": "#ba1a1a",
+              "background": "#f8f9ff",
+              "tertiary-fixed-dim": "#b7c8e1",
+              "on-tertiary": "#ffffff",
+              "secondary-fixed": "#dae2fd",
+              "primary-fixed-dim": "#ffb690",
+              "inverse-primary": "#ffb690",
+              "on-secondary-fixed-variant": "#3f465c",
+              "surface-container-lowest": "#ffffff",
+              "on-surface": "#0b1c30",
+              "error-container": "#ffdad6",
+              "primary": "#9d4300",
+              "surface-variant": "#d3e4fe",
+              "on-primary-fixed": "#341100",
+              "on-secondary-fixed": "#131b2e",
+              "on-background": "#0b1c30",
+              "secondary": "#565e74",
+              "on-tertiary-container": "#243348",
+              "surface-tint": "#9d4300",
+              "inverse-surface": "#213145",
+              "tertiary-fixed": "#d3e4fe",
+              "outline": "#8c7164",
+              "tertiary-container": "#8c9cb4",
+              "on-error-container": "#93000a",
+              "surface": "#f8f9ff",
+              "on-secondary-container": "#5c647a",
+              "inverse-on-surface": "#eaf1ff",
+              "surface-container": "#e5eeff"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        vertical-align: middle;
+      }
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl shadow-sm dark:shadow-none bg-gradient-to-b from-slate-100/50 to-transparent dark:from-slate-800/50">
+<nav class="flex justify-between items-center h-20 px-8 max-w-[1920px] mx-auto">
+<div class="text-2xl font-bold tracking-tighter text-slate-900 dark:text-slate-50 font-headline">Helios Chrono</div>
+<div class="hidden md:flex items-center space-x-8 font-['Space_Grotesk'] uppercase tracking-widest text-sm weight-500">
+<a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors" href="#">Dashboard</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors" href="#">Analemma</a>
+<a class="text-orange-600 dark:text-orange-500 border-b-2 border-orange-600 dark:border-orange-500 pb-1" href="#">Landmarks</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors" href="#">Observatory</a>
+</div>
+<div class="flex items-center space-x-6">
+<div class="relative hidden lg:block">
+<span class="absolute inset-y-0 left-3 flex items-center text-slate-400">
+<span class="material-symbols-outlined text-lg" data-icon="search">search</span>
+</span>
+<input class="bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-xs w-64 focus:ring-1 focus:ring-primary transition-all font-label" placeholder="Search coordinates..." type="text"/>
+</div>
+<button class="hover:opacity-80 transition-opacity text-slate-500"><span class="material-symbols-outlined" data-icon="settings">settings</span></button>
+<button class="hover:opacity-80 transition-opacity text-slate-500"><span class="material-symbols-outlined" data-icon="account_circle">account_circle</span></button>
+</div>
+</nav>
+</header>
+<main class="pt-32 pb-20 px-8 max-w-[1920px] mx-auto">
+<!-- Hero Section & Editorial Title -->
+<section class="mb-20 flex flex-col md:flex-row justify-between items-end gap-8">
+<div class="max-w-3xl">
+<h1 class="font-headline text-7xl font-bold tracking-tighter text-on-surface mb-6 leading-[1.1]">Celestial<br/><span class="text-primary italic">Landmarks</span></h1>
+<p class="text-secondary text-lg max-w-xl font-light leading-relaxed">Tracking the interplay between ancient architecture and solar precision. Real-time alignment diagnostics for the world's most significant astronomical monuments.</p>
+</div>
+<!-- Filter Section (Integrated Layout) -->
+<div class="flex flex-col items-end">
+<div class="flex space-x-2 bg-surface-container-low p-1 rounded-xl">
+<button class="px-6 py-2 rounded-lg bg-surface-container-lowest text-primary font-semibold text-sm shadow-sm transition-all font-label">Historic</button>
+<button class="px-6 py-2 rounded-lg text-secondary hover:bg-surface-container-high transition-colors text-sm font-label">Technical</button>
+<button class="px-6 py-2 rounded-lg text-secondary hover:bg-surface-container-high transition-colors text-sm font-label">Custom</button>
+</div>
+<div class="mt-4 flex items-center space-x-4 text-xs tracking-widest uppercase font-label text-outline">
+<span>Sorting: Solar Proximity</span>
+<span class="material-symbols-outlined text-sm" data-icon="unfold_more">unfold_more</span>
+</div>
+</div>
+</section>
+<!-- Main Content Grid: Asymmetric Bento Style -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Card 1: Stonehenge (Featured Large) -->
+<article class="col-span-12 lg:col-span-8 group relative overflow-hidden rounded-xl bg-surface-container-low hover:bg-surface-bright transition-all duration-500">
+<div class="grid grid-cols-1 md:grid-cols-2 h-full">
+<div class="relative h-[400px] md:h-auto overflow-hidden">
+<img alt="Stonehenge" class="w-full h-full object-cover grayscale-[0.2] group-hover:scale-105 transition-transform duration-700" data-alt="dramatic wide shot of Stonehenge at sunrise with golden light rays hitting the ancient monoliths and misty atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKU6Vtnl5gp8ixEeopZfReU9zZi0MMYGY5cC-cH5IwmjwJYB7_IHgz68lvxbyVtcwPLoYr76pUYNf4XFWjaEaC6E1_TJhdzXK6lGBTsuRCc_HB-FhNPWmPs4RwNUDMMRt_PHCMBicFDqrkb68Lmo-Za0YGdLSfCP46GDdbFi70KHwNTokeUXRGB_uO3goghnceqY8nUFYIP6XBnWcyTG6G9qm58J2kmhExEJuAp5MXQdT0B5vJV6MsRkPA3fNq_qvOI-KpHqPXQj4"/>
+<div class="absolute inset-0 bg-gradient-to-r from-transparent to-surface-container-low/20"></div>
+<div class="absolute top-6 left-6 glass-panel px-4 py-2 rounded-full flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="font-label text-[10px] uppercase tracking-widest font-bold">Live Tracking</span>
+</div>
+</div>
+<div class="p-10 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="font-label text-xs uppercase tracking-widest text-primary font-bold">Wiltshire, UK</span>
+<span class="text-outline-variant font-headline text-2xl font-light">01</span>
+</div>
+<h2 class="font-headline text-4xl font-bold mb-4">Stonehenge</h2>
+<p class="text-secondary text-sm leading-relaxed mb-8">Calculated for the Summer Solstice heel stone alignment. Monitoring atmospheric refraction adjustments in real-time.</p>
+</div>
+<div class="grid grid-cols-2 gap-y-8 gap-x-4 pt-8 border-t border-outline-variant/20">
+<div>
+<span class="block font-label text-[10px] uppercase tracking-widest text-secondary mb-1">Azimuth</span>
+<span class="font-headline text-3xl font-light">49.82°</span>
+</div>
+<div>
+<span class="block font-label text-[10px] uppercase tracking-widest text-secondary mb-1">Elevation</span>
+<span class="font-headline text-3xl font-light">+12.4°</span>
+</div>
+<div>
+<span class="block font-label text-[10px] uppercase tracking-widest text-secondary mb-1">Status</span>
+<span class="font-label text-sm text-primary font-bold">Pre-Alignment</span>
+</div>
+<div>
+<span class="block font-label text-[10px] uppercase tracking-widest text-secondary mb-1">Photo Window</span>
+<span class="font-label text-sm">04:52 — 05:10</span>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Card 2: Giza Pyramids (Tall/Narrow) -->
+<article class="col-span-12 md:col-span-6 lg:col-span-4 bg-surface-container-lowest rounded-xl p-8 flex flex-col justify-between group">
+<div>
+<div class="aspect-[4/3] rounded-lg overflow-hidden mb-8">
+<img alt="Giza Pyramids" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="the great pyramids of giza during late afternoon golden hour with warm sunlight casting long shadows across the sand" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDW2ahyVN2LuKp7LTGS3Inm-ThlGXeX4URymEsx76U6lj5qlX8tD_liGDK2ew1uY8bIWrot_LUzHR22bF-MxUdZFA8s0HQbUGj9Munuge8PXnCjDcih9b3DGRhK-PAvSuzYt0dUSY7Iubxh1depiC7O65r1DQT4k2C9t60FOPajj7_a4b-BGC479twMly_JC30YYBdMqaKeMzTzEyc-_GwhMVBFgzB6_pSWnaoegT97kNx3YlMzGP82Opgz3SOuEQBX3UD_sjwhOis"/>
+</div>
+<div class="flex justify-between items-center mb-2">
+<span class="font-label text-xs uppercase tracking-widest text-primary font-bold">Giza, Egypt</span>
+<span class="material-symbols-outlined text-outline" data-icon="north">north</span>
+</div>
+<h2 class="font-headline text-3xl font-bold mb-4">Giza Pyramids</h2>
+<p class="text-secondary text-xs leading-relaxed">Cardinal orientation precision monitoring. Deviation index: 0.05°.</p>
+</div>
+<div class="mt-12 space-y-4">
+<div class="flex justify-between items-end">
+<span class="font-label text-[10px] uppercase text-outline">Solar Transit</span>
+<span class="font-headline text-xl">12:14:02</span>
+</div>
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[75%]"></div>
+</div>
+<div class="flex justify-between items-center pt-4">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-primary-fixed border-2 border-surface-container-lowest"></div>
+<div class="w-6 h-6 rounded-full bg-secondary-fixed border-2 border-surface-container-lowest"></div>
+</div>
+<button class="text-primary font-label text-xs font-bold flex items-center">
+                            Technical Specs <span class="material-symbols-outlined ml-1 text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 3: Chichén Itzá (Wide Side-kick) -->
+<article class="col-span-12 md:col-span-6 lg:col-span-5 bg-surface-container-low rounded-xl p-8 group">
+<div class="flex flex-col h-full">
+<div class="flex justify-between items-start mb-8">
+<div>
+<span class="font-label text-xs uppercase tracking-widest text-primary font-bold">Yucatán, Mexico</span>
+<h2 class="font-headline text-3xl font-bold mt-1">Chichén Itzá</h2>
+</div>
+<div class="p-3 bg-primary/10 rounded-full text-primary">
+<span class="material-symbols-outlined" data-icon="wb_sunny">wb_sunny</span>
+</div>
+</div>
+<div class="flex-grow">
+<div class="relative w-full h-48 mb-8 rounded-lg overflow-hidden">
+<img alt="El Castillo" class="w-full h-full object-cover" data-alt="El Castillo pyramid at Chichen Itza under a clear blue sky with sharp geometric shadows on the stone steps" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAs5w4ed-aG6t72O2EelxQ8_D-mryTj5iOeqN1PnzoP5TV6CIt1iCOSUsIrn-Y54KKjcDhhFMwp6fUoDu5R729vAJk3gTJH_iTTEk62p7fjBy_dFzJ_uwZtklddCp_7ev5fh0HSkwQIdLpUDRQiC8L_c1AoMNfftFRqt1VgZQhIOW7stRifsruyXx8HdQSXu_9mCSMAiF3sw9sA0wV6JdwwYervaQYRAUcPOfeK00MjIcrvqA7wysGvgAsSJmyZdvmJnnCZ0hPTElk"/>
+<div class="absolute inset-0 bg-black/10"></div>
+<div class="absolute bottom-4 left-4 font-label text-[10px] text-white bg-black/40 px-2 py-1 backdrop-blur-sm rounded">Equinox Serpent Alignment: Active</div>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<div class="text-center p-3 bg-surface-container-lowest rounded-lg">
+<span class="block font-label text-[9px] uppercase text-outline mb-1">Azimuth</span>
+<span class="font-headline text-lg font-bold">285.4°</span>
+</div>
+<div class="text-center p-3 bg-surface-container-lowest rounded-lg">
+<span class="block font-label text-[9px] uppercase text-outline mb-1">Step Shift</span>
+<span class="font-headline text-lg font-bold">-0.12°</span>
+</div>
+<div class="text-center p-3 bg-surface-container-lowest rounded-lg">
+<span class="block font-label text-[9px] uppercase text-outline mb-1">Intensity</span>
+<span class="font-headline text-lg font-bold">88%</span>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Card 4: Technical Observatory (Data Centric) -->
+<article class="col-span-12 lg:col-span-7 bg-on-tertiary-fixed text-white rounded-xl p-10 relative overflow-hidden">
+<!-- Abstract Sun Path Background -->
+<div class="absolute -right-20 -top-20 w-80 h-80 bg-primary/20 rounded-full blur-[80px]"></div>
+<div class="relative z-10 flex flex-col md:flex-row h-full gap-10">
+<div class="flex-1">
+<span class="font-label text-xs uppercase tracking-widest text-primary-fixed-dim font-bold mb-2 block">Real-time Global Vector</span>
+<h2 class="font-headline text-4xl font-bold mb-6">Atmospheric<br/>Refraction Index</h2>
+<p class="text-tertiary-fixed-dim text-sm font-light leading-relaxed mb-8">Calculating the bending of light at low horizons to predict exact visual alignment moments for ancient horizons.</p>
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<span class="font-label text-xs text-white/60">Equatorial Gradient</span>
+<span class="font-headline text-xl">+0.0042</span>
+</div>
+<div class="w-full h-[2px] bg-white/10">
+<div class="w-2/3 h-full bg-primary-fixed-dim"></div>
+</div>
+</div>
+</div>
+<div class="w-full md:w-64 glass-panel border border-white/10 rounded-xl p-6 flex flex-col justify-between">
+<div>
+<span class="block font-label text-[10px] uppercase text-white/50 mb-4 tracking-widest text-center">Current System Load</span>
+<div class="flex justify-center items-center py-6">
+<div class="relative w-32 h-32 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90">
+<circle class="text-white/5" cx="64" cy="64" fill="transparent" r="60" stroke="currentColor" stroke-width="4"></circle>
+<circle class="text-primary-container" cx="64" cy="64" fill="transparent" r="60" stroke="currentColor" stroke-dasharray="377" stroke-dashoffset="100" stroke-width="4"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-headline text-3xl font-bold">74%</span>
+<span class="font-label text-[8px] uppercase tracking-tighter">Capacity</span>
+</div>
+</div>
+</div>
+</div>
+<button class="w-full py-3 bg-white/10 hover:bg-white/20 transition-colors rounded-lg font-label text-xs uppercase tracking-widest">Run Diagnostic</button>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-50 dark:bg-slate-900">
+<div class="flex flex-col md:flex-row justify-between items-center py-12 px-8 max-w-[1920px] mx-auto">
+<div class="mb-8 md:mb-0">
+<div class="text-lg font-bold text-slate-900 dark:text-slate-50 font-headline mb-2">Helios Chrono</div>
+<p class="font-['Inter'] text-xs tracking-tight text-slate-400">© 2024 Helios Chrono. Celestial Precision.</p>
+</div>
+<div class="flex space-x-12">
+<div class="flex flex-col space-y-3">
+<span class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Documentation</span>
+<a class="font-['Inter'] text-xs tracking-tight text-slate-400 hover:text-orange-500 transition-colors" href="#">API Reference</a>
+<a class="font-['Inter'] text-xs tracking-tight text-slate-400 hover:text-orange-500 transition-colors" href="#">Calculation Logic</a>
+</div>
+<div class="flex flex-col space-y-3">
+<span class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Legal</span>
+<a class="font-['Inter'] text-xs tracking-tight text-slate-400 hover:text-orange-500 transition-colors" href="#">Privacy</a>
+<a class="font-['Inter'] text-xs tracking-tight text-slate-400 hover:text-orange-500 transition-colors" href="#">Terms</a>
+</div>
+</div>
+<div class="mt-8 md:mt-0 flex space-x-4">
+<button class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="language">language</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="share">share</span>
+</button>
+</div>
+</div>
+</footer>
+</body></html>

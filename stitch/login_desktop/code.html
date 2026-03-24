@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Helios Chrono | Sign In</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@300;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-tertiary-fixed": "#0b1c30",
+                        "surface": "#f8f9ff",
+                        "on-primary-container": "#582200",
+                        "secondary-container": "#dae2fd",
+                        "inverse-primary": "#ffb690",
+                        "surface-bright": "#f8f9ff",
+                        "on-tertiary-container": "#243348",
+                        "on-surface": "#0b1c30",
+                        "secondary": "#565e74",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#e0c0b1",
+                        "secondary-fixed": "#dae2fd",
+                        "primary-fixed-dim": "#ffb690",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#d3e4fe",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#5c647a",
+                        "primary-fixed": "#ffdbca",
+                        "surface-container-low": "#eff4ff",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#8c9cb4",
+                        "on-surface-variant": "#584237",
+                        "surface-container": "#e5eeff",
+                        "on-primary-fixed": "#341100",
+                        "surface-container-high": "#dce9ff",
+                        "on-primary-fixed-variant": "#783200",
+                        "on-secondary-fixed-variant": "#3f465c",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "on-secondary-fixed": "#131b2e",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#bec6e0",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-dim": "#cbdbf5",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#d3e4fe",
+                        "tertiary-fixed": "#d3e4fe",
+                        "background": "#f8f9ff",
+                        "primary-container": "#f97316",
+                        "tertiary": "#505f76",
+                        "inverse-surface": "#213145",
+                        "surface-tint": "#9d4300",
+                        "on-background": "#0b1c30",
+                        "primary": "#9d4300",
+                        "outline": "#8c7164"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .celestial-glow {
+            background: radial-gradient(circle at 70% 30%, rgba(249, 115, 22, 0.15) 0%, rgba(248, 249, 255, 0) 60%),
+                        radial-gradient(circle at 20% 80%, rgba(157, 67, 0, 0.1) 0%, rgba(248, 249, 255, 0) 50%);
+        }
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface min-h-screen flex items-center justify-center celestial-glow selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Top Navigation Suppression: Not rendered per "Destination" rule (Login screen) -->
+<main class="w-full max-w-[1440px] px-6 py-20 flex justify-center items-center">
+<!-- Main Card Container -->
+<div class="relative w-full max-w-xl">
+<!-- Branding Header -->
+<header class="mb-12 text-center">
+<div class="inline-flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-5xl" style="font-variation-settings: 'FILL' 1;">wb_sunny</span>
+</div>
+<h1 class="font-headline font-bold text-5xl tracking-tighter text-on-surface mb-2">Helios Chrono</h1>
+<p class="font-label text-sm uppercase tracking-[0.2em] text-secondary font-medium">Celestial Alignment &amp; Solar Tracking</p>
+</header>
+<!-- Login Surface -->
+<section class="bg-surface-container-lowest rounded-xl p-12 shadow-[0_32px_64px_-12px_rgba(11,28,48,0.08)] border border-outline-variant/10">
+<div class="space-y-10">
+<!-- Form Header (Editorial Style) -->
+<div class="flex items-baseline justify-between border-b-2 border-primary w-fit pb-1">
+<h2 class="font-headline text-2xl font-medium tracking-tight">Access Observatory</h2>
+</div>
+<form class="space-y-8">
+<!-- Email Field -->
+<div class="space-y-2">
+<label class="font-label text-xs uppercase tracking-widest text-secondary font-bold" for="email">Observer ID (Email)</label>
+<div class="relative group">
+<input class="w-full bg-surface-container-low border-0 border-b-2 border-transparent focus:border-primary focus:ring-0 transition-all px-0 py-3 text-lg font-headline tracking-tight placeholder:text-secondary/30" id="email" name="email" placeholder="name@celestial.com" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-2">
+<div class="flex justify-between items-end">
+<label class="font-label text-xs uppercase tracking-widest text-secondary font-bold" for="password">Secure Key (Password)</label>
+<a class="text-[10px] uppercase tracking-wider text-primary font-bold hover:opacity-70 transition-opacity" href="#">Reset Key</a>
+</div>
+<div class="relative group">
+<input class="w-full bg-surface-container-low border-0 border-b-2 border-transparent focus:border-primary focus:ring-0 transition-all px-0 py-3 text-lg font-headline tracking-tight placeholder:text-secondary/30" id="password" name="password" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<!-- Actions -->
+<div class="pt-4 space-y-6">
+<button class="w-full h-14 bg-gradient-to-r from-primary to-primary-container text-on-primary font-headline font-bold text-lg rounded-xl hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/20" type="submit">
+                                Sign In
+                            </button>
+<div class="relative py-2 flex items-center justify-center">
+<span class="bg-surface-container-lowest px-4 font-label text-[10px] uppercase tracking-[0.3em] text-secondary/40 z-10">OR</span>
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-outline-variant/20"></div>
+</div>
+</div>
+<button class="w-full h-14 bg-surface-container-highest text-on-surface font-headline font-bold text-lg rounded-xl hover:bg-surface-container-high active:scale-[0.98] transition-all" type="button">
+                                Continue as Guest
+                            </button>
+</div>
+</form>
+</div>
+</section>
+<!-- Footer / System Data Brackets -->
+<footer class="mt-12 flex justify-between items-center px-2">
+<div class="flex flex-col gap-1">
+<span class="font-label text-[10px] uppercase tracking-widest text-secondary/60">System Status</span>
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+<span class="font-headline text-xs font-medium tracking-tight">SOLAR_GATEWAY_ACTIVE</span>
+</div>
+</div>
+<div class="flex gap-6">
+<a class="font-label text-[10px] uppercase tracking-widest text-secondary/60 hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="font-label text-[10px] uppercase tracking-widest text-secondary/60 hover:text-primary transition-colors" href="#">Terms</a>
+</div>
+</footer>
+</div>
+<!-- Asymmetric Background Graphic Element (Glass Scrubber Tooltip Style) -->
+<div class="fixed top-20 right-[10%] hidden xl:block w-72 h-72 border border-outline-variant/10 rounded-full glass-panel pointer-events-none p-8">
+<div class="h-full w-full border border-dashed border-primary/20 rounded-full flex items-center justify-center relative">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary px-3 py-1 rounded-full">
+<span class="font-headline text-[10px] font-bold text-on-primary tracking-widest">ZENITH</span>
+</div>
+<div class="text-center">
+<span class="font-headline text-4xl font-bold tracking-tighter text-on-surface block">84.2°</span>
+<span class="font-label text-[10px] uppercase tracking-[0.2em] text-secondary">Elevation</span>
+</div>
+</div>
+</div>
+<!-- Secondary Decoration (L-Brackets) -->
+<div class="fixed bottom-12 left-12 opacity-30 hidden lg:block">
+<div class="w-12 h-12 border-l-2 border-b-2 border-outline"></div>
+</div>
+<div class="fixed top-12 right-12 opacity-30 hidden lg:block">
+<div class="w-12 h-12 border-r-2 border-t-2 border-outline"></div>
+</div>
+</main>
+<!-- Navigation Shell Suppressed per context: Login/Transactional screens prioritize content canvas -->
+</body></html>
