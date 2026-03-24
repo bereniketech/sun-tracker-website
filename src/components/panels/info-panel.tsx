@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Compass } from "@/components/compass/compass";
+import { EducationalGlossary } from "@/components/panels/educational-glossary";
 import { LightingInsightCard } from "@/components/panels/lighting-insight-card";
 import { LandmarkAlignmentPanel } from "@/components/panels/landmark-alignment-panel";
 import { LocationComparison } from "@/components/panels/location-comparison";
@@ -45,6 +46,7 @@ export function InfoPanel() {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [isComparisonOpen, setIsComparisonOpen] = useState<boolean>(false);
+  const [isGlossaryOpen, setIsGlossaryOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const syncViewportState = () => {
@@ -84,6 +86,14 @@ export function InfoPanel() {
             onClick={() => setIsComparisonOpen(true)}
           >
             Compare
+          </button>
+
+          <button
+            type="button"
+            className="rounded-lg border border-slate-300 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-slate-700"
+            onClick={() => setIsGlossaryOpen(true)}
+          >
+            Learn more
           </button>
 
           <button
@@ -155,6 +165,7 @@ export function InfoPanel() {
       </aside>
 
       <LocationComparison isOpen={isComparisonOpen} onClose={handleComparisonClose} />
+      <EducationalGlossary isOpen={isGlossaryOpen} onClose={() => setIsGlossaryOpen(false)} />
     </>
   );
 }
