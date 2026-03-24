@@ -136,7 +136,20 @@ _Skills: /code-writing-software-development; /tdd-workflow_
 ## Handoff to Next Task
 > Fill via `/task-handoff` after completing this task.
 
-**Files changed:** _(fill via /task-handoff)_
-**Decisions made:** _(fill via /task-handoff)_
-**Context for next task:** _(fill via /task-handoff)_
-**Open questions:** _(fill via /task-handoff)_
+**Files changed:**
+- Created `src/lib/educational-content.ts` — Educational terms constants with type-safe keys
+- Created `src/hooks/use-educational-dismissal.ts` — localStorage-backed dismissal hook
+- Created `src/__tests__/lib/educational-content.test.ts` — 5 tests for entries and field validation
+- Created `src/__tests__/hooks/use-educational-dismissal.test.ts` — 11 tests for dismissal behavior
+
+**Decisions made:**
+- Set<string> for O(1) lookups; useCallback for stable references
+- Silent localStorage error handling for SSR/private-mode
+- Non-technical user language; Definitions 2–4 sentences, ≤20 words shortDef
+
+**Context for next task:**
+- Educational content is tree-shakeable; no server persistence
+- Ready for integration with UI panels
+- All tests passing
+
+**Open questions:** None
