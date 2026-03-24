@@ -37,7 +37,7 @@ describe("time/date controls", () => {
 	it("updates store time when the slider moves", () => {
 		render(<TimeSlider />);
 
-		fireEvent.change(screen.getByLabelText("Time of day"), {
+		fireEvent.change(screen.getByLabelText("Time of day slider"), {
 			target: { value: "830" },
 		});
 
@@ -49,7 +49,7 @@ describe("time/date controls", () => {
 	it("updates store date when date picker changes", () => {
 		render(<DatePicker />);
 
-		fireEvent.change(screen.getByLabelText("Date"), {
+		fireEvent.change(screen.getByLabelText("Date picker"), {
 			target: { value: "2026-07-04" },
 		});
 
@@ -88,7 +88,7 @@ describe("time/date controls", () => {
 
 		const beforeMs = useSunTrackerStore.getState().dateTime.getTime();
 
-		fireEvent.click(screen.getByRole("button", { name: "Animate" }));
+		fireEvent.click(screen.getByRole("button", { name: "Animate sun movement" }));
 		expect(useSunTrackerStore.getState().isAnimating).toBe(true);
 
 		act(() => {

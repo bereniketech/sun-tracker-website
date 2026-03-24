@@ -3,6 +3,13 @@ import { InfoPanel } from "@/components/panels/info-panel";
 import { LocationComparison } from "@/components/panels/location-comparison";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
 
+function formatExpectedTime(value: Date): string {
+  return new Intl.DateTimeFormat("en", {
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(value);
+}
+
 vi.mock("@/components/search-bar", () => ({
   SearchBar: ({ onLocationSelect }: { onLocationSelect?: (location: { lat: number; lng: number; name: string }) => void }) => (
     <button
@@ -171,17 +178,26 @@ describe("LocationComparison", () => {
       comparisonLocations: [{ lat: 40.7128, lng: -74.006, name: "New York" }],
     });
 
+    const firstDateTime = new Date("2026-03-21T12:00:00.000Z");
+    const secondDateTime = new Date("2026-03-21T13:00:00.000Z");
+    const expectedFirstSunrise = formatExpectedTime(
+      new Date(firstDateTime.getTime() + Math.round(40.7128 - 74.006) * 60000),
+    );
+    const expectedSecondSunrise = formatExpectedTime(
+      new Date(secondDateTime.getTime() + Math.round(40.7128 - 74.006) * 60000),
+    );
+
     render(<LocationComparison isOpen={true} onClose={vi.fn()} />);
 
-    const originalSunrise = screen.getByText("11:27 AM");
+    const originalSunrise = screen.getByText(expectedFirstSunrise);
     expect(originalSunrise).toBeInTheDocument();
 
     useSunTrackerStore.setState({
-      dateTime: new Date("2026-03-21T13:00:00.000Z"),
+      dateTime: secondDateTime,
     });
 
     await waitFor(() => {
-      expect(screen.getByText("12:27 PM")).toBeInTheDocument();
+      expect(screen.getByText(expectedSecondSunrise)).toBeInTheDocument();
     });
   });
 

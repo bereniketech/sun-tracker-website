@@ -249,7 +249,7 @@ export function LocationComparison({ isOpen, onClose }: LocationComparisonProps)
           <div className="flex gap-3">
             {snapshots.map((snapshot, index) => (
               <ComparisonCard
-                key={`${snapshot.location.lat}-${snapshot.location.lng}-${snapshot.location.name}`}
+                key={`${snapshot.location.lat}-${snapshot.location.lng}-${snapshot.location.name}-${index}`}
                 snapshot={snapshot}
                 onRemove={() => removeComparisonLocation(index)}
               />

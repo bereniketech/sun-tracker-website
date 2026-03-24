@@ -120,12 +120,16 @@ describe("task 7 info panel components", () => {
   it("toggles photographer mode from the panel toolbar", async () => {
     render(<InfoPanel />);
 
-    const modeButton = screen.getByRole("button", { name: "Photographer Off" });
+    const modeButton = screen.getByRole("button", { name: "Photographer Mode" });
     expect(modeButton).toBeInTheDocument();
+    expect(modeButton).toHaveAttribute("aria-pressed", "false");
 
     fireEvent.click(modeButton);
 
-    expect(screen.getByRole("button", { name: "Photographer On" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Photographer Mode" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
     expect(useSunTrackerStore.getState().photographerMode).toBe(true);
     
     // Wait for lazy-loaded PhotographerPanel to load
