@@ -13,7 +13,7 @@
 Feature: helios-chrono-ui
 Spec: .spec/helios-chrono-ui/requirements.md, design.md
 Tasks: .spec/helios-chrono-ui/tasks/
-Current task: .spec/helios-chrono-ui/tasks/task-001.md
+Current task: .spec/helios-chrono-ui/tasks/task-002.md
 Branch: feature/sun-tracker-v2
 
 ## Start Here
