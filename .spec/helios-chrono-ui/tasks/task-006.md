@@ -1,7 +1,7 @@
 ---
 task: 006
 feature: helios-chrono-ui
-status: pending
+status: done
 depends_on: [1]
 ---
 
@@ -137,11 +137,11 @@ _Skills: /code-writing-software-development — pure function; /tdd-workflow —
 ---
 
 ## Acceptance Criteria
-- [ ] `computeAnalemma` returns 365 points for a non-leap year.
-- [ ] Declination ≈ +23.4° at Summer Solstice, ≈ -23.4° at Winter Solstice, ≈ 0° at equinoxes.
-- [ ] `GET /api/analemma?lat=51&lng=0&year=2025` returns 200 with `{ points: [...] }`.
-- [ ] Invalid lat/lng/year returns 400.
-- [ ] All unit tests pass.
+- [x] `computeAnalemma` returns 365 points for a non-leap year.
+- [x] Declination ≈ +23.4° at Summer Solstice, ≈ -23.4° at Winter Solstice, ≈ 0° at equinoxes.
+- [x] `GET /api/analemma?lat=51&lng=0&year=2025` returns 200 with `{ points: [...] }`.
+- [x] Invalid lat/lng/year returns 400.
+- [x] All unit tests pass.
 - [ ] `/verify` passes.
 
 ---
@@ -152,10 +152,15 @@ _Skills: /code-writing-software-development — pure function; /tdd-workflow —
 
 | File | What changed | State |
 |------|-------------|-------|
-| `src/lib/analemma.ts` | New pure lib: `computeAnalemma` + `AnalemmaPoint` type | pending |
-| `src/app/api/analemma/route.ts` | GET route with validation + cache header | pending |
-| `src/__tests__/lib/analemma.test.ts` | Unit tests: 365 points, declination at solstices/equinoxes | pending |
+| `src/lib/analemma.ts` | New pure lib: `computeAnalemma` + `AnalemmaPoint` type | done |
+| `src/app/api/analemma/route.ts` | GET route with validation + cache header | done |
+| `src/__tests__/lib/analemma.test.ts` | Unit tests: 365/366 points, declination, ranges, solar distance/anomaly | done |
 
-**Decisions made:** _(fill in after completion)_
-**Context for next task:** Task-007 imports `computeAnalemma` from `@/lib/analemma` directly (client-side) or fetches from `/api/analemma` — the component can call the lib directly for simplicity.
+**Decisions made:**
+- `computeAnalemma` remains pure and deterministic, with all derived values computed from day index and solar-noon queries.
+- Day iteration now seeds SunCalc with noon UTC (`Date.UTC(..., 12, 0, 0)`) to avoid timezone/JD rollback edge cases near year boundaries.
+- API validation uses explicit lat/lng/year bounds and stable cache header (`public, max-age=86400`).
+
+**Context for next task:** Task-007 can consume analemma data from `computeAnalemma` directly or via `/api/analemma`; both now produce consistent point structures.
+**Verification note:** Full `/verify` is blocked by pre-existing lint errors in `check-tests.js` and `diagnose-tests.js` (`@typescript-eslint/no-require-imports`), unrelated to Task-006 changes.
 **Open questions:** _(none)_
