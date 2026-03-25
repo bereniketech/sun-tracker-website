@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { SunData } from "@/types/sun";
 
 export type NotificationPermissionState = "default" | "granted" | "denied" | "unsupported";
@@ -36,8 +36,20 @@ export function useGoldenHourNotifications(
     setPermissionState(currentPermission);
   }, []);
 
+  const fireNotification = useCallback(() => {
+    if (!("Notification" in window)) {
+      return;
+    }
+
+    const truncatedName = locationName.slice(0, 100);
+    new window.Notification("Golden Hour Starting Soon", {
+      body: `Golden hour starts in 30 minutes at ${truncatedName}. Open the tracker.`,
+    });
+    setIsScheduled(false);
+  }, [locationName]);
+
   // Calculate next golden hour event that is > 30 minutes away
-  const scheduleNext = () => {
+  const scheduleNext = useCallback(() => {
     if (!sunData || !("Notification" in window)) {
       setIsScheduled(false);
       return;
@@ -93,19 +105,7 @@ export function useGoldenHourNotifications(
     } else {
       setIsScheduled(false);
     }
-  };
-
-  const fireNotification = () => {
-    if (!("Notification" in window)) {
-      return;
-    }
-
-    const truncatedName = locationName.slice(0, 100);
-    new window.Notification("Golden Hour Starting Soon", {
-      body: `Golden hour starts in 30 minutes at ${truncatedName}. Open the tracker.`,
-    });
-    setIsScheduled(false);
-  };
+  }, [fireNotification, sunData]);
 
   const requestAndSchedule = async () => {
     const isSupported = typeof window !== "undefined" && "Notification" in window;
@@ -147,7 +147,7 @@ export function useGoldenHourNotifications(
         timerRef.current = null;
       }
     };
-  }, [sunData, locationName, isScheduled, permissionState]);
+  }, [isScheduled, permissionState, scheduleNext]);
 
   return {
     permissionState,

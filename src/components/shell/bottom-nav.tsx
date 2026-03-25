@@ -28,6 +28,10 @@ function isActivePath(pathname: string, href: string): boolean {
 export function BottomNav() {
   const pathname = usePathname();
 
+  if (pathname.startsWith("/login")) {
+    return null;
+  }
+
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-lowest shadow-[0_-4px_24px_rgba(11,28,48,0.06)] md:hidden"

@@ -4,7 +4,14 @@ import { useGoldenHourNotifications } from "@/hooks/use-golden-hour-notification
 import type { SunData } from "@/types/sun";
 
 describe("useGoldenHourNotifications", () => {
-  let mockNotification: any;
+  let mockNotification: {
+    permission: NotificationPermission;
+    requestPermission: ReturnType<typeof vi.fn>;
+  };
+
+  const browserWindow = globalThis as typeof globalThis & {
+    Notification?: unknown;
+  };
 
   beforeEach(() => {
     vi.useFakeTimers();
@@ -12,10 +19,10 @@ describe("useGoldenHourNotifications", () => {
 
     // Mock Notification API
     mockNotification = {
-      permission: "default",
+      permission: "default" as NotificationPermission,
       requestPermission: vi.fn().mockResolvedValue("granted"),
     };
-    (global as any).Notification = mockNotification;
+    browserWindow.Notification = mockNotification;
   });
 
   afterEach(() => {
@@ -53,7 +60,7 @@ describe("useGoldenHourNotifications", () => {
   });
 
   it("returns 'unsupported' when Notification API is not available", () => {
-    delete (global as any).Notification;
+    delete browserWindow.Notification;
 
     const { result } = renderHook(() =>
       useGoldenHourNotifications(null, "Test City")
@@ -231,13 +238,16 @@ describe("useGoldenHourNotifications", () => {
     );
 
     const mockedNotificationConstructor = vi.fn();
-    (global as any).Notification = function (title: string, options: any) {
-      mockedNotificationConstructor(title, options);
-    };
-    (global as any).Notification.permission = "granted";
-    (global as any).Notification.requestPermission = vi
-      .fn()
-      .mockResolvedValue("granted");
+    const notificationConstructor = Object.assign(
+      (title: string, options?: NotificationOptions) => {
+        mockedNotificationConstructor(title, options);
+      },
+      {
+        permission: "granted" as NotificationPermission,
+        requestPermission: vi.fn().mockResolvedValue("granted"),
+      },
+    );
+    browserWindow.Notification = notificationConstructor;
 
     const { result } = renderHook(() =>
       useGoldenHourNotifications(sunData, longLocationName)

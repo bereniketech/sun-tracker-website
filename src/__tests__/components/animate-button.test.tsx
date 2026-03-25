@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { vi } from "vitest";
 import { AnimateButton } from "@/components/controls/animate-button";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
