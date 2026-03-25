@@ -1,7 +1,7 @@
 ---
 task: 002
 feature: helios-chrono-ui
-status: pending
+status: complete
 depends_on: [1]
 ---
 
@@ -117,14 +117,14 @@ _Skills: /build-website-web-app — Next.js layout + client components_
 ---
 
 ## Acceptance Criteria
-- [ ] TopBar shows "✦ HELIOS CHRONO" in orange Space Grotesk on all pages.
-- [ ] BottomNav is visible on mobile (< md), hidden on desktop.
-- [ ] Desktop TopBar shows horizontal nav links.
-- [ ] Active route link/tab is highlighted in orange.
-- [ ] No visible border lines in the shell (tonal shift only).
-- [ ] `main` content not hidden behind BottomNav on mobile.
-- [ ] All 4 placeholder routes resolve without 404.
-- [ ] `/verify` passes.
+- [x] TopBar shows "✦ HELIOS CHRONO" in orange Space Grotesk on all pages.
+- [x] BottomNav is visible on mobile (< md), hidden on desktop.
+- [x] Desktop TopBar shows horizontal nav links.
+- [x] Active route link/tab is highlighted in orange.
+- [x] No visible border lines in the shell (tonal shift only).
+- [x] `main` content not hidden behind BottomNav on mobile.
+- [x] All 4 placeholder routes resolve without 404.
+- [ ] `/verify` passes. (Blocked by pre-existing lint/test failures outside this task's files.)
 
 ---
 
@@ -134,13 +134,22 @@ _Skills: /build-website-web-app — Next.js layout + client components_
 
 | File | What changed | State |
 |------|-------------|-------|
-| `src/components/shell/top-bar.tsx` | New glassmorphic TopBar with branding, desktop nav, user icons | pending |
-| `src/components/shell/bottom-nav.tsx` | New 4-tab mobile BottomNav with active state | pending |
-| `src/app/layout.tsx` | Replaced old header with TopBar + BottomNav; added pb-20 md:pb-0 to main | pending |
-| `src/app/analemma/page.tsx` | New placeholder page | pending |
-| `src/app/landmarks/page.tsx` | New placeholder page | pending |
-| `src/app/observatory/page.tsx` | New placeholder page | pending |
+| `src/components/shell/top-bar.tsx` | New glassmorphic TopBar with branding, desktop nav, user icons | done |
+| `src/components/shell/bottom-nav.tsx` | New 4-tab mobile BottomNav with active state | done |
+| `src/app/layout.tsx` | Replaced old header with TopBar + BottomNav; added pb-20 md:pb-0 to main | done |
+| `src/app/analemma/page.tsx` | New placeholder page | done |
+| `src/app/landmarks/page.tsx` | New placeholder page | done |
+| `src/app/observatory/page.tsx` | New placeholder page | done |
 
-**Decisions made:** _(fill in after completion)_
-**Context for next task:** _(fill in after completion)_
+**Decisions made:**
+- Added shared route matching logic in TopBar/BottomNav so `/city` pages still highlight the Dashboard tab.
+- Kept shell separation borderless, relying on tonal surfaces and ambient shadow as specified.
+- Added 44px+ touch targets (`h-11` icons and `min-h-14` mobile tabs) for accessibility.
+
+**Context for next task:**
+- `/verify` was executed, but failed because of existing lint/test issues not introduced by this task:
+  - `src/__tests__/hooks/use-golden-hour-notifications.test.ts` (`no-explicit-any`)
+  - `src/__tests__/components/animate-button.test.tsx` (unused `waitFor` + failing animation assertions)
+  - `src/hooks/use-golden-hour-notifications.ts` (react-hooks/exhaustive-deps warning)
+  - `src/__tests__/integration/animation-controls.test.tsx` (2 failing tests)
 **Open questions:** _(none)_
