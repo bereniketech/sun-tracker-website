@@ -1,3 +1,7 @@
+---
+status: complete
+---
+
 # Task 008 — Mobile Responsive Layout
 
 ## Requirement

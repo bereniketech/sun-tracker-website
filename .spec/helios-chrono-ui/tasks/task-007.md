@@ -1,7 +1,7 @@
 ---
 task: 007
 feature: helios-chrono-ui
-status: pending
+status: complete
 depends_on: [6]
 ---
 

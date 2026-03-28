@@ -37,6 +37,23 @@ body[data-map-fullscreen="true"] {
   background: linear-gradient(180deg, #dbeafe 0%, #e2e8f0 100%);
 }
 
+@keyframes corona-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.corona-ring {
+  transform-origin: 150px 150px;
+  animation: corona-pulse 2s ease-in-out infinite;
+}
+
 .sun-tracker-pin {
   position: relative;
   display: block;

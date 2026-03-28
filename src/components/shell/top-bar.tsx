@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bell, LogOut, Settings, UserRound } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { SearchBar } from "@/components/search-bar";
 
 interface TopBarItem {
   href: string;
@@ -68,6 +69,10 @@ export function TopBar() {
             );
           })}
         </nav>
+
+        <div className="hidden w-64 md:block mx-4">
+          <SearchBar />
+        </div>
 
         <div className="flex items-center gap-2">
           <button

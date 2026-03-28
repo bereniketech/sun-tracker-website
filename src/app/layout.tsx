@@ -26,8 +26,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Sun Tracker",
-  description: "See where the sun rises and sets for any location, any time.",
+  title: "Helios Chrono",
+  description: "Precision solar tracking — celestial alignment for photographers and astronomers.",
 };
 
 export default function RootLayout({

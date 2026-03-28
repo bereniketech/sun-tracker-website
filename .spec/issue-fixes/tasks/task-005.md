@@ -1,3 +1,7 @@
+---
+status: complete
+---
+
 # Task 005 — Fix geocoding language (English only)
 
 ## Summary

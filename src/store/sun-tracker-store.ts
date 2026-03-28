@@ -33,6 +33,7 @@ export const useSunTrackerStore = create<SunTrackerState>((set) => ({
   selectedLandmark: null,
   photographerMode: false,
   isMobile: false,
+  calibration: { focusOffset: 0, exposureBias: 0, captureRate: 10 },
 
   setLocation: (lat, lng, name) => {
     set((state) => ({
@@ -127,6 +128,12 @@ export const useSunTrackerStore = create<SunTrackerState>((set) => ({
   togglePhotographerMode: () => {
     set((state) => ({
       photographerMode: !state.photographerMode,
+    }));
+  },
+
+  setCalibration: (c) => {
+    set((state) => ({
+      calibration: { ...state.calibration, ...c },
     }));
   },
 }));

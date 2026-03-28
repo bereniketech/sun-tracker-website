@@ -10,10 +10,9 @@
 @C:/Users/Hp/Desktop/Experiment/claude_kit/skills/data-backend/postgres-patterns/SKILL.md
 
 ## Active Feature
-Feature: helios-chrono-ui
+Feature: helios-chrono-ui — COMPLETE (all 13 tasks done)
 Spec: .spec/helios-chrono-ui/requirements.md, design.md
-Tasks: .spec/helios-chrono-ui/tasks/
-Current task: .spec/helios-chrono-ui/tasks/task-010.md
+Tasks: .spec/helios-chrono-ui/tasks/ (all complete)
 Branch: feature/sun-tracker-v2
 
 ## Start Here
