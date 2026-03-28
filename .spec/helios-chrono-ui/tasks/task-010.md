@@ -78,12 +78,22 @@ import { LANDMARKS } from "@/lib/landmarks";
 
 | File | What changed |
 |------|-------------|
-| `src/lib/landmarks.ts` | Added 3 new landmarks + optional fields |
-| `src/app/api/landmarks/route.ts` | GET route |
-| `src/components/landmarks/landmark-card.tsx` | Styled landmark cards |
-| `src/app/landmarks/page.tsx` | Full landmarks page with filter + cards |
+| `src/types/sun.ts` | Extended Landmark interface with optional location, category, imageGradient fields |
+| `src/lib/landmarks.ts` | Added Stonehenge, Giza Pyramids, Chichen Itza + extended all landmarks with location/category/imageGradient |
+| `src/app/api/landmarks/route.ts` | GET route returning landmarks with currentAzimuth/currentAltitude computed at request time |
+| `src/components/landmarks/landmark-card.tsx` | Client component with gradient image area, location badges, selection state (LIVE TRACKING) |
+| `src/app/landmarks/page.tsx` | Full landmarks page with filter tabs (Historic/Technical), sort toggle (Solar Proximity/A-Z), and card grid |
 
----
+**Decisions made in previous task:**
+- **Grade placeholder images** — CSS gradient placeholders (from-amber-900 to-stone-700) enable fast iteration without external image dependencies
+- **Client-side filtering** — Filter state is local (useState) for snappy UX; LANDMARKS is small enough to filter in-component
+- **Real-time sun data** — `/api/landmarks` computes sunData on-demand per landmark, no caching; marked as `force-dynamic`
+- **Reused store integration** — Landmarks leverage existing `useSunTrackerStore.selectedLandmark` for cross-page state management
+
+**Context for this task:**
+The landmarks page is complete and stable with 7 landmarks (4 technical + 3 historic). Task-010 now adds the Atmospheric Refraction Index widget to the page footer. The widget computes real-time atmospheric refraction from the current `sunData.sunElevation` and displays it as a percentage in a dark card with optional per-landmark diagnostic. The component can import `LANDMARKS` directly and leverage the same `computeSunData` function used in the API route.
+
+
 
 ## Implementation Steps
 

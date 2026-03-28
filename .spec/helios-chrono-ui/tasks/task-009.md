@@ -1,7 +1,7 @@
 ---
 task: 009
 feature: helios-chrono-ui
-status: pending
+status: complete
 depends_on: [2]
 ---
 
@@ -156,11 +156,22 @@ _Skills: /build-website-web-app — card grid layout_
 
 | File | What changed | State |
 |------|-------------|-------|
-| `src/lib/landmarks.ts` | Added Stonehenge, Giza Pyramids, Chichen Itza + location/category/imageGradient fields | pending |
-| `src/app/api/landmarks/route.ts` | GET route returning landmarks with current sun data | pending |
-| `src/components/landmarks/landmark-card.tsx` | Helios Chrono styled landmark card | pending |
-| `src/app/landmarks/page.tsx` | Full landmarks page with filter tabs and card grid | pending |
+| `src/types/sun.ts` | Extended Landmark interface with optional location, category, imageGradient fields | complete |
+| `src/lib/landmarks.ts` | Added Stonehenge, Giza Pyramids, Chichen Itza + location/category/imageGradient fields to all landmarks | complete |
+| `src/app/api/landmarks/route.ts` | GET route returning landmarks with current sun data (azimuth/altitude) | complete |
+| `src/components/landmarks/landmark-card.tsx` | Helios Chrono styled landmark card with gradient images, location badges, selection state | complete |
+| `src/app/landmarks/page.tsx` | Full landmarks page with filter tabs, sorting, card grid, and API data fetching | complete |
 
-**Decisions made:** _(fill in after completion)_
-**Context for next task:** Task-010 adds the Atmospheric Refraction Index widget to the bottom of the landmarks page.
-**Open questions:** _(none)_
+**Decisions made:**
+- **Landmark card styling** — Used CSS gradient placeholders (from-amber-900 to-stone-700) instead of real images to match the stitch designs and enable fast iteration
+- **Category filters** — Implemented as client-side state (useState) for snappy UX; no server-side filtering needed since LANDMARKS is small
+- **Sort by solar proximity** — Sorts by current altitude (descending) to show visible landmarks first in the grid
+- **API route pattern** — Computes sun data on-the-fly per landmark using computeSunData; marked as `dynamic = "force-dynamic"` for real-time updates
+- **Landmark selection** — Reused existing `useSunTrackerStore.selectedLandmark` + `setSelectedLandmark` to integrate with the store
+
+**Context for next task:**
+Task-010 extends the landmarks page with an Atmospheric Refraction Index widget at the bottom. The landmark card and page are stable and can accept additional UI elements (refraction info, expanded panels, etc.). All 7 landmarks are loaded and functional with filtering/sorting.
+
+**Open questions:** 
+- None; ready for Task-010
+

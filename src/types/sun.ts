@@ -16,6 +16,9 @@ export interface Landmark {
   lat: number;
   lng: number;
   orientationAzimuth: number;
+  location?: string;
+  category?: "historic" | "technical" | "custom";
+  imageGradient?: string;
 }
 
 export interface AlignmentEvent {
