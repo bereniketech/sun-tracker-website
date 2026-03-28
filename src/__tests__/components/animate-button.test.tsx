@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { act, render, screen, fireEvent } from "@testing-library/react";
 import { vi } from "vitest";
 import { AnimateButton } from "@/components/controls/animate-button";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
@@ -7,6 +7,12 @@ describe("AnimateButton", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers();
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
+      return window.setTimeout(() => callback(Date.now()), 16);
+    });
+    vi.spyOn(window, "cancelAnimationFrame").mockImplementation((frameId) => {
+      window.clearTimeout(frameId);
+    });
     
     // Initialize store with NYC location and valid sunData
     const initialDate = new Date("2025-06-21T12:00:00Z");
@@ -78,7 +84,9 @@ describe("AnimateButton", () => {
     fireEvent.click(playButton);
     
     // Advance timers to trigger animation frames
-    vi.advanceTimersByTime(1000);
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
     
     const updatedState = useSunTrackerStore.getState();
     const updatedDateTime = updatedState.dateTime;
@@ -98,20 +106,26 @@ describe("AnimateButton", () => {
     const state1x = useSunTrackerStore.getState();
     const time1x = state1x.dateTime;
     
-    vi.advanceTimersByTime(500);
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
     
     const state1xAfter = useSunTrackerStore.getState();
     const advancement1x = state1xAfter.dateTime.getTime() - time1x.getTime();
     
     // Reset and try with 5x speed
     fireEvent.click(playButton); // Stop animation
-    useSunTrackerStore.setState({ dateTime: new Date(time1x) });
+    act(() => {
+      useSunTrackerStore.setState({ dateTime: new Date(time1x) });
+    });
     
     // Change speed to 5x
     fireEvent.change(speedSelect, { target: { value: "5" } });
     fireEvent.click(playButton); // Start animation again
     
-    vi.advanceTimersByTime(500);
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
     
     const state5x = useSunTrackerStore.getState();
     const advancement5x = state5x.dateTime.getTime() - time1x.getTime();
@@ -121,17 +135,20 @@ describe("AnimateButton", () => {
   });
 
   it("stops animation at end of day", async () => {
+    const nearEndOfDay = new Date("2025-06-21T23:58:00Z");
+    act(() => {
+      useSunTrackerStore.setState({ dateTime: nearEndOfDay });
+    });
+
     render(<AnimateButton />);
     const playButton = screen.getByRole("button", { name: /animate sun movement/i });
-    
-    // Set time near end of day
-    const nearEndOfDay = new Date("2025-06-21T23:58:00Z");
-    useSunTrackerStore.setState({ dateTime: nearEndOfDay });
     
     // Start animation
     fireEvent.click(playButton);
     
-    vi.advanceTimersByTime(2000);
+    await act(async () => {
+      vi.advanceTimersByTime(2000);
+    });
     
     const finalState = useSunTrackerStore.getState();
     expect(finalState.isAnimating).toBe(false);
@@ -146,7 +163,9 @@ describe("AnimateButton", () => {
     const initialSunAzimuth = initialState.sunData?.sunAzimuth;
     
     fireEvent.click(playButton);
-    vi.advanceTimersByTime(1000);
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
     
     const updatedState = useSunTrackerStore.getState();
     const updatedSunAzimuth = updatedState.sunData?.sunAzimuth;

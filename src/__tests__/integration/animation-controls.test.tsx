@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { act, render, screen, fireEvent } from "@testing-library/react";
 import { vi } from "vitest";
 import { AnimateButton } from "@/components/controls/animate-button";
 import { TimeSlider } from "@/components/controls/time-slider";
@@ -9,6 +9,7 @@ import { computeSunData } from "@/lib/sun";
 describe("Task 007 — Animation Controls Integration", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.useFakeTimers();
 
     // Initialize store with NYC and valid sunData
     const initialDate = new Date("2025-06-21T12:00:00Z");
@@ -36,6 +37,10 @@ describe("Task 007 — Animation Controls Integration", () => {
     });
   });
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("should advance dateTime when animation is playing", async () => {
     render(
       <>
@@ -50,16 +55,14 @@ describe("Task 007 — Animation Controls Integration", () => {
 
     fireEvent.click(playButton);
 
-    // Wait for animation to advance the time (should happen within 1000ms)
-    await waitFor(
-      () => {
-        const currentState = useSunTrackerStore.getState();
-        expect(currentState.dateTime.getTime()).toBeGreaterThan(initialTime.getTime());
-      },
-      { timeout: 1000 }
-    );
+    await act(async () => {
+      vi.advanceTimersByTime(2000);
+    });
 
-    fireEvent.click(playButton); // Stop animation
+    const currentState = useSunTrackerStore.getState();
+    expect(currentState.dateTime.getTime()).toBeGreaterThan(initialTime.getTime());
+
+    fireEvent.click(screen.getByRole("button", { name: /pause animation/i }));
   });
 
   it("should update time slider as animation advances", async () => {
@@ -77,18 +80,16 @@ describe("Task 007 — Animation Controls Integration", () => {
 
     fireEvent.click(playButton);
 
-    // Wait for slider to advance
-    await waitFor(
-      () => {
-        const currentValue = Number(
-          screen.getByRole("slider", { name: /time of day slider/i }).getAttribute("value")
-        );
-        expect(currentValue).toBeGreaterThan(initialValue);
-      },
-      { timeout: 1000 }
-    );
+    await act(async () => {
+      vi.advanceTimersByTime(2000);
+    });
 
-    fireEvent.click(playButton); // Stop animation
+    const currentValue = Number(
+      (screen.getByRole("slider", { name: /time of day slider/i }) as HTMLInputElement).value
+    );
+    expect(currentValue).toBeGreaterThan(initialValue);
+
+    fireEvent.click(screen.getByRole("button", { name: /pause animation/i }));
   });
 
   it("should stop animation and reset time with Now button", async () => {
@@ -104,14 +105,7 @@ describe("Task 007 — Animation Controls Integration", () => {
 
     fireEvent.click(playButton);
 
-    // Wait for animation to advance
-    await waitFor(
-      () => {
-        const state = useSunTrackerStore.getState();
-        expect(state.isAnimating).toBe(true);
-      },
-      { timeout: 500 }
-    );
+    expect(useSunTrackerStore.getState().isAnimating).toBe(true);
 
     const beforeNow = new Date();
     fireEvent.click(nowButton);

@@ -15,7 +15,7 @@ When implementing tasks, read these files for detailed coding standards:
 Feature: sun-tracker-v2
 Spec: .spec/sun-tracker-v2/requirements.md, design.md
 Tasks: .spec/sun-tracker-v2/tasks/
-Current task: .spec/sun-tracker-v2/tasks/task-006.md
+Current task: .spec/helios-chrono-ui/tasks/task-005.md
 Branch: feature/sun-tracker-v2
 
 ## Start Here

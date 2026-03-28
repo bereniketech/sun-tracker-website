@@ -1,7 +1,7 @@
 ---
 task: 005
 feature: helios-chrono-ui
-status: pending
+status: done
 depends_on: [4]
 ---
 
@@ -151,10 +151,16 @@ _Skills: /build-website-web-app — responsive grid layout_
 
 | File | What changed | State |
 |------|-------------|-------|
-| `src/components/dashboard/day-cycle.tsx` | Sunrise/Noon/Sunset panel with azimuths | pending |
-| `src/components/dashboard/photo-windows.tsx` | Golden Hour + Blue Hour panel with countdowns | pending |
-| `src/components/home-page-client.tsx` | Restructured to 3-col desktop / stacked mobile layout | pending |
+| `src/components/dashboard/day-cycle.tsx` | Sunrise/Noon/Sunset panel with azimuths | done |
+| `src/components/dashboard/photo-windows.tsx` | Golden Hour + Blue Hour panel with countdowns | done |
+| `src/components/home-page-client.tsx` | Restructured to 3-col desktop / stacked mobile layout | done |
 
-**Decisions made:** _(fill in after completion)_
-**Context for next task:** _(fill in after completion)_
+**Decisions made:**
+- Mobile: Day Cycle + Photo Windows rendered inside left col (hidden on lg+) so they appear below controls in the stack order.
+- Desktop: right col uses `hidden lg:flex flex-col` — components rendered twice (once mobile, once desktop) to avoid layout shift.
+- Controls card uses `bg-surface-container-low rounded-2xl` — removed `border border-slate-200 bg-white shadow-sm`.
+- `formatAzimuth` utility inlined in `day-cycle.tsx` (no shared util needed for one use).
+- Solar Noon has no azimuth displayed (not available in SunData as a dedicated field).
+
+**Context for next task:** Dashboard 3-col layout is complete. SolarMetrics (top), controls/DayCycle/PhotoWindows (grid), InfoPanel/SharePanel/FavoritesPanel (below grid). Build passes cleanly.
 **Open questions:** _(none)_

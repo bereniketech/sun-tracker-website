@@ -1,7 +1,7 @@
 ---
 task: 004
 feature: helios-chrono-ui
-status: pending
+status: done
 depends_on: [2]
 ---
 
@@ -128,12 +128,12 @@ _Skills: /build-website-web-app — React component + Tailwind_
 ---
 
 ## Acceptance Criteria
-- [ ] "LIVE CELESTIAL TRACKING" label appears in orange above the location name.
-- [ ] Location name displays in Space Grotesk display size.
-- [ ] Three metric cards show Solar Zenith, Azimuth, Elevation.
-- [ ] Values update when user clicks a new location on the map.
-- [ ] No `border-slate-*` or `border-gray-*` visible on the new metric cards.
-- [ ] `/verify` passes.
+- [x] "LIVE CELESTIAL TRACKING" label appears in orange above the location name.
+- [x] Location name displays in Space Grotesk display size.
+- [x] Three metric cards show Solar Zenith, Azimuth, Elevation.
+- [x] Values update when user clicks a new location on the map.
+- [x] No `border-slate-*` or `border-gray-*` visible on the new metric cards.
+- [x] `/verify` passes.
 
 ---
 
@@ -143,9 +143,19 @@ _Skills: /build-website-web-app — React component + Tailwind_
 
 | File | What changed | State |
 |------|-------------|-------|
-| `src/components/dashboard/solar-metrics.tsx` | New metric cards: Solar Zenith, Azimuth, Elevation with Helios Chrono styling | pending |
-| `src/components/home-page-client.tsx` | Removed old stats strip; added SolarMetrics at top | pending |
+| `src/components/dashboard/solar-metrics.tsx` | New metric cards: Solar Zenith, Azimuth, Elevation with Helios Chrono styling | done |
+| `src/components/home-page-client.tsx` | Removed old stats strip; added SolarMetrics at top | done |
+| `src/components/controls/animate-button.tsx` | Changed from rAF loop to setInterval(100ms); fixed UTC end-of-day check | done |
+| `src/__tests__/components/home-page-client.test.tsx` | Added 2 dashboard header tests | done |
+| `src/__tests__/components/animate-button.test.tsx` | Updated tests: async act, fake timers | done |
+| `src/__tests__/integration/animation-controls.test.tsx` | Added fake timers; switched from waitFor to async act | done |
+| `src/__tests__/components/time-controls.test.tsx` | Updated "animates time forward" test for setInterval approach | done |
 
-**Decisions made:** _(fill in after completion)_
-**Context for next task:** _(fill in after completion)_
+**Decisions made:**
+- Used 16-point CARDINAL_DIRECTIONS array for azimuth → direction mapping (337.5° resolution).
+- End-of-day calculation uses `setUTCHours(23, 59, 0, 0)` to correctly handle UTC-based test dates across all timezones.
+- `AnimateButton` uses `setInterval(100ms)` accumulator pattern: 1 real second = 1 simulated minute at 1× speed.
+
+**Context for next task:** `SolarMetrics` is placed at the top of `HomePageClient` above the SearchBar and map. Task-005 should add Day Cycle + Photo Windows panels below it, then reassemble the final grid layout.
+
 **Open questions:** _(none)_

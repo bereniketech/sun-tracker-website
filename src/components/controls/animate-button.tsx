@@ -14,28 +14,18 @@ export function AnimateButton() {
 
   const [speedMultiplier, setSpeedMultiplier] = useState<number>(1);
   const dateTimeRef = useRef<Date>(dateTime);
-
-  useEffect(() => {
-    dateTimeRef.current = dateTime;
-  }, [dateTime]);
+  dateTimeRef.current = dateTime;
 
   useEffect(() => {
     if (!isAnimating) {
       return;
     }
 
-    let frameId = 0;
-    let lastTick: number | null = null;
+    const intervalMs = 100;
     let accumulatedMs = 0;
 
-    const tick = (now: number): void => {
-      if (lastTick === null) {
-        lastTick = now;
-      }
-
-      const deltaMs = now - lastTick;
-      lastTick = now;
-      accumulatedMs += deltaMs;
+    const intervalId = window.setInterval(() => {
+      accumulatedMs += intervalMs;
 
       const minutesToAdvance = Math.floor((accumulatedMs / 1000) * speedMultiplier);
 
@@ -44,7 +34,7 @@ export function AnimateButton() {
 
         const current = dateTimeRef.current;
         const endOfDay = new Date(current);
-        endOfDay.setHours(23, 59, 0, 0);
+        endOfDay.setUTCHours(23, 59, 0, 0);
 
         const nextDateTime = new Date(current);
         nextDateTime.setMinutes(nextDateTime.getMinutes() + minutesToAdvance);
@@ -57,16 +47,10 @@ export function AnimateButton() {
 
         setDateTime(nextDateTime);
       }
-
-      frameId = window.requestAnimationFrame(tick);
-    };
-
-    frameId = window.requestAnimationFrame(tick);
+    }, intervalMs);
 
     return () => {
-      if (typeof window.cancelAnimationFrame === "function") {
-        window.cancelAnimationFrame(frameId);
-      }
+      window.clearInterval(intervalId);
     };
   }, [isAnimating, setAnimating, setDateTime, speedMultiplier]);
 

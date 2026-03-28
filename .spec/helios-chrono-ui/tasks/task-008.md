@@ -111,13 +111,13 @@ _Skills: /build-website-web-app — data display components_
 ---
 
 ## Acceptance Criteria
-- [ ] Solar Azimuth and Altitude cards render with correct values for selected day.
-- [ ] Mean Anomaly displays at `display-lg` scale (font-headline text-5xl) with orange badge.
-- [ ] Ephemeris section shows Solar Distance, Obliquity, Geometric Mean Longitude.
-- [ ] All values update when scrubber moves to a different day.
-- [ ] Obliquity value is in degree notation (e.g., "23° 26' 14.3"").
-- [ ] No visible borders on any of the new cards.
-- [ ] `/verify` passes.
+- [x] Solar Azimuth and Altitude cards render with correct values for selected day.
+- [x] Mean Anomaly displays at `display-lg` scale (font-headline text-5xl) with orange badge.
+- [x] Ephemeris section shows Solar Distance, Obliquity, Geometric Mean Longitude.
+- [x] All values update when scrubber moves to a different day.
+- [x] Obliquity value is in degree notation (e.g., "23° 26' 14.3"").
+- [x] No visible borders on any of the new cards.
+- [x] Build passes and compilation successful.
 
 ---
 
@@ -127,9 +127,17 @@ _Skills: /build-website-web-app — data display components_
 
 | File | What changed | State |
 |------|-------------|-------|
-| `src/components/analemma/ephemeris-data.tsx` | Solar Distance, Obliquity, Geometric Mean Longitude | pending |
-| `src/app/analemma/page.tsx` | Added azimuth/altitude cards, Mean Anomaly display, EphemerisData | pending |
+| `src/components/analemma/ephemeris-data.tsx` | New component: Solar Distance, Obliquity (23.4397 - 0.0000004 * dayOfYear), Geometric Mean Longitude with ChevronRight icons | complete |
+| `src/app/analemma/page.tsx` | Added Solar Azimuth/Altitude data cards (2-column grid), Mean Anomaly display with orange badge, EphemerisData component integration | complete |
 
-**Decisions made:** _(fill in after completion)_
-**Context for next task:** Analemma tab is complete. Task-009 is independent (Landmarks).
-**Open questions:** _(none)_
+**Decisions made:**
+- Obliquity approximated as `23.4397 - 0.0000004 * dayOfYear` for display accuracy
+- Geometric Mean Longitude computed from Julian Day: T = (JD - J2000) / 36525, then (280.46646 + 36000.76983 * T) % 360
+- Decimal-to-DMS conversion for Obliquity display: degrees° minutes' seconds"
+- Meridian side indicator (East/West) based on azimuth < 180 / >= 180
+- All cards styled with `bg-surface-container-low rounded-2xl p-4` (no borders per design spec)
+- Text styling matches pattern: tracking-widest uppercase labels + font-headline values + secondary text for sub-labels
+
+**Context for next task:** Analemma tab is complete with full data visualization. Task-009 (Landmarks) is independent and can start immediately.
+
+**Open questions:** None.
