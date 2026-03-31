@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Login | Helios Chrono",
-  description: "Sign in to Helios Chrono to save favorites and personalize your observatory.",
+  title: "Login | Sun Tracker by Helios Chrono",
+  description: "Sign in to Sun Tracker by Helios Chrono to save favorites and personalize your observatory.",
 };
 
 export default function LoginLayout({

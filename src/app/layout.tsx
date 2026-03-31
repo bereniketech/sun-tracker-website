@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono, Inter, Space_Grotesk } from "next/font/google";
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -34,17 +35,25 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
   title: {
     template: `%s | ${SITE_NAME}`,
-    default: `${SITE_NAME} — Precision Solar Tracking for Photographers & Astronomers`,
+    default: "Sun Tracker - Real-Time Sun Position, Sunrise & Sunset Calculator",
   },
   description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,
   keywords: [
+    "sun tracker",
+    "sun tracking",
+    "sun tracking app",
+    "suntracker",
     "sunrise time",
     "sunset time",
+    "sunrise sunset calculator",
     "golden hour",
+    "golden hour calculator",
     "blue hour",
     "sun position",
+    "sun position map",
     "solar tracking",
+    "solar tracker",
     "photography timing",
     "sun calculator",
     "celestial alignment",
@@ -57,9 +66,23 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     type: "website",
     locale: "en_US",
+    title: "Sun Tracker by Helios Chrono",
+    description: SITE_DESCRIPTION,
+    url: siteUrl("/"),
+    images: [
+      {
+        url: siteUrl("/globe.svg"),
+        width: 512,
+        height: 512,
+        alt: "Sun Tracker by Helios Chrono",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
+    title: "Sun Tracker by Helios Chrono",
+    description: SITE_DESCRIPTION,
+    images: [siteUrl("/globe.svg")],
   },
 };
 
@@ -73,6 +96,16 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${inter.variable}`}
     >
+      {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (
+        <head>
+          <Script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`}
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+        </head>
+      )}
       <body className="min-h-screen flex flex-col bg-surface font-body text-on-surface">
         <TopBar />
         <main className="flex-1 p-3 pb-20 md:p-5 md:pb-0">

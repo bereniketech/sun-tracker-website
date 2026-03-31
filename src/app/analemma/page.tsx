@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import AnalemmaClient from "./analemma-client";
+import { AdUnit } from "@/components/ads/ad-unit";
 import { JsonLd } from "@/components/seo/json-ld";
 import { buildWebPage, buildBreadcrumbList, buildHowTo } from "@/lib/schema";
 
@@ -53,6 +54,7 @@ export default function AnalemmaPage() {
         ]}
       />
       <AnalemmaClient />
+      <AdUnit adSlot="ANALEMMA_BOTTOM" adFormat="horizontal" className="mt-6" />
     </>
   );
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AdUnit } from "@/components/ads/ad-unit";
 import { JsonLd } from "@/components/seo/json-ld";
 import {
   buildWebPage,
@@ -10,9 +11,9 @@ import {
 import { EDUCATIONAL_ENTRIES } from "@/lib/educational-content";
 
 export const metadata: Metadata = {
-  title: "About Helios Chrono — How Solar Tracking Works for Photography",
+  title: "About Sun Tracker by Helios Chrono - How Solar Tracking Works",
   description:
-    "Learn how Helios Chrono calculates sunrise, sunset, golden hour, and blue hour times using astronomical algorithms. A complete guide to solar tracking for photographers and astronomers, including glossary, methodology, and photography timing tips.",
+    "Learn how Sun Tracker by Helios Chrono calculates sunrise, sunset, golden hour, and blue hour times using astronomical algorithms. A complete guide to solar tracking for photographers and astronomers, including glossary, methodology, and photography timing tips.",
   alternates: { canonical: "/about" },
 };
 
@@ -27,7 +28,7 @@ export default function AboutPage() {
       <JsonLd
         data={[
           buildWebPage(
-            "About Helios Chrono — How Solar Tracking Works",
+            "About Sun Tracker by Helios Chrono - How Solar Tracking Works",
             "Complete guide to solar tracking for photographers and astronomers, including methodology, glossary, and photography timing tips.",
             "/about",
           ),
@@ -42,7 +43,7 @@ export default function AboutPage() {
             [
               {
                 name: "Choose your location",
-                text: "Use the Helios Chrono interactive map to select your shooting location. The sun tracker shows real-time sun position, azimuth, and elevation for any point on Earth.",
+                text: "Use the Sun Tracker by Helios Chrono interactive map to select your shooting location. The sun tracker shows real-time sun position, azimuth, and elevation for any point on Earth.",
               },
               {
                 name: "Check golden hour timing",
@@ -70,10 +71,10 @@ export default function AboutPage() {
           About
         </p>
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
-          About Helios Chrono
+          About Sun Tracker by Helios Chrono
         </h1>
         <p className="max-w-3xl text-base leading-relaxed text-slate-700">
-          Helios Chrono is a precision solar tracking application that calculates sunrise, sunset,
+          Sun Tracker by Helios Chrono is a precision solar tracking application that calculates sunrise, sunset,
           golden hour, and blue hour times for any location on Earth using astronomical algorithms.
           It is built for photographers who need to plan shoots around natural light, and astronomers
           who require accurate celestial position data.
@@ -86,7 +87,7 @@ export default function AboutPage() {
         </h2>
         <div className="max-w-3xl space-y-3 text-sm leading-relaxed text-slate-700 md:text-base">
           <p>
-            Helios Chrono computes sun positions using the{" "}
+            Sun Tracker by Helios Chrono computes sun positions using the{" "}
             <strong>suncalc</strong> library, which implements algorithms derived
             from the NOAA Solar Calculator and Jean Meeus&apos;s{" "}
             <em>Astronomical Algorithms</em>. These calculations account for
@@ -178,6 +179,8 @@ export default function AboutPage() {
           </p>
         </div>
       </section>
+
+      <AdUnit adSlot="ABOUT_MID" adFormat="horizontal" className="my-2" />
 
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold text-slate-900">

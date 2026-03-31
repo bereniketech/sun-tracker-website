@@ -37,9 +37,14 @@ export function TopBar() {
           <span className="text-lg leading-none text-primary transition-transform duration-300 group-hover:rotate-90 group-hover:scale-110" aria-hidden="true">
             ✦
           </span>
-          <span className="font-headline text-xl font-bold uppercase tracking-widest bg-gradient-to-r from-primary to-primary-container bg-clip-text text-transparent">
-            HELIOS CHRONO
-          </span>
+          <div className="flex flex-col leading-none">
+            <span className="font-headline text-base font-bold uppercase tracking-[0.22em] bg-gradient-to-r from-primary to-primary-container bg-clip-text text-transparent md:text-lg">
+              SUN TRACKER
+            </span>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-secondary">
+              by Helios Chrono
+            </span>
+          </div>
         </div>
 
         <nav className="hidden items-center gap-5 md:flex" aria-label="Primary">

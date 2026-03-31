@@ -71,7 +71,7 @@ export function LoginForm() {
     <section className="w-full max-w-sm rounded-2xl bg-surface-container-lowest p-8 shadow-[0_8px_48px_rgba(11,28,48,0.08)]">
       <div className="mb-7 flex flex-col items-center text-center">
         <Sun className="mb-3 h-10 w-10 text-primary" aria-hidden="true" />
-        <h1 className="font-headline text-2xl font-bold text-on-surface">Helios Chrono</h1>
+        <h1 className="font-headline text-2xl font-bold text-on-surface">Sun Tracker</h1>
         <p className="mt-2 text-xs font-medium tracking-widest text-secondary uppercase">
           Precision Solar Tracking
         </p>

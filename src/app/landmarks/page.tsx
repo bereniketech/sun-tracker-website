@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import LandmarksClient from "./landmarks-client";
+import { AdUnit } from "@/components/ads/ad-unit";
 import { JsonLd } from "@/components/seo/json-ld";
 import { buildWebPage, buildBreadcrumbList } from "@/lib/schema";
 
@@ -27,6 +28,7 @@ export default function LandmarksPage() {
         ]}
       />
       <LandmarksClient />
+      <AdUnit adSlot="LANDMARKS_BOTTOM" adFormat="horizontal" className="mt-6" />
     </>
   );
 }

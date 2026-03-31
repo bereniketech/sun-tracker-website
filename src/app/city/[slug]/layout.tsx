@@ -14,29 +14,29 @@ export async function generateMetadata({ params }: CityLayoutProps): Promise<Met
 
   if (!city) {
     return {
-      title: "City Sun Times | Sun Tracker",
+      title: "City Sun Times | Sun Tracker by Helios Chrono",
       description:
-        "Find sunrise, sunset, golden hour, and blue hour times. Plan photography and outdoor activities with Sun Tracker.",
+        "Find sunrise, sunset, golden hour, and blue hour times. Plan photography and outdoor activities with Sun Tracker by Helios Chrono.",
     };
   }
 
   const cityLabel = `${city.name}, ${city.country}`;
 
   return {
-    title: `Sunrise & Sunset Times in ${cityLabel} | Sun Tracker`,
+    title: `Sunrise & Sunset Times in ${cityLabel} | Sun Tracker by Helios Chrono`,
     description: `Find sunrise, sunset, golden hour, and blue hour times in ${cityLabel}. Plan your photography and activities with real-time sun position data.`,
     alternates: {
       canonical: `/city/${city.slug}`,
     },
     openGraph: {
-      title: `Sunrise & Sunset Times in ${cityLabel} | Sun Tracker`,
+      title: `Sunrise & Sunset Times in ${cityLabel} | Sun Tracker by Helios Chrono`,
       description: `Sunrise, sunset, golden hour, and blue hour information for ${cityLabel}.`,
       url: `/city/${city.slug}`,
       type: "article",
     },
     twitter: {
       card: "summary_large_image",
-      title: `Sunrise & Sunset Times in ${cityLabel}`,
+      title: `Sunrise & Sunset Times in ${cityLabel} | Sun Tracker`,
       description: `Sunrise, sunset, golden hour, and blue hour data for ${cityLabel}.`,
     },
   };

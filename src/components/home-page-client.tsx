@@ -11,6 +11,7 @@ import { SharePanel } from "@/components/panels/share-panel";
 import { SolarMetrics } from "@/components/dashboard/solar-metrics";
 import { DayCycle } from "@/components/dashboard/day-cycle";
 import { PhotoWindows } from "@/components/dashboard/photo-windows";
+import { AdUnit } from "@/components/ads/ad-unit";
 import { FadeUp, ScaleIn } from "@/components/motion";
 import {
   DEFAULT_MAP_LOCATION,
@@ -120,6 +121,8 @@ export function HomePageClient() {
           <PhotoWindows sunData={sunData} />
         </FadeUp>
       </div>
+
+      <AdUnit adSlot="HOME_MID" adFormat="horizontal" className="my-2" />
 
       <FadeUp delay={0.6}>
         <InfoPanel />
