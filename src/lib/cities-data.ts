@@ -1,5 +1,46 @@
 import type { CitySeed } from "@/types/cities";
 
+const DEG_TO_RAD = Math.PI / 180;
+const EARTH_RADIUS_KM = 6371;
+
+/** Maximum distance (km) to consider a city as "nearby". */
+const MAX_NEARBY_KM = 150;
+
+function haversineDistanceKm(
+  lat1: number,
+  lng1: number,
+  lat2: number,
+  lng2: number,
+): number {
+  const dLat = (lat2 - lat1) * DEG_TO_RAD;
+  const dLng = (lng2 - lng1) * DEG_TO_RAD;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * DEG_TO_RAD) *
+      Math.cos(lat2 * DEG_TO_RAD) *
+      Math.sin(dLng / 2) ** 2;
+  return EARTH_RADIUS_KM * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+/**
+ * Returns the slug of the nearest supported city within MAX_NEARBY_KM,
+ * or `null` if no city is close enough.
+ */
+export function findNearestCitySlug(lat: number, lng: number): string | null {
+  let bestSlug: string | null = null;
+  let bestDist = MAX_NEARBY_KM;
+
+  for (const city of CITY_SEEDS) {
+    const dist = haversineDistanceKm(lat, lng, city.lat, city.lng);
+    if (dist < bestDist) {
+      bestDist = dist;
+      bestSlug = city.slug;
+    }
+  }
+
+  return bestSlug;
+}
+
 export const CITY_SEEDS: CitySeed[] = [
   { slug: "tokyo", name: "Tokyo", country: "Japan", lat: 35.6762, lng: 139.6503, timezone: "Asia/Tokyo" },
   { slug: "delhi", name: "Delhi", country: "India", lat: 28.6139, lng: 77.209, timezone: "Asia/Kolkata" },

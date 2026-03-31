@@ -99,9 +99,10 @@ export function TopBar() {
             aria-label="Search for a location"
             aria-expanded={isSearchOpen}
             onClick={() => setIsSearchOpen((prev) => !prev)}
-            className="flex h-11 w-11 items-center justify-center rounded-full text-secondary transition-colors hover:bg-surface-container hover:text-on-surface"
+            className="flex h-11 items-center justify-center gap-2 rounded-full px-4 text-secondary transition-colors hover:bg-surface-container hover:text-on-surface"
           >
             <Search className="h-5 w-5" />
+            <span className="text-sm font-medium">Search</span>
           </button>
 
           {isSearchOpen ? (

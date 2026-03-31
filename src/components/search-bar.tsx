@@ -1,7 +1,7 @@
 "use client";
 
-import { type FormEvent, useEffect, useId, useState } from "react";
-import { LoaderCircle, LocateFixed, MapPin, Search } from "lucide-react";
+import { type FormEvent, useCallback, useEffect, useId, useRef, useState } from "react";
+import { LoaderCircle, LocateFixed, MapPin, Search, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   createSearchCacheKey,
@@ -14,6 +14,7 @@ import {
 } from "@/lib/geocoding";
 import { formatCoordinatePair } from "@/components/map/location-utils";
 import { LANDMARKS } from "@/lib/landmarks";
+import { findNearestCitySlug } from "@/lib/cities-data";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
 import type { ComparisonLocation } from "@/types/comparison";
 import type { Landmark } from "@/types/sun";
@@ -79,7 +80,71 @@ export function SearchBar({ onLocationSelect }: SearchBarProps) {
   const [coordinateError, setCoordinateError] = useState("");
   const [latitudeInput, setLatitudeInput] = useState("");
   const [longitudeInput, setLongitudeInput] = useState("");
+  const [discoveredLandmarks, setDiscoveredLandmarks] = useState<Landmark[]>([]);
+  const [isDiscovering, setIsDiscovering] = useState(false);
+  const [discoveryLabel, setDiscoveryLabel] = useState("");
+  const discoveryRef = useRef<AbortController | null>(null);
   const debouncedQuery = useDebouncedValue(query, SEARCH_DEBOUNCE_MS);
+
+  const discoverLandmarks = useCallback(
+    async (lat: number, lng: number, locationName: string) => {
+      // Abort any in-flight discovery
+      discoveryRef.current?.abort();
+      const controller = new AbortController();
+      discoveryRef.current = controller;
+
+      setIsDiscovering(true);
+      setDiscoveredLandmarks([]);
+      setDiscoveryLabel(locationName);
+
+      try {
+        const response = await fetch("/api/landmarks/discover", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ lat, lng, locationName }),
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          const payload = (await response.json()) as { error?: string };
+          setLocationMessage(payload.error ?? "Could not discover landmarks.");
+          return;
+        }
+
+        const payload = (await response.json()) as {
+          landmarks: Array<Record<string, unknown>>;
+          source: string;
+        };
+
+        const mapped: Landmark[] = payload.landmarks
+          .map((row) => ({
+            id: typeof row.landmark_id === "string" ? row.landmark_id : String(row.id ?? ""),
+            name: typeof row.name === "string" ? row.name : "",
+            lat: typeof row.lat === "number" ? row.lat : 0,
+            lng: typeof row.lng === "number" ? row.lng : 0,
+            orientationAzimuth:
+              typeof row.orientation_azimuth === "number" ? row.orientation_azimuth : 0,
+            location: typeof row.location === "string" ? row.location : undefined,
+            citySlug: typeof row.city_slug === "string" ? row.city_slug : undefined,
+            category: typeof row.category === "string" ? (row.category as Landmark["category"]) : undefined,
+            imageGradient: typeof row.image_gradient === "string" ? row.image_gradient : undefined,
+          }))
+          .filter((lm) => lm.name.length > 0);
+
+        setDiscoveredLandmarks(mapped);
+
+        if (mapped.length > 0 && payload.source === "overpass") {
+          setLocationMessage(`Found ${mapped.length} landmarks near ${locationName}.`);
+        }
+      } catch (error: unknown) {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        setLocationMessage("Failed to discover landmarks for this location.");
+      } finally {
+        setIsDiscovering(false);
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     if (isPickerMode || !location) {
@@ -153,9 +218,22 @@ export function SearchBar({ onLocationSelect }: SearchBarProps) {
     };
   }, [debouncedQuery]);
 
-  const matchedLandmarks = LANDMARKS.filter((lm) =>
-    lm.name.toLowerCase().includes(normalizeSearchQuery(query))
-  ).slice(0, 5);
+  const nearestCitySlug = location
+    ? findNearestCitySlug(location.lat, location.lng)
+    : null;
+
+  const seededLandmarks = nearestCitySlug
+    ? LANDMARKS.filter((lm) => lm.citySlug === nearestCitySlug)
+    : [];
+
+  // Merge seeded + discovered landmarks (discovered takes priority for new locations)
+  const availableLandmarks = seededLandmarks.length > 0 ? seededLandmarks : discoveredLandmarks;
+
+  const matchedLandmarks = normalizeSearchQuery(query).length >= 2
+    ? availableLandmarks.filter((lm) =>
+        lm.name.toLowerCase().includes(normalizeSearchQuery(query))
+      ).slice(0, 5)
+    : availableLandmarks.slice(0, 8);
 
   const applyLocationSelection = (
     nextLocation: ComparisonLocation,
@@ -174,6 +252,18 @@ export function SearchBar({ onLocationSelect }: SearchBarProps) {
     setSearchError("");
     setCoordinateError("");
     setLocationMessage(buildSelectionMessage(nextLocation.name, isPickerMode));
+
+    // Auto-discover landmarks if none exist for this location
+    if (!landmark) {
+      const slug = findNearestCitySlug(nextLocation.lat, nextLocation.lng);
+      const hasSeeded = slug
+        ? LANDMARKS.some((lm) => lm.citySlug === slug)
+        : false;
+
+      if (!hasSeeded) {
+        void discoverLandmarks(nextLocation.lat, nextLocation.lng, nextLocation.name);
+      }
+    }
   };
 
   const handleLandmarkSelect = (landmark: Landmark): void => {
@@ -254,9 +344,9 @@ export function SearchBar({ onLocationSelect }: SearchBarProps) {
   };
 
   const normalizedQuery = normalizeSearchQuery(query);
-  const hasLandmarkMatches = normalizedQuery.length >= 2 && matchedLandmarks.length > 0;
+  const hasLandmarkMatches = matchedLandmarks.length > 0;
   const showSuggestions =
-    hasLandmarkMatches || suggestions.length > 0 || isSearching || Boolean(searchError);
+    hasLandmarkMatches || isDiscovering || suggestions.length > 0 || isSearching || Boolean(searchError);
 
   return (
     <section className="grid gap-4 rounded-[1.75rem] border border-slate-200 bg-white/95 p-4 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur md:p-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(18rem,1fr)]">
@@ -304,11 +394,28 @@ export function SearchBar({ onLocationSelect }: SearchBarProps) {
 
           {showSuggestions ? (
             <div className="mt-3 max-h-64 overflow-y-auto rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
+              {/* Discovery loading */}
+              {isDiscovering && (
+                <div className="flex items-center gap-2 px-3 py-2">
+                  <LoaderCircle className="h-4 w-4 animate-spin text-amber-500" />
+                  <p className="text-sm text-slate-500">
+                    Discovering landmarks near {discoveryLabel}...
+                  </p>
+                </div>
+              )}
+
               {/* Landmark matches */}
               {hasLandmarkMatches && (
                 <>
-                  <p className="px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-sky-700">
-                    Landmarks
+                  <p className="flex items-center gap-1.5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-sky-700">
+                    {discoveredLandmarks.length > 0 && seededLandmarks.length === 0 && (
+                      <Sparkles className="h-3 w-3" />
+                    )}
+                    {nearestCitySlug
+                      ? `Landmarks near ${matchedLandmarks[0]?.location ?? nearestCitySlug}`
+                      : discoveryLabel
+                        ? `Landmarks near ${discoveryLabel}`
+                        : "Landmarks"}
                   </p>
                   <ul className="space-y-1">
                     {matchedLandmarks.map((lm) => (
