@@ -11,7 +11,7 @@ interface AnalemmasvgProps {
 
 const VIEWBOX_WIDTH = 400;
 const VIEWBOX_HEIGHT = 500;
-const PADDING = 10;
+const PADDING = 30;
 const PLOT_WIDTH = VIEWBOX_WIDTH - 2 * PADDING;
 const PLOT_HEIGHT = VIEWBOX_HEIGHT - 2 * PADDING;
 
@@ -53,9 +53,6 @@ function buildPathString(points: AnalemmaPoint[]): string {
       pathSegments.push(`L ${x} ${y}`);
     }
   }
-
-  // Close the path to complete the figure-8
-  pathSegments.push("Z");
 
   return pathSegments.join(" ");
 }
@@ -158,7 +155,7 @@ export function AnalemmasvG({
       <path
         d={pathString}
         stroke="url(#analemma-grad)"
-        strokeWidth="2"
+        strokeWidth="2.5"
         fill="none"
         strokeLinecap="round"
         strokeLinejoin="round"

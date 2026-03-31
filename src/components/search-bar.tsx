@@ -270,6 +270,9 @@ export function SearchBar({ onLocationSelect }: SearchBarProps) {
           <label htmlFor={inputId} className="text-sm font-medium text-slate-900">
             Search for a place
           </label>
+          <p className="mt-0.5 text-xs text-slate-500">
+            Enter a city, landmark, or address to view sun data for that location.
+          </p>
           <div className="mt-2 flex flex-col gap-3 md:flex-row">
             <div className="relative flex-1">
               <input

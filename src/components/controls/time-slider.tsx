@@ -67,11 +67,11 @@ export function TimeSlider() {
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between gap-2">
-        <label htmlFor={sliderId} className="text-sm font-medium text-slate-900">
+      <div className="flex flex-col items-center gap-1">
+        <label htmlFor={sliderId} className="text-xs font-medium uppercase tracking-wide text-slate-500">
           Time of day
         </label>
-        <p className="text-sm font-semibold text-slate-900">{formatMinuteLabel(value)}</p>
+        <p className="text-2xl font-bold tabular-nums text-slate-900">{formatMinuteLabel(value)}</p>
       </div>
       <input
         id={sliderId}
@@ -93,7 +93,9 @@ export function TimeSlider() {
         aria-valuetext={formatMinuteLabel(value)}
         className="h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-amber-500"
       />
-      <LightingBadge sunData={sunData} />
+      <div className="flex justify-center">
+        <LightingBadge sunData={sunData} />
+      </div>
     </div>
   );
 }

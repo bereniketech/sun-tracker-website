@@ -7,9 +7,9 @@ import { EducationalGlossary } from "@/components/panels/educational-glossary";
 import { LightingInsightCard } from "@/components/panels/lighting-insight-card";
 import { LandmarkAlignmentPanel } from "@/components/panels/landmark-alignment-panel";
 import { LocationComparison } from "@/components/panels/location-comparison";
-import { NotificationSettings } from "@/components/panels/notification-settings";
+
 import { SeasonalInsights } from "@/components/panels/seasonal-insights";
-import { SharePanel } from "@/components/panels/share-panel";
+
 import { SkyPathDiagram } from "@/components/panels/sky-path-diagram";
 import { ShadowInfo } from "@/components/panels/shadow-info";
 import { SunDataDisplay } from "@/components/panels/sun-data-display";
@@ -159,8 +159,6 @@ export function InfoPanel() {
           </div>
         </details>
         <ShadowInfo />
-        <NotificationSettings />
-        <SharePanel />
       </div>
       </aside>
 

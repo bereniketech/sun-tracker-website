@@ -53,7 +53,7 @@ function buildCalendarMonths(year: number): CalendarMonth[] {
 }
 
 function yearOptions(centerYear: number): number[] {
-  return Array.from({ length: YEAR_WINDOW * 2 + 1 }, (_, index) => centerYear - YEAR_WINDOW + index);
+  return Array.from({ length: YEAR_WINDOW + 1 }, (_, index) => centerYear + index);
 }
 
 export function LandmarkAlignmentPanel() {
