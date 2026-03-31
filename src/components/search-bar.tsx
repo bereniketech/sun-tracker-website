@@ -349,6 +349,7 @@ export function SearchBar({ onLocationSelect, onClose }: SearchBarProps) {
   const hasLandmarkMatches = matchedLandmarks.length > 0;
   const showSuggestions =
     hasLandmarkMatches || isDiscovering || suggestions.length > 0 || isSearching || Boolean(searchError);
+  const statusMessage = coordinateError || locationMessage;
 
   return (
     <section className="grid gap-4 rounded-[1.75rem] border border-slate-200 bg-white/95 p-4 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur md:p-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(18rem,1fr)]">
@@ -377,9 +378,8 @@ export function SearchBar({ onLocationSelect, onClose }: SearchBarProps) {
                 placeholder="City, neighborhood, or address"
                 autoComplete="off"
                 aria-label="Search for a place"
-                className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-4 pr-11 text-sm text-slate-900 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100"
+                className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100"
               />
-              <Search className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             </div>
 
             <button
@@ -545,9 +545,11 @@ export function SearchBar({ onLocationSelect, onClose }: SearchBarProps) {
         </form>
 
         <div className="mt-4 min-h-10 rounded-2xl border border-white/70 bg-white/80 px-4 py-3">
-          <p className="text-sm text-slate-700" aria-live="polite">
-            {coordinateError || locationMessage || "Start typing to search."}
-          </p>
+          {statusMessage ? (
+            <p className="text-sm text-slate-700" aria-live="polite">
+              {statusMessage}
+            </p>
+          ) : null}
         </div>
       </div>
     </section>
