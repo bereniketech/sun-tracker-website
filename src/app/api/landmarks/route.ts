@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { getAllLandmarks } from "@/lib/landmarks";
 import { computeSunData } from "@/lib/sun";
 import { fetchWikipediaImageUrl } from "@/lib/wikipedia-image";
+import { getFallbackImageUrl } from "@/lib/landmark-images";
 import type { Landmark } from "@/types/sun";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +16,8 @@ function getServiceClient() {
 
 /**
  * Lazily populate missing Wikipedia images for landmarks.
- * Fetches images, updates DB in-place, and returns the enriched list.
+ * First tries Wikipedia, then falls back to curated fallback URLs.
+ * Updates DB in-place, and returns the enriched list.
  */
 async function populateMissingImages(
   landmarks: Landmark[],
@@ -27,8 +29,10 @@ async function populateMissingImages(
 
   const results = await Promise.allSettled(
     missing.map(async (lm) => {
-      const url = await fetchWikipediaImageUrl(lm.name);
-      return { id: lm.id, imageUrl: url };
+      const wikiUrl = await fetchWikipediaImageUrl(lm.name);
+      const fallbackUrl = getFallbackImageUrl(lm.name);
+      const imageUrl = wikiUrl ?? fallbackUrl;
+      return { id: lm.id, imageUrl };
     }),
   );
 
