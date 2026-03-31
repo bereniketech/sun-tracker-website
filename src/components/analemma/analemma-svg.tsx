@@ -42,16 +42,25 @@ function buildPathString(points: AnalemmaPoint[]): string {
   if (points.length === 0) return "";
 
   const pathSegments: string[] = [];
+  let firstX = 0;
+  let firstY = 0;
 
   for (let i = 0; i < points.length; i++) {
     const point = points[i];
     const { x, y } = mapCoordinates(point.equationOfTime, point.declination);
 
     if (i === 0) {
+      firstX = x;
+      firstY = y;
       pathSegments.push(`M ${x} ${y}`);
     } else {
       pathSegments.push(`L ${x} ${y}`);
     }
+  }
+
+  // Close the loop so the yearly path appears continuous at the year boundary.
+  if (points.length > 1) {
+    pathSegments.push(`L ${firstX} ${firstY}`);
   }
 
   return pathSegments.join(" ");
@@ -228,8 +237,10 @@ export function AnalemmasvG({
           cx={selectedPoint.x}
           cy={selectedPoint.y}
           r="7"
-          fill="currentColor"
-          className="fill-primary transition-all"
+          fill="#0284c7"
+          stroke="#ffffff"
+          strokeWidth="2"
+          className="transition-all"
         />
       )}
     </svg>

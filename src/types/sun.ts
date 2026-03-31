@@ -20,6 +20,7 @@ export interface Landmark {
   citySlug?: string;
   category?: "historic" | "religious" | "monument" | "modern" | "natural" | "technical" | "custom";
   imageGradient?: string;
+  imageUrl?: string;
 }
 
 export interface AlignmentEvent {

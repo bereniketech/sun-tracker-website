@@ -29,6 +29,7 @@ function mapRowToLandmark(row: Record<string, unknown>): Landmark | null {
     category: isValidCategory(row.category) ? row.category : undefined,
     imageGradient:
       typeof row.image_gradient === "string" ? row.image_gradient : undefined,
+    imageUrl: typeof row.image_url === "string" ? row.image_url : undefined,
   };
 }
 
