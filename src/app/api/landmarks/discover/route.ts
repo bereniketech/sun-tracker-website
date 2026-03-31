@@ -181,6 +181,23 @@ function deduplicateRows(rows: LandmarkInsertRow[]): LandmarkInsertRow[] {
   return unique;
 }
 
+// ─── Row mapper ─────────────────────────────────────────────────────
+
+function mapRow(row: Record<string, unknown>) {
+  return {
+    id: row.landmark_id,
+    name: row.name,
+    lat: row.lat,
+    lng: row.lng,
+    orientationAzimuth: row.orientation_azimuth ?? 0,
+    location: row.location,
+    citySlug: row.city_slug,
+    category: row.category,
+    imageGradient: row.image_gradient,
+    imageUrl: row.image_url ?? null,
+  };
+}
+
 // ─── Route handler ──────────────────────────────────────────────────
 
 export async function POST(request: Request) {
@@ -230,7 +247,7 @@ export async function POST(request: Request) {
       .order("name");
 
     return NextResponse.json({
-      landmarks: allExisting ?? [],
+      landmarks: (allExisting ?? []).map(mapRow),
       source: "cache",
       citySlug,
     });
@@ -298,7 +315,7 @@ export async function POST(request: Request) {
     .order("name");
 
   return NextResponse.json({
-    landmarks: saved ?? rows,
+    landmarks: (saved ?? rows).map(mapRow),
     source: "overpass",
     citySlug,
   });
