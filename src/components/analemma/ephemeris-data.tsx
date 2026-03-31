@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { ChevronRight } from "lucide-react";
 import type { AnalemmaPoint } from "@/lib/analemma";
 
 interface EphemerisDataProps {
@@ -47,42 +46,33 @@ export function EphemerisData({ point }: EphemerisDataProps) {
       </div>
       <div className="space-y-4 rounded-2xl bg-surface-container-low p-4">
         {/* Solar Distance */}
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-xs font-medium text-on-surface">
-              Solar Distance
-            </div>
-            <div className="text-sm text-secondary">
-              {point.solarDistance.toFixed(3)} AU
-            </div>
+        <div>
+          <div className="text-xs font-medium text-on-surface">
+            Solar Distance
           </div>
-          <ChevronRight className="h-5 w-5 text-secondary" strokeWidth={1.5} />
+          <div className="text-sm text-secondary">
+            {point.solarDistance.toFixed(3)} AU
+          </div>
         </div>
 
         {/* Obliquity */}
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-xs font-medium text-on-surface">
-              Obliquity
-            </div>
-            <div className="text-sm text-secondary">
-              {decimalToDMS(obliquity)}
-            </div>
+        <div>
+          <div className="text-xs font-medium text-on-surface">
+            Obliquity
           </div>
-          <ChevronRight className="h-5 w-5 text-secondary" strokeWidth={1.5} />
+          <div className="text-sm text-secondary">
+            {decimalToDMS(obliquity)}
+          </div>
         </div>
 
         {/* Geometric Mean Longitude */}
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-xs font-medium text-on-surface">
-              Geometric Mean Longitude
-            </div>
-            <div className="text-sm text-secondary">
-              {geometricMeanLongitude.toFixed(2)}°
-            </div>
+        <div>
+          <div className="text-xs font-medium text-on-surface">
+            Geometric Mean Longitude
           </div>
-          <ChevronRight className="h-5 w-5 text-secondary" strokeWidth={1.5} />
+          <div className="text-sm text-secondary">
+            {geometricMeanLongitude.toFixed(2)}°
+          </div>
         </div>
       </div>
     </div>

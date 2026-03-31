@@ -94,7 +94,7 @@ export function HomePageClient() {
           <div className="glass-card sidebar-card rounded-2xl p-4">
             <div className="space-y-4">
               <TimeSlider />
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-[1fr_auto] gap-3">
                 <DatePicker />
                 <div className="flex items-end gap-2">
                   <AnimateButton />

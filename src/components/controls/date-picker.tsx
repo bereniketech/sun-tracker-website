@@ -55,7 +55,7 @@ export function DatePicker() {
           setDateTime(nextDateTime);
         }}
         aria-label="Date picker"
-        className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100"
+        className="h-11 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100"
       />
     </div>
   );
