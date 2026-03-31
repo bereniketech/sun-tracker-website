@@ -10,6 +10,9 @@ import { InteractiveMap } from "@/components/map/interactive-map";
 import { InfoPanel } from "@/components/panels/info-panel";
 import { SharePanel } from "@/components/panels/share-panel";
 import { SearchBar } from "@/components/search-bar";
+import { SolarMetrics } from "@/components/dashboard/solar-metrics";
+import { DayCycle } from "@/components/dashboard/day-cycle";
+import { PhotoWindows } from "@/components/dashboard/photo-windows";
 import {
   DEFAULT_MAP_LOCATION,
   formatCoordinatePair,
@@ -53,6 +56,7 @@ export function HomePageClient() {
   const location = useSunTrackerStore((state) => state.location);
   const locationName = useSunTrackerStore((state) => state.locationName);
   const sunData = useSunTrackerStore((state) => state.sunData);
+  const resolvedLocationName = locationName || DEFAULT_MAP_LOCATION.name;
 
   const [showHint, setShowHint] = useState(false);
 
@@ -91,43 +95,19 @@ export function HomePageClient() {
         </div>
       )}
 
-      {/* Stats strip */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-          <p className="text-xs font-medium text-slate-500">Location</p>
-          <p className="mt-1 truncate text-sm font-semibold text-slate-900">
-            {locationName || DEFAULT_MAP_LOCATION.name}
-          </p>
-          <p className="text-xs text-slate-500">{coordinateLabel}</p>
-        </div>
-
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-          <p className="text-xs font-medium text-slate-500">Sunrise</p>
-          <p className="mt-1 text-sm font-semibold text-slate-900">
-            {formatTime(sunData?.sunrise ?? null)}
-          </p>
-        </div>
-
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-          <p className="text-xs font-medium text-slate-500">Sunset</p>
-          <p className="mt-1 text-sm font-semibold text-slate-900">
-            {formatTime(sunData?.sunset ?? null)}
-          </p>
-        </div>
-      </div>
+      <SolarMetrics
+        sunData={sunData}
+        locationName={resolvedLocationName}
+        coordinates={coordinateLabel}
+      />
 
       <SearchBar />
 
-      {/* Map + controls: stacked on mobile, side-by-side on desktop */}
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
-        {/* Map — takes available width on desktop */}
-        <div className="min-w-0 lg:flex-1">
-          <InteractiveMap />
-        </div>
-
-        {/* Controls sidebar */}
-        <div className="flex flex-col gap-4 lg:w-80 lg:flex-shrink-0">
-          <div className="rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm">
+      {/* Main 3-col grid: stacked on mobile, 3-col on desktop */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[280px_1fr_320px] lg:items-start">
+        {/* Left col: controls card */}
+        <div className="flex flex-col gap-4">
+          <div className="bg-surface-container-low rounded-2xl p-4">
             <div className="space-y-4">
               <TimeSlider />
               <div className="grid grid-cols-2 gap-3">
@@ -140,12 +120,29 @@ export function HomePageClient() {
             </div>
           </div>
 
-          <InfoPanel />
+          {/* Day Cycle + Photo Windows shown in left col on mobile, hidden on desktop */}
+          <div className="flex flex-col gap-4 lg:hidden">
+            <DayCycle sunData={sunData} />
+            <PhotoWindows sunData={sunData} />
+          </div>
+        </div>
+
+        {/* Center col: map */}
+        <div className="min-w-0">
+          <InteractiveMap />
+        </div>
+
+        {/* Right col: day cycle + photo windows — desktop only */}
+        <div className="hidden flex-col gap-4 lg:flex">
+          <DayCycle sunData={sunData} />
+          <PhotoWindows sunData={sunData} />
         </div>
       </div>
 
+      <InfoPanel />
+
       <p className="sr-only" aria-live="polite">
-        Active location {locationName || DEFAULT_MAP_LOCATION.name}. Sunrise {formatTime(sunData?.sunrise ?? null)}.
+        Active location {resolvedLocationName}. Sunrise {formatTime(sunData?.sunrise ?? null)}.
         Sunset {formatTime(sunData?.sunset ?? null)}.
       </p>
 

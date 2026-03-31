@@ -1,3 +1,7 @@
+---
+status: complete
+---
+
 # Task 003 — Fix landmark alignment axis (bidirectional)
 
 ## Summary

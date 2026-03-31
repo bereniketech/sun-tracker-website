@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
 import type { OverlayType } from "@/types/sun";
+import type { ComparisonLocation } from "@/types/comparison";
 
 const ALL_OVERLAY_KEYS: OverlayType[] = [
   "sun-position",
@@ -16,12 +17,21 @@ const ALL_OVERLAY_KEYS: OverlayType[] = [
   "landmark-alignment",
 ];
 
+function safeDecodeURIComponent(value: string): string {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
 function buildParams(
   lat: number,
   lng: number,
   name: string,
   dateTime: Date,
   activeOverlays: Set<OverlayType>,
+  comparisonLocations: ComparisonLocation[],
 ): URLSearchParams {
   const params = new URLSearchParams();
   params.set("lat", lat.toFixed(6));
@@ -32,6 +42,16 @@ function buildParams(
   const hidden = ALL_OVERLAY_KEYS.filter((o) => !activeOverlays.has(o));
   if (hidden.length > 0) {
     params.set("hidden", hidden.join(","));
+  }
+
+  if (comparisonLocations.length > 0) {
+    const compare = comparisonLocations
+      .map((location) => {
+        const encodedName = encodeURIComponent(location.name);
+        return `${location.lat.toFixed(6)},${location.lng.toFixed(6)},${encodedName}`;
+      })
+      .join("|");
+    params.set("compare", compare);
   }
 
   return params;
@@ -81,6 +101,29 @@ export function useUrlState(): void {
         }
       }
     }
+
+    store.clearComparisonLocations();
+
+    const compareStr = searchParams.get("compare");
+    if (compareStr) {
+      const entries = compareStr.split("|");
+      for (const entry of entries) {
+        const [rawLat, rawLng, ...nameParts] = entry.split(",");
+        const parsedLat = parseFloat(rawLat ?? "");
+        const parsedLng = parseFloat(rawLng ?? "");
+        const encodedName = nameParts.join(",");
+
+        if (!Number.isFinite(parsedLat) || !Number.isFinite(parsedLng)) {
+          continue;
+        }
+
+        store.addComparisonLocation({
+          lat: parsedLat,
+          lng: parsedLng,
+          name: safeDecodeURIComponent(encodedName),
+        });
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -95,6 +138,7 @@ export function useUrlState(): void {
         state.locationName,
         state.dateTime,
         state.activeOverlays,
+        state.comparisonLocations,
       );
 
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });

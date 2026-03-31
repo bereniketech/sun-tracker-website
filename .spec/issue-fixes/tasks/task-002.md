@@ -1,3 +1,7 @@
+---
+status: complete
+---
+
 # Task 002 — Time slider contextual feedback
 
 ## Summary

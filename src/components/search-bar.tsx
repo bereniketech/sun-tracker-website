@@ -15,6 +15,7 @@ import {
 import { formatCoordinatePair } from "@/components/map/location-utils";
 import { LANDMARKS } from "@/lib/landmarks";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
+import type { ComparisonLocation } from "@/types/comparison";
 import type { Landmark } from "@/types/sun";
 
 const SEARCH_CACHE_PREFIX = "sun-tracker:nominatim:";
@@ -52,13 +53,22 @@ function useDebouncedValue<T>(value: T, delay: number): T {
   return debouncedValue;
 }
 
-export function SearchBar() {
+interface SearchBarProps {
+  onLocationSelect?: (location: ComparisonLocation) => void;
+}
+
+function buildSelectionMessage(locationName: string, isPickerMode: boolean): string {
+  return isPickerMode ? `Added ${locationName} to comparison.` : `Moved to ${locationName}.`;
+}
+
+export function SearchBar({ onLocationSelect }: SearchBarProps) {
   const inputId = useId();
   const latitudeId = useId();
   const longitudeId = useId();
   const location = useSunTrackerStore((state) => state.location);
   const setLocation = useSunTrackerStore((state) => state.setLocation);
   const setSelectedLandmark = useSunTrackerStore((state) => state.setSelectedLandmark);
+  const isPickerMode = typeof onLocationSelect === "function";
 
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<GeocodingSuggestion[]>([]);
@@ -72,13 +82,13 @@ export function SearchBar() {
   const debouncedQuery = useDebouncedValue(query, SEARCH_DEBOUNCE_MS);
 
   useEffect(() => {
-    if (!location) {
+    if (isPickerMode || !location) {
       return;
     }
 
     setLatitudeInput(location.lat.toFixed(4));
     setLongitudeInput(location.lng.toFixed(4));
-  }, [location]);
+  }, [isPickerMode, location]);
 
   useEffect(() => {
     const normalizedQuery = normalizeSearchQuery(debouncedQuery);
@@ -147,23 +157,42 @@ export function SearchBar() {
     lm.name.toLowerCase().includes(normalizeSearchQuery(query))
   );
 
-  const handleLandmarkSelect = (landmark: Landmark): void => {
-    setLocation(landmark.lat, landmark.lng, landmark.name);
-    setSelectedLandmark(landmark);
-    setQuery(landmark.name);
+  const applyLocationSelection = (
+    nextLocation: ComparisonLocation,
+    landmark: Landmark | null = null,
+  ): void => {
+    if (isPickerMode) {
+      onLocationSelect?.(nextLocation);
+      setQuery("");
+    } else {
+      setLocation(nextLocation.lat, nextLocation.lng, nextLocation.name);
+      setQuery(nextLocation.name);
+      setSelectedLandmark(landmark);
+    }
+
     setSuggestions([]);
     setSearchError("");
     setCoordinateError("");
-    setLocationMessage(`Showing ${landmark.name}.`);
+    setLocationMessage(buildSelectionMessage(nextLocation.name, isPickerMode));
+  };
+
+  const handleLandmarkSelect = (landmark: Landmark): void => {
+    applyLocationSelection(
+      {
+        lat: landmark.lat,
+        lng: landmark.lng,
+        name: landmark.name,
+      },
+      landmark,
+    );
   };
 
   const handleSuggestionSelect = (suggestion: GeocodingSuggestion): void => {
-    setLocation(suggestion.lat, suggestion.lng, suggestion.displayName);
-    setQuery(suggestion.displayName);
-    setSuggestions([]);
-    setSearchError("");
-    setCoordinateError("");
-    setLocationMessage(`Moved to ${suggestion.displayName}.`);
+    applyLocationSelection({
+      lat: suggestion.lat,
+      lng: suggestion.lng,
+      name: suggestion.displayName,
+    });
   };
 
   const handleCoordinateSubmit = (event: FormEvent<HTMLFormElement>): void => {
@@ -184,11 +213,11 @@ export function SearchBar() {
 
     const coordinateLabel = formatCoordinatePair(latitude, longitude);
 
-    setLocation(latitude, longitude, `Manual coordinates ${coordinateLabel}`);
-    setCoordinateError("");
-    setSearchError("");
-    setSuggestions([]);
-    setLocationMessage(`Moved to ${coordinateLabel}.`);
+    applyLocationSelection({
+      lat: latitude,
+      lng: longitude,
+      name: `Manual coordinates ${coordinateLabel}`,
+    });
   };
 
   const handleUseCurrentLocation = (): void => {
@@ -205,8 +234,11 @@ export function SearchBar() {
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        setLocation(position.coords.latitude, position.coords.longitude, "Your location");
-        setLocationMessage("Moved to your current location.");
+        applyLocationSelection({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          name: "Your location",
+        });
         setIsLocating(false);
       },
       (error) => {

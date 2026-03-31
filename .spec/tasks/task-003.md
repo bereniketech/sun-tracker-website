@@ -1,7 +1,7 @@
 ---
 task: 003
 feature: sun-tracker-website
-status: pending
+status: complete
 depends_on: [001, 002]
 ---
 

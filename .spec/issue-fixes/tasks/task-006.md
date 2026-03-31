@@ -1,3 +1,7 @@
+---
+status: complete
+---
+
 # Task 006 — Onboarding hint banner
 
 ## Summary

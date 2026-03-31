@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { BestDirectionIndicator } from "@/components/panels/best-direction-indicator";
 import { BlueHourCountdown } from "@/components/panels/blue-hour-countdown";
 import { GoldenHourCountdown } from "@/components/panels/golden-hour-countdown";
+import { LightingInsightCard } from "@/components/panels/lighting-insight-card";
 import { WeeklyForecast } from "@/components/panels/weekly-forecast";
+import { computeLightingInsight } from "@/lib/lighting-insight";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
 
 const MOBILE_WIDTH_PX = 768;
@@ -102,6 +104,7 @@ export function PhotographerPanel() {
         </div>
 
         <BestDirectionIndicator sunData={sunData} dateTime={dateTime} />
+        <LightingInsightCard insight={computeLightingInsight(sunData, dateTime)} />
         <WeeklyForecast location={location} dateTime={dateTime} />
       </div>
     </section>

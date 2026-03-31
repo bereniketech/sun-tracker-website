@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary": "#ffffff",
+              "on-primary-container": "#582200",
+              "surface-container": "#e5eeff",
+              "on-tertiary-fixed": "#0b1c30",
+              "secondary-fixed": "#dae2fd",
+              "on-tertiary": "#ffffff",
+              "tertiary-fixed": "#d3e4fe",
+              "on-secondary-fixed-variant": "#3f465c",
+              "surface-tint": "#9d4300",
+              "error-container": "#ffdad6",
+              "secondary-container": "#dae2fd",
+              "outline-variant": "#e0c0b1",
+              "inverse-on-surface": "#eaf1ff",
+              "on-tertiary-fixed-variant": "#38485d",
+              "surface-container-high": "#dce9ff",
+              "surface": "#f8f9ff",
+              "on-secondary": "#ffffff",
+              "surface-container-low": "#eff4ff",
+              "on-secondary-container": "#5c647a",
+              "tertiary-fixed-dim": "#b7c8e1",
+              "surface-variant": "#d3e4fe",
+              "surface-container-lowest": "#ffffff",
+              "on-primary-fixed": "#341100",
+              "background": "#f8f9ff",
+              "on-tertiary-container": "#243348",
+              "primary": "#9d4300",
+              "primary-fixed-dim": "#ffb690",
+              "on-secondary-fixed": "#131b2e",
+              "tertiary-container": "#8c9cb4",
+              "on-surface": "#0b1c30",
+              "inverse-primary": "#ffb690",
+              "on-error": "#ffffff",
+              "surface-bright": "#f8f9ff",
+              "surface-dim": "#cbdbf5",
+              "on-background": "#0b1c30",
+              "secondary": "#565e74",
+              "error": "#ba1a1a",
+              "on-error-container": "#93000a",
+              "secondary-fixed-dim": "#bec6e0",
+              "primary-fixed": "#ffdbca",
+              "inverse-surface": "#213145",
+              "tertiary": "#505f76",
+              "primary-container": "#f97316",
+              "surface-container-highest": "#d3e4fe",
+              "on-surface-variant": "#584237",
+              "on-primary-fixed-variant": "#783200",
+              "outline": "#8c7164"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .solar-glow {
+            box-shadow: 0 0 40px rgba(249, 115, 22, 0.15);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopAppBar -->
+<header class="bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl docked full-width top-0 sticky z-50 flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-orange-600 dark:text-orange-500" data-icon="flare">flare</span>
+<h1 class="text-xl font-bold tracking-widest text-orange-600 dark:text-orange-500 uppercase font-['Space_Grotesk']">HELIOS CHRONO</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-500" data-icon="notifications">notifications</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="close-up portrait of a professional astronomer in a dimly lit control room environment with soft blue accent lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBR75CHJgMiEJn9zh12ScXpgB9IwvEtLfEI_GK2Yg9W9yE1N8Qo5pnTvnbfTuOQ2Io6jmoCeQrhoeM75Y6wmFsGWBLJQ4WlxLvkRBbTfZ5FUejIMNE51WdKzCNCyTsFh7G5TpDXkzGdhEjwDq6ovTcNcwN5V8ph--538l-fpDKUXSfo2Gcr11aV22hz-thdj5-IW2azhkMHBTfnsdWNclEea7KwN-ak_4Co5GZDFRQpKj9kmpwVV5Ts9OaN__hjQGUdUdJxHui3ahE"/>
+</div>
+</div>
+</header>
+<main class="pb-24 px-4 pt-6 max-w-md mx-auto space-y-8">
+<!-- Live Solar Feed Section -->
+<section class="space-y-4">
+<div class="flex justify-between items-end">
+<div class="space-y-1">
+<p class="text-[10px] uppercase tracking-[0.2em] font-bold text-secondary font-headline">Live Telemetry</p>
+<h2 class="text-2xl font-headline font-bold text-on-surface">Observatory Feed</h2>
+</div>
+<div class="flex items-center gap-2 bg-error/10 px-2 py-1 rounded-full">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-error">Live</span>
+</div>
+</div>
+<div class="relative aspect-square w-full rounded-xl overflow-hidden bg-on-tertiary-fixed shadow-2xl solar-glow">
+<img alt="Solar Surface" class="w-full h-full object-cover opacity-80 mix-blend-screen" data-alt="highly detailed close-up of the sun's surface with solar flares and sunspots in deep orange and gold tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOaBZ4oyqpMmiTK-XqS3k0sTkUvLsyf8FQ0MBJy5hYeBmSe0lK9AUydpfk4Ky5O_K66MM-DDUVVSYwD-h-RCI3CpH2tmFl4Ockbnr0Vdok5U-IPPfLFFudBlIyaSiIhRaAP7FAPYWcM4s-L2Q3DmJWZVydx0ICCstr6fNLby9G_oSDlus9WHd6L7sX8g4Mn2VBCdwDs1XLzhdik7NnC_zAvOXMEaxHkTDrI3QDl7utZjSee4LPob-XCBTaXEJyKqBJmyuvX5NMjtY"/>
+<!-- Azimuthal Projection Overlay -->
+<div class="absolute inset-0 border-[1px] border-primary/20 rounded-full scale-90 pointer-events-none"></div>
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="w-[1px] h-full bg-white/10"></div>
+<div class="h-[1px] w-full bg-white/10 absolute"></div>
+<div class="w-3/4 h-3/4 border border-white/5 rounded-full"></div>
+</div>
+<!-- HUD Data Overlay -->
+<div class="absolute top-6 left-6 font-headline">
+<p class="text-[10px] text-white/40 uppercase tracking-widest">Azimuthal Projection</p>
+<p class="text-3xl font-bold text-white tracking-tight">284.42° <span class="text-xs font-normal text-white/50">W</span></p>
+</div>
+<div class="absolute bottom-6 right-6 text-right font-headline">
+<p class="text-[10px] text-white/40 uppercase tracking-widest">Altitude</p>
+<p class="text-3xl font-bold text-white tracking-tight">42.15°</p>
+</div>
+<!-- Corner Brackets -->
+<div class="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-primary/40"></div>
+<div class="absolute top-4 right-4 w-4 h-4 border-t-2 border-r-2 border-primary/40"></div>
+<div class="absolute bottom-4 left-4 w-4 h-4 border-b-2 border-l-2 border-primary/40"></div>
+<div class="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-primary/40"></div>
+</div>
+</section>
+<!-- System Status Chips -->
+<section class="flex flex-wrap gap-2">
+<div class="bg-surface-container-low px-3 py-2 rounded-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="settings_motion">settings_motion_mode</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-secondary">Gimbal Logic</span>
+<span class="text-[10px] font-bold text-primary">NOMINAL</span>
+</div>
+<div class="bg-surface-container-low px-3 py-2 rounded-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="filter_center_focus">filter_center_focus</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-secondary">Filter Array</span>
+<span class="text-[10px] font-bold text-primary">ACTIVE</span>
+</div>
+<div class="bg-surface-container-low px-3 py-2 rounded-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="thermostat">thermostat</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-secondary">Thermal Sink</span>
+<span class="text-[10px] font-bold text-primary">34.2°C</span>
+</div>
+</section>
+<!-- Calibration Core Controls -->
+<section class="bg-surface-container-low rounded-2xl p-6 space-y-8">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="tune">tune</span>
+<h3 class="text-sm font-headline font-bold uppercase tracking-widest text-on-surface">Calibration Core</h3>
+</div>
+<p class="text-xs text-secondary leading-relaxed">Adjusting precision optics for optimal luminosity capture.</p>
+</div>
+<!-- Slider: Focus Offset -->
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<label class="text-[10px] uppercase font-bold tracking-[0.1em] text-secondary">Focus Offset
+<span class="font-headline text-sm font-bold text-primary">+1.24mm</span>
+</label></div>
+<div class="relative h-8 flex items-center">
+<div class="absolute w-full h-1 bg-surface-variant rounded-full"></div>
+<div class="absolute w-[60%] h-1 bg-gradient-to-r from-primary to-primary-container rounded-full"></div>
+<div class="absolute left-[60%] w-5 h-5 bg-white border-2 border-primary rounded-full shadow-lg"></div>
+</div>
+<div class="flex justify-between text-[8px] font-bold text-outline-variant uppercase tracking-tighter">
+<span>-5.00</span>
+<span>0.00</span>
+<span>+5.00</span>
+</div>
+</div>
+<!-- Slider: Exposure Bias -->
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<label class="text-[10px] uppercase font-bold tracking-[0.1em] text-secondary">Exposure Bias
+<span class="font-headline text-sm font-bold text-primary">-0.3 EV</span>
+</label></div>
+<div class="relative h-8 flex items-center">
+<div class="absolute w-full h-1 bg-surface-variant rounded-full"></div>
+<div class="absolute w-[40%] h-1 bg-gradient-to-r from-primary to-primary-container rounded-full"></div>
+<div class="absolute left-[40%] w-5 h-5 bg-white border-2 border-primary rounded-full shadow-lg"></div>
+</div>
+<div class="flex justify-between text-[8px] font-bold text-outline-variant uppercase tracking-tighter">
+<span>-2.0</span>
+<span>0.0</span>
+<span>+2.0</span>
+</div>
+</div>
+</section>
+<!-- Command Actions -->
+<section class="grid grid-cols-2 gap-4">
+<button class="flex flex-col items-center justify-center p-6 bg-surface-container-lowest border border-surface-variant rounded-2xl gap-3 transition-colors hover:bg-surface-bright">
+<span class="material-symbols-outlined text-primary" data-icon="center_focus_strong">center_focus_strong</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface">Auto Align</span>
+</button>
+<button class="flex flex-col items-center justify-center p-6 bg-surface-container-lowest border border-surface-variant rounded-2xl gap-3 transition-colors hover:bg-surface-bright">
+<span class="material-symbols-outlined text-primary" data-icon="shutter_speed">shutter_speed</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface">Capture</span>
+</button>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full h-20 flex justify-around items-center px-4 pb-safe bg-white dark:bg-slate-950 shadow-[0_-4px_24px_rgba(0,0,0,0.04)] z-50 border-t border-slate-100 dark:border-slate-900">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-600 hover:text-orange-400 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.1em] font-medium">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-600 hover:text-orange-400 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="timeline">timeline</span>
+<span class="font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.1em] font-medium">Analemma</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-600 hover:text-orange-400 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="location_on">location_on</span>
+<span class="font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.1em] font-medium">Landmarks</span>
+</a>
+<a class="flex flex-col items-center justify-center text-orange-600 dark:text-orange-500 scale-110 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="visibility" style="font-variation-settings: 'FILL' 1;">visibility</span>
+<span class="font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.1em] font-medium">Observatory</span>
+</a>
+</nav>
+</body></html>
