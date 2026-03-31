@@ -1,9 +1,8 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense } from "react";
 import { AnimateButton } from "@/components/controls/animate-button";
 import { DatePicker } from "@/components/controls/date-picker";
-import { NowButton } from "@/components/controls/now-button";
 import { TimeSlider } from "@/components/controls/time-slider";
 import { InteractiveMap } from "@/components/map/interactive-map";
 import { InfoPanel } from "@/components/panels/info-panel";
@@ -43,19 +42,6 @@ export function HomePageClient() {
   const sunData = useSunTrackerStore((state) => state.sunData);
   const resolvedLocationName = locationName || DEFAULT_MAP_LOCATION.name;
 
-  const [showHint, setShowHint] = useState(false);
-
-  useEffect(() => {
-    if (localStorage.getItem("sun-tracker:onboarded") === null) {
-      setShowHint(true);
-    }
-  }, []);
-
-  function handleDismissHint() {
-    localStorage.setItem("sun-tracker:onboarded", "1");
-    setShowHint(false);
-  }
-
   const coordinateLabel = location
     ? formatCoordinatePair(location.lat, location.lng)
     : formatCoordinatePair(DEFAULT_MAP_LOCATION.lat, DEFAULT_MAP_LOCATION.lng);
@@ -65,22 +51,6 @@ export function HomePageClient() {
       <Suspense fallback={null}>
         <UrlStateSyncer />
       </Suspense>
-
-      {showHint && (
-        <FadeUp>
-          <div className="flex items-center justify-between gap-3 rounded-2xl border border-amber-200/60 bg-gradient-to-r from-amber-50 to-orange-50 px-4 py-3 text-sm text-amber-900 shadow-sm">
-            <span>Click anywhere on the map or search for a place to explore sun data.</span>
-            <button
-              type="button"
-              onClick={handleDismissHint}
-              aria-label="Dismiss hint"
-              className="shrink-0 text-amber-600 hover:text-amber-800 transition-colors"
-            >
-              ✕
-            </button>
-          </div>
-        </FadeUp>
-      )}
 
       <SolarMetrics
         sunData={sunData}
@@ -96,10 +66,7 @@ export function HomePageClient() {
             <div className="space-y-4">
               <TimeSlider />
               <DatePicker />
-              <div className="flex flex-wrap items-center gap-2">
-                <AnimateButton />
-                <NowButton />
-              </div>
+              <AnimateButton />
             </div>
           </div>
 

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Pause, Play } from "lucide-react";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
+import { NowButton } from "@/components/controls/now-button";
 
 const SPEED_OPTIONS = [1, 2, 5] as const;
 
@@ -100,6 +101,7 @@ export function AnimateButton() {
           ))}
         </select>
       </label>
+      <NowButton />
     </div>
   );
 }
