@@ -7,7 +7,7 @@ import { EphemerisData } from "@/components/analemma/ephemeris-data";
 import { computeAnalemma } from "@/lib/analemma";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
 
-export default function AnalemmaPage() {
+export default function AnalemmaClient() {
   const { location } = useSunTrackerStore();
   const currentYear = new Date().getFullYear();
   const currentDayOfYear = Math.floor(

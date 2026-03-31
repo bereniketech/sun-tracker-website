@@ -2,6 +2,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SeasonalInsights } from "@/components/panels/seasonal-insights";
 import { CityLandmarksSection } from "@/components/landmarks/city-landmarks-section";
+import { JsonLd } from "@/components/seo/json-ld";
+import {
+  buildWebPage,
+  buildBreadcrumbList,
+  buildFaqPage,
+  buildPlace,
+  buildDataset,
+} from "@/lib/schema";
 import { computeSunData } from "@/lib/sun";
 import { getAllCities, getCityBySlug, getRelatedCities } from "@/lib/cities";
 import type { MonthlySunSnapshot } from "@/types/cities";
@@ -83,56 +91,71 @@ export default async function CityPage({ params }: CityPageProps) {
   const monthly = monthlyRows(city.precomputed_data, city.timezone);
   const relatedCities = await getRelatedCities(city.country, city.slug, 6);
 
-  const jsonLdWebPage = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    name: `Sunrise and Sunset Times in ${city.name}`,
-    description: `Find sunrise, sunset, golden hour, and blue hour times in ${city.name}, ${city.country}.`,
-    url: `/city/${city.slug}`,
-    about: {
-      "@type": "Place",
-      name: `${city.name}, ${city.country}`,
-      geo: {
-        "@type": "GeoCoordinates",
-        latitude: city.lat,
-        longitude: city.lng,
-      },
-    },
+  const sunrisesByTime = city.precomputed_data
+    .map((m) => ({ month: m.monthLabel, time: new Date(m.sunriseIso).getTime() }))
+    .sort((a, b) => a.time - b.time);
+  const earliestSunrise = sunrisesByTime[0];
+  const latestSunrise = sunrisesByTime[sunrisesByTime.length - 1];
+
+  const sunsetsByTime = city.precomputed_data
+    .map((m) => ({ month: m.monthLabel, time: new Date(m.sunsetIso).getTime() }))
+    .sort((a, b) => a.time - b.time);
+  const earliestSunset = sunsetsByTime[0];
+  const latestSunset = sunsetsByTime[sunsetsByTime.length - 1];
+
+  const todaySunriseStr = formatTimeForZone(todaySunData.sunrise.toISOString(), city.timezone);
+  const todaySunsetStr = formatTimeForZone(todaySunData.sunset.toISOString(), city.timezone);
+
+  const webPageSchema = {
+    ...buildWebPage(
+      `Sunrise and Sunset Times in ${city.name}`,
+      `Find sunrise, sunset, golden hour, and blue hour times in ${city.name}, ${city.country}.`,
+      `/city/${city.slug}`,
+    ),
+    about: buildPlace(`${city.name}, ${city.country}`, city.lat, city.lng),
   };
 
-  const jsonLdFaq = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: `What time is sunrise in ${city.name}?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `Sunrise time in ${city.name} changes during the year. Use this page for monthly trends and the live tracker for exact daily times.`,
-        },
-      },
-      {
-        "@type": "Question",
-        name: `When is golden hour in ${city.name}?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `Golden hour typically occurs just after sunrise and before sunset. This page shows precomputed monthly ranges for ${city.name}.`,
-        },
-      },
-    ],
-  };
+  const faqSchema = buildFaqPage([
+    {
+      question: `What time is sunrise in ${city.name}?`,
+      answer: `In ${city.name}, sunrise ranges from ${formatTimeForZone(new Date(earliestSunrise.time).toISOString(), city.timezone)} in ${earliestSunrise.month} to ${formatTimeForZone(new Date(latestSunrise.time).toISOString(), city.timezone)} in ${latestSunrise.month}. Today, sunrise is at ${todaySunriseStr}. ${city.name} is located at ${city.lat.toFixed(2)}°N, ${city.lng.toFixed(2)}°E in the ${city.timezone} timezone.`,
+    },
+    {
+      question: `When is golden hour in ${city.name}?`,
+      answer: `Golden hour in ${city.name} occurs during the first hour after sunrise and the last hour before sunset, when the sun is below 6° elevation. Evening golden hour is most popular for photography. Today, sunset is at ${todaySunsetStr}, so evening golden hour begins approximately one hour before that. This page shows precomputed monthly golden hour ranges for ${city.name}.`,
+    },
+    {
+      question: `What time is sunset in ${city.name}?`,
+      answer: `Sunset in ${city.name} ranges from ${formatTimeForZone(new Date(earliestSunset.time).toISOString(), city.timezone)} in ${earliestSunset.month} to ${formatTimeForZone(new Date(latestSunset.time).toISOString(), city.timezone)} in ${latestSunset.month}. Today, sunset is at ${todaySunsetStr}.`,
+    },
+  ]);
+
+  const breadcrumbSchema = buildBreadcrumbList([
+    { name: "Home", url: "/" },
+    { name: "Cities", url: "/city" },
+    { name: city.name, url: `/city/${city.slug}` },
+  ]);
+
+  const datasetSchema = buildDataset(
+    `Monthly Sun Times for ${city.name}, ${city.country}`,
+    `Precomputed sunrise, sunset, golden hour, and blue hour times for each month of the year in ${city.name}.`,
+    `/city/${city.slug}`,
+  );
 
   return (
     <article className="mx-auto flex w-full max-w-5xl flex-col gap-8">
+      <JsonLd data={[webPageSchema, faqSchema, breadcrumbSchema, datasetSchema]} />
       <header className="space-y-3">
         <p className="text-sm font-medium uppercase tracking-widest text-slate-500">City Sun Guide</p>
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
           Sunrise and Sunset in {city.name}, {city.country}
         </h1>
         <p className="max-w-3xl text-sm text-slate-600 md:text-base">
-          Monthly sunrise, sunset, golden hour, and blue hour times for {city.name}. Use this city page
-          for planning, then jump into the interactive map for exact location and time control.
+          {city.name} is located at {city.lat.toFixed(2)}°N, {city.lng.toFixed(2)}°E
+          in the {city.timezone} timezone. Today, sunrise is at {todaySunriseStr} and
+          sunset at {todaySunsetStr}, giving a day length
+          of {formatDuration(todaySunData.dayLength)}. Use this city page for monthly planning,
+          then jump into the interactive map for exact location and time control.
         </p>
         <div className="flex flex-wrap gap-3">
           <Link
@@ -248,14 +271,6 @@ export default async function CityPage({ params }: CityPageProps) {
         )}
       </section>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdWebPage) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }}
-      />
     </article>
   );
 }

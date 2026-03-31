@@ -1,10 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search } from "lucide-react";
-import { SearchBar } from "@/components/search-bar";
 
 interface TopBarItem {
   href: string;
@@ -28,34 +25,6 @@ function isActivePath(pathname: string, href: string): boolean {
 
 export function TopBar() {
   const pathname = usePathname();
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const searchPanelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!isSearchOpen) {
-      return;
-    }
-
-    function handleClickOutside(event: MouseEvent): void {
-      if (searchPanelRef.current && !searchPanelRef.current.contains(event.target as Node)) {
-        setIsSearchOpen(false);
-      }
-    }
-
-    function handleEscape(event: KeyboardEvent): void {
-      if (event.key === "Escape") {
-        setIsSearchOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEscape);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscape);
-    };
-  }, [isSearchOpen]);
 
   if (pathname.startsWith("/login")) {
     return null;
@@ -93,24 +62,7 @@ export function TopBar() {
           })}
         </nav>
 
-        <div className="relative hidden md:block" ref={searchPanelRef}>
-          <button
-            type="button"
-            aria-label="Search for a location"
-            aria-expanded={isSearchOpen}
-            onClick={() => setIsSearchOpen((prev) => !prev)}
-            className="flex h-11 items-center justify-center gap-2 rounded-full px-4 text-secondary transition-colors hover:bg-surface-container hover:text-on-surface"
-          >
-            <Search className="h-5 w-5" />
-            <span className="text-sm font-medium">Search</span>
-          </button>
-
-          {isSearchOpen ? (
-            <div className="absolute right-0 top-full mt-2 w-[min(56rem,calc(100vw-2rem))] z-50">
-              <SearchBar onClose={() => setIsSearchOpen(false)} />
-            </div>
-          ) : null}
-        </div>
+        <div className="hidden md:block" aria-hidden="true" />
 
         <div className="flex items-center" />
       </div>

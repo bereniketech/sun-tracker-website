@@ -34,6 +34,11 @@ export async function generateMetadata({ params }: CityLayoutProps): Promise<Met
       url: `/city/${city.slug}`,
       type: "article",
     },
+    twitter: {
+      card: "summary_large_image",
+      title: `Sunrise & Sunset Times in ${cityLabel}`,
+      description: `Sunrise, sunset, golden hour, and blue hour data for ${cityLabel}.`,
+    },
   };
 }
 

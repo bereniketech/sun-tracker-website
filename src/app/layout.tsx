@@ -5,6 +5,9 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import "leaflet/dist/leaflet.css";
 import { BottomNav } from "@/components/shell/bottom-nav";
 import { TopBar } from "@/components/shell/top-bar";
+import { JsonLd } from "@/components/seo/json-ld";
+import { buildWebSite, buildSoftwareApplication } from "@/lib/schema";
+import { SITE_NAME, SITE_DESCRIPTION, siteUrl } from "@/lib/seo-constants";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,8 +31,36 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Helios Chrono",
-  description: "Precision solar tracking — celestial alignment for photographers and astronomers.",
+  metadataBase: new URL(siteUrl()),
+  title: {
+    template: `%s | ${SITE_NAME}`,
+    default: `${SITE_NAME} — Precision Solar Tracking for Photographers & Astronomers`,
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  keywords: [
+    "sunrise time",
+    "sunset time",
+    "golden hour",
+    "blue hour",
+    "sun position",
+    "solar tracking",
+    "photography timing",
+    "sun calculator",
+    "celestial alignment",
+    "analemma",
+    "solar noon",
+    "sun elevation",
+    "sun azimuth",
+  ],
+  openGraph: {
+    siteName: SITE_NAME,
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({
@@ -50,6 +81,7 @@ export default function RootLayout({
           </div>
         </main>
         <BottomNav />
+        <JsonLd data={[buildWebSite(), buildSoftwareApplication()]} />
         <Analytics />
         <SpeedInsights />
       </body>

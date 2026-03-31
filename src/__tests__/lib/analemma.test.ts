@@ -76,6 +76,14 @@ describe("computeAnalemma", () => {
     }
   });
 
+  it("equation of time stays within expected range", () => {
+    const points = computeAnalemma(LONDON_LAT, LONDON_LNG, NON_LEAP_YEAR);
+    for (const point of points) {
+      expect(point.equationOfTime).toBeGreaterThanOrEqual(-20);
+      expect(point.equationOfTime).toBeLessThanOrEqual(20);
+    }
+  });
+
   it("each point's date corresponds to the correct year", () => {
     const points = computeAnalemma(LONDON_LAT, LONDON_LNG, NON_LEAP_YEAR);
     for (const point of points) {

@@ -50,8 +50,8 @@ function computeSolarDistance(meanAnomalyDeg: number): number {
 function computeEquationOfTime(solarNoon: Date, lng: number): number {
   const minutesFromMidnightUTC =
     solarNoon.getUTCHours() * 60 + solarNoon.getUTCMinutes() + solarNoon.getUTCSeconds() / 60;
-  const lngOffsetMinutes = lng / 0.25;
-  return minutesFromMidnightUTC - (12 * 60 + lngOffsetMinutes);
+  const meanSolarNoonUtcMinutes = 12 * 60 - lng * 4;
+  return minutesFromMidnightUTC - meanSolarNoonUtcMinutes;
 }
 
 export function computeAnalemma(lat: number, lng: number, year: number): AnalemmaPoint[] {

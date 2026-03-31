@@ -5,7 +5,7 @@ import { SolarFeed } from "@/components/observatory/solar-feed";
 import { SystemStatus } from "@/components/observatory/system-status";
 import { Calibration } from "@/components/observatory/calibration";
 
-export default function ObservatoryPage() {
+export default function ObservatoryClient() {
   const sunData = useSunTrackerStore((state) => state.sunData);
   const locationName = useSunTrackerStore((state) => state.locationName);
 

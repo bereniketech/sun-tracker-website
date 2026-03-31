@@ -1,13 +1,36 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getCityIndexGroups } from "@/lib/cities";
+import { JsonLd } from "@/components/seo/json-ld";
+import { buildWebPage, buildBreadcrumbList } from "@/lib/schema";
 
 export const revalidate = 86400;
+
+export const metadata: Metadata = {
+  title: "Sun Times by City — Sunrise, Sunset & Golden Hour Worldwide",
+  description:
+    "Browse sunrise, sunset, golden hour, and blue hour times for cities worldwide, organized by country. Each city page includes monthly solar data tables and a link to the interactive sun tracker.",
+  alternates: { canonical: "/city" },
+};
 
 export default async function CityIndexPage() {
   const groups = await getCityIndexGroups();
 
   return (
     <section className="mx-auto flex w-full max-w-5xl flex-col gap-8">
+      <JsonLd
+        data={[
+          buildWebPage(
+            "Sun Times by City",
+            "Browse sunrise, sunset, golden hour, and blue hour times for cities worldwide.",
+            "/city",
+          ),
+          buildBreadcrumbList([
+            { name: "Home", url: "/" },
+            { name: "Cities", url: "/city" },
+          ]),
+        ]}
+      />
       <header className="space-y-3">
         <p className="text-sm font-medium uppercase tracking-widest text-slate-500">City Directory</p>
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">

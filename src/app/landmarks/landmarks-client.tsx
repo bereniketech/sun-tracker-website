@@ -27,7 +27,7 @@ function getInitialCitySlug(): string {
   return "all";
 }
 
-export default function LandmarksPage() {
+export default function LandmarksClient() {
   const [landmarks, setLandmarks] = useState<LandmarkWithData[]>(LANDMARKS);
   const [filter, setFilter] = useState<FilterCategory>("all");
   const [cityFilter, setCityFilter] = useState<string>(getInitialCitySlug);
