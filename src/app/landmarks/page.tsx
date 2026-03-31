@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { LANDMARKS } from "@/lib/landmarks";
-import { getUniqueCitySlugs } from "@/lib/landmarks";
 import { findNearestCitySlug, CITY_SEEDS } from "@/lib/cities-data";
+import { toSlug } from "@/lib/slug";
 import { LandmarkCard } from "@/components/landmarks/landmark-card";
 import { RefractionIndex } from "@/components/landmarks/refraction-index";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
@@ -18,22 +18,68 @@ interface LandmarkWithData extends Landmark {
   currentAltitude?: number;
 }
 
+function getInitialCitySlug(): string {
+  const { location, locationName } = useSunTrackerStore.getState();
+  const nearest = findNearestCitySlug(location.lat, location.lng);
+  if (nearest) return nearest;
+  // For non-seeded cities (e.g. Kuwait), derive slug from location name
+  if (locationName) return toSlug(locationName);
+  return "all";
+}
+
 export default function LandmarksPage() {
   const [landmarks, setLandmarks] = useState<LandmarkWithData[]>(LANDMARKS);
   const [filter, setFilter] = useState<FilterCategory>("all");
-  const [cityFilter, setCityFilter] = useState<string>(() => {
-    const { lat, lng } = useSunTrackerStore.getState().location;
-    return findNearestCitySlug(lat, lng) ?? "all";
-  });
+  const [cityFilter, setCityFilter] = useState<string>(getInitialCitySlug);
   const [sortBy, setSortBy] = useState<"proximity" | "name">("proximity");
   const [isLoading, setIsLoading] = useState(true);
+  const [isDiscovering, setIsDiscovering] = useState(false);
 
-  const cityNameMap = useMemo(
-    () => new Map(CITY_SEEDS.map((c) => [c.slug, c.name])),
-    [],
-  );
+  const cityNameMap = useMemo(() => {
+    const map = new Map(CITY_SEEDS.map((c) => [c.slug, c.name]));
+    // Add display names from discovered landmarks (e.g. "kuwait" → "Kuwait")
+    for (const lm of landmarks) {
+      if (lm.citySlug && !map.has(lm.citySlug) && lm.location) {
+        map.set(lm.citySlug, lm.location);
+      }
+    }
+    return map;
+  }, [landmarks]);
 
-  const uniqueCitySlugs = useMemo(() => getUniqueCitySlugs(), []);
+  // Build city slugs from both static seed data and fetched landmarks
+  const uniqueCitySlugs = useMemo(() => {
+    const slugs = new Set<string>();
+    for (const lm of LANDMARKS) {
+      if (lm.citySlug) slugs.add(lm.citySlug);
+    }
+    for (const lm of landmarks) {
+      if (lm.citySlug) slugs.add(lm.citySlug);
+    }
+    return Array.from(slugs).sort();
+  }, [landmarks]);
+
+  const discoverLandmarks = useCallback(async (slug: string) => {
+    const { location, locationName } = useSunTrackerStore.getState();
+    if (!locationName || slug === "all") return;
+
+    setIsDiscovering(true);
+    try {
+      const res = await fetch("/api/landmarks/discover", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lat: location.lat, lng: location.lng, locationName }),
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.landmarks?.length > 0) {
+        setLandmarks(data.landmarks);
+      }
+    } catch {
+      // Discovery failed silently — user still sees empty state
+    } finally {
+      setIsDiscovering(false);
+    }
+  }, []);
 
   // Fetch landmark data from API
   useEffect(() => {
@@ -47,7 +93,17 @@ export default function LandmarksPage() {
         const response = await fetch(url);
         if (!response.ok) throw new Error("Failed to fetch landmarks");
         const data = await response.json();
-        setLandmarks(data.landmarks || LANDMARKS);
+        const fetched = data.landmarks ?? [];
+
+        if (fetched.length > 0) {
+          setLandmarks(fetched);
+        } else if (cityFilter !== "all") {
+          // No landmarks found for this city — try discovering from OpenStreetMap
+          setLandmarks([]);
+          void discoverLandmarks(cityFilter);
+        } else {
+          setLandmarks(LANDMARKS);
+        }
       } catch {
         setLandmarks(LANDMARKS);
       } finally {
@@ -56,7 +112,7 @@ export default function LandmarksPage() {
     }
 
     fetchLandmarks();
-  }, [cityFilter, filter]);
+  }, [cityFilter, filter, discoverLandmarks]);
 
   // Filter landmarks based on category and city
   const filteredLandmarks = landmarks.filter((landmark) => {
@@ -110,9 +166,14 @@ export default function LandmarksPage() {
                 <option value="all">All Cities</option>
                 {uniqueCitySlugs.map((slug) => (
                   <option key={slug} value={slug}>
-                    {cityNameMap.get(slug) ?? slug}
+                    {cityNameMap.get(slug) ?? slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
                   </option>
                 ))}
+                {cityFilter !== "all" && !uniqueCitySlugs.includes(cityFilter) && (
+                  <option key={cityFilter} value={cityFilter}>
+                    {cityNameMap.get(cityFilter) ?? cityFilter.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                  </option>
+                )}
               </select>
             </div>
 
@@ -166,9 +227,11 @@ export default function LandmarksPage() {
           </div>
 
           {/* Landmarks Grid */}
-          {isLoading ? (
+          {isLoading || isDiscovering ? (
             <div className="flex items-center justify-center py-12">
-              <div className="text-muted-foreground">Loading landmarks...</div>
+              <div className="text-muted-foreground">
+                {isDiscovering ? "Discovering landmarks from OpenStreetMap..." : "Loading landmarks..."}
+              </div>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

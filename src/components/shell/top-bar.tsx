@@ -107,7 +107,7 @@ export function TopBar() {
 
           {isSearchOpen ? (
             <div className="absolute right-0 top-full mt-2 w-[min(56rem,calc(100vw-2rem))] z-50">
-              <SearchBar />
+              <SearchBar onClose={() => setIsSearchOpen(false)} />
             </div>
           ) : null}
         </div>

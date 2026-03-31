@@ -56,13 +56,14 @@ function useDebouncedValue<T>(value: T, delay: number): T {
 
 interface SearchBarProps {
   onLocationSelect?: (location: ComparisonLocation) => void;
+  onClose?: () => void;
 }
 
 function buildSelectionMessage(locationName: string, isPickerMode: boolean): string {
   return isPickerMode ? `Added ${locationName} to comparison.` : `Moved to ${locationName}.`;
 }
 
-export function SearchBar({ onLocationSelect }: SearchBarProps) {
+export function SearchBar({ onLocationSelect, onClose }: SearchBarProps) {
   const inputId = useId();
   const latitudeId = useId();
   const longitudeId = useId();
@@ -252,6 +253,7 @@ export function SearchBar({ onLocationSelect }: SearchBarProps) {
     setSearchError("");
     setCoordinateError("");
     setLocationMessage(buildSelectionMessage(nextLocation.name, isPickerMode));
+    onClose?.();
 
     // Auto-discover landmarks if none exist for this location
     if (!landmark) {

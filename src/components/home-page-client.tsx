@@ -91,15 +91,13 @@ export function HomePageClient() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[280px_1fr_320px] lg:items-start">
         {/* Left col: controls card */}
         <FadeUp delay={0.4} className="flex flex-col gap-4">
-          <div className="glass-card sidebar-card rounded-2xl p-4">
+          <div className="glass-card sidebar-card rounded-2xl p-4 relative z-10">
             <div className="space-y-4">
               <TimeSlider />
-              <div className="grid grid-cols-[1fr_auto] gap-3">
-                <DatePicker />
-                <div className="flex items-end gap-2">
-                  <AnimateButton />
-                  <NowButton />
-                </div>
+              <DatePicker />
+              <div className="flex flex-wrap items-center gap-2">
+                <AnimateButton />
+                <NowButton />
               </div>
             </div>
           </div>
@@ -132,7 +130,7 @@ export function HomePageClient() {
         Sunset {formatTime(sunData?.sunset ?? null)}.
       </p>
 
-      <FadeUp delay={0.65}>
+      <FadeUp delay={0.65} className="pb-8">
         <SharePanel />
       </FadeUp>
     </div>
