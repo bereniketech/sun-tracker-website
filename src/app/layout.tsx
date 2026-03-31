@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, Space_Grotesk } from "next/font/google";
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import "leaflet/dist/leaflet.css";
 import { BottomNav } from "@/components/shell/bottom-nav";
 import { TopBar } from "@/components/shell/top-bar";
@@ -50,6 +51,7 @@ export default function RootLayout({
         </main>
         <BottomNav />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
