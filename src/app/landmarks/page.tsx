@@ -3,9 +3,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { LANDMARKS } from "@/lib/landmarks";
 import { getUniqueCitySlugs } from "@/lib/landmarks";
-import { CITY_SEEDS } from "@/lib/cities-data";
+import { findNearestCitySlug, CITY_SEEDS } from "@/lib/cities-data";
 import { LandmarkCard } from "@/components/landmarks/landmark-card";
 import { RefractionIndex } from "@/components/landmarks/refraction-index";
+import { useSunTrackerStore } from "@/store/sun-tracker-store";
 import type { Landmark } from "@/types/sun";
 
 type FilterCategory = "all" | "historic" | "religious" | "monument" | "modern" | "natural" | "technical" | "custom";
@@ -20,7 +21,10 @@ interface LandmarkWithData extends Landmark {
 export default function LandmarksPage() {
   const [landmarks, setLandmarks] = useState<LandmarkWithData[]>(LANDMARKS);
   const [filter, setFilter] = useState<FilterCategory>("all");
-  const [cityFilter, setCityFilter] = useState<string>("all");
+  const [cityFilter, setCityFilter] = useState<string>(() => {
+    const { lat, lng } = useSunTrackerStore.getState().location;
+    return findNearestCitySlug(lat, lng) ?? "all";
+  });
   const [sortBy, setSortBy] = useState<"proximity" | "name">("proximity");
   const [isLoading, setIsLoading] = useState(true);
 
