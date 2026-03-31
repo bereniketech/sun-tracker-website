@@ -64,7 +64,7 @@ export function LandmarkCard({ landmark }: LandmarkCardProps) {
       </div>
 
       {/* Data row below image */}
-      <div className="px-4 py-4 grid grid-cols-3 gap-4 text-center">
+      <div className="px-4 pt-4 pb-3 grid grid-cols-3 gap-4 text-center">
         <div>
           <div className="text-xs uppercase tracking-wider text-muted-foreground font-medium mb-1">
             Azimuth
@@ -93,10 +93,6 @@ export function LandmarkCard({ landmark }: LandmarkCardProps) {
         </div>
       </div>
 
-      {/* Photo Window info */}
-      <div className="px-4 pb-4 text-xs text-muted-foreground text-center">
-        {landmark.location && <span>Photo Window: Varies by season</span>}
-      </div>
     </div>
   );
 }
