@@ -231,6 +231,14 @@ export async function POST(request: Request) {
 
   const citySlug = toSlug(locationName);
 
+  // Ensure a city row exists to satisfy the FK constraint on landmarks.city_slug
+  await supabase
+    .from("cities")
+    .upsert(
+      { slug: citySlug, name: locationName, country: "Unknown", lat, lng, timezone: "UTC" },
+      { onConflict: "slug", ignoreDuplicates: true },
+    );
+
   // Check if landmarks already exist for this city
   const { data: existing } = await supabase
     .from("landmarks")

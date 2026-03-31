@@ -283,7 +283,7 @@ export function SearchBar({ onLocationSelect, onClose }: SearchBarProps) {
     applyLocationSelection({
       lat: suggestion.lat,
       lng: suggestion.lng,
-      name: suggestion.displayName,
+      name: suggestion.name,
     });
   };
 
