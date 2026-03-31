@@ -1,9 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import type { Landmark } from "@/types/sun";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
+import { getStaticImageUrl } from "@/lib/landmark-static-images";
+
+const MAX_RETRIES = 3;
 
 interface LandmarkCardProps {
   landmark: Landmark & {
@@ -13,15 +16,56 @@ interface LandmarkCardProps {
     currentAzimuth?: number;
     currentAltitude?: number;
   };
+  /** Stagger image loading to avoid Wikimedia 429 rate limits (ms). */
+  loadDelay?: number;
 }
 
-export function LandmarkCard({ landmark }: LandmarkCardProps) {
+export function LandmarkCard({ landmark, loadDelay = 0 }: LandmarkCardProps) {
   const { selectedLandmark, setSelectedLandmark } = useSunTrackerStore();
   const isSelected = selectedLandmark?.id === landmark.id;
+  const [ready, setReady] = useState(loadDelay === 0);
+  const [currentSrc, setCurrentSrc] = useState<string | undefined>(
+    loadDelay === 0 ? landmark.imageUrl : undefined,
+  );
   const [imgError, setImgError] = useState(false);
+  const retryCount = useRef(0);
+
+  // Stagger image loading to spread requests over time
+  useEffect(() => {
+    if (ready) return;
+    const timer = setTimeout(() => {
+      setCurrentSrc(landmark.imageUrl);
+      setReady(true);
+    }, loadDelay);
+    return () => clearTimeout(timer);
+  }, [loadDelay, ready, landmark.imageUrl]);
+
+  const handleImageError = useCallback(() => {
+    // Retry with exponential backoff (Wikimedia returns 429 on concurrent requests)
+    if (retryCount.current < MAX_RETRIES) {
+      retryCount.current += 1;
+      const delay = 1000 * Math.pow(2, retryCount.current) + Math.random() * 500;
+      setTimeout(() => {
+        // Append cache-buster to force browser to retry the request
+        const base = landmark.imageUrl ?? "";
+        const sep = base.includes("?") ? "&" : "?";
+        setCurrentSrc(`${base}${sep}_r=${retryCount.current}`);
+      }, delay);
+      return;
+    }
+
+    // After retries exhausted, try static fallback URL
+    const fallback = getStaticImageUrl(landmark.id);
+    if (fallback && fallback !== currentSrc) {
+      retryCount.current = 0;
+      setCurrentSrc(fallback);
+    } else {
+      setImgError(true);
+    }
+  }, [landmark.id, landmark.imageUrl, currentSrc]);
 
   const imageGradient = landmark.imageGradient || "from-slate-700 to-slate-900";
-  const showImage = Boolean(landmark.imageUrl) && !imgError;
+  const showImage = Boolean(currentSrc) && !imgError;
 
   return (
     <div
@@ -32,13 +76,14 @@ export function LandmarkCard({ landmark }: LandmarkCardProps) {
       <div className={`h-40 bg-gradient-to-br ${imageGradient} relative overflow-hidden`}>
         {showImage && (
           <Image
-            src={landmark.imageUrl!}
+            src={currentSrc!}
             alt={landmark.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover"
             unoptimized
-            onError={() => setImgError(true)}
+            loading="lazy"
+            onError={handleImageError}
           />
         )}
         {/* Darkening gradient overlay at bottom */}

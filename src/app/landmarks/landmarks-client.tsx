@@ -235,8 +235,8 @@ export default function LandmarksClient() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sortedLandmarks.map((landmark) => (
-                <LandmarkCard key={landmark.id} landmark={landmark} />
+              {sortedLandmarks.map((landmark, index) => (
+                <LandmarkCard key={landmark.id} landmark={landmark} loadDelay={index * 150} />
               ))}
             </div>
           )}

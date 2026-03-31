@@ -9,7 +9,7 @@ export const LANDMARK_IMAGE_FALLBACKS: Record<string, string> = {
   "St. Patrick's Cathedral": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Saint_Patrick%27s_Cathedral_NYC.jpg/640px-Saint_Patrick%27s_Cathedral_NYC.jpg",
   "North Axis Study": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Stonehenge_2007_07_30.jpg/640px-Stonehenge_2007_07_30.jpg",
   "Grand Central Terminal": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Grand_Central_Terminal_-_Narthex.jpg/640px-Grand_Central_Terminal_-_Narthex.jpg",
-  "Central Park": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Central_park_nyc.jpg/640px-Central_park_nyc.jpg",
+  "Central Park": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Global_Citizen_Festival_Central_Park_New_York_City_from_NYonAir_%2815351915006%29.jpg/640px-Global_Citizen_Festival_Central_Park_New_York_City_from_NYonAir_%2815351915006%29.jpg",
   
   // Tokyo
   "Sensō-ji Temple": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Sensoji_Temple_Entrance02.jpg/640px-Sensoji_Temple_Entrance02.jpg",

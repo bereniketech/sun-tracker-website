@@ -6,8 +6,25 @@ interface WikiSummary {
 }
 
 /**
+ * Validate that a Wikimedia thumbnail URL is reachable (HEAD request).
+ * Returns the URL if valid, null otherwise.
+ */
+async function validateImageUrl(url: string): Promise<string | null> {
+  try {
+    const response = await fetch(url, {
+      method: "HEAD",
+      signal: AbortSignal.timeout(3000),
+    });
+    return response.ok ? url : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Fetch a Wikipedia thumbnail URL for a landmark name.
  * Returns the thumbnail source URL or null when no image is available.
+ * Validates the URL before returning to avoid persisting broken links.
  */
 export async function fetchWikipediaImageUrl(
   landmarkName: string,
@@ -31,7 +48,14 @@ export async function fetchWikipediaImageUrl(
     if (!url) return null;
 
     // Request a larger thumbnail (640px) for better card display
-    return url.replace(/\/\d+px-/, "/640px-");
+    const resizedUrl = url.replace(/\/\d+px-/, "/640px-");
+
+    // Validate the resized URL; fall back to original thumbnail if 640px fails
+    const valid = await validateImageUrl(resizedUrl);
+    if (valid) return valid;
+
+    // Original thumbnail URL from Wikipedia is already validated by the API
+    return url;
   } catch {
     return null;
   }
