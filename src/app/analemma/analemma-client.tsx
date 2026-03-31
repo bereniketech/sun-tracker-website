@@ -136,9 +136,6 @@ export default function AnalemmaClient() {
 
         {/* SVG Visualization */}
         <div className="space-y-4 rounded-lg border border-outline bg-surface-variant/20 p-6 backdrop-blur">
-          <div className="text-sm text-muted-foreground">
-            Click on the curve to select a day
-          </div>
           <div className="flex justify-center bg-surface rounded-lg p-4">
             <div className="w-full max-w-md">
               <AnalemmasvG

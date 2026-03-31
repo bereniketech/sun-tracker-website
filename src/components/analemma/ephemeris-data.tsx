@@ -44,34 +44,33 @@ export function EphemerisData({ point }: EphemerisDataProps) {
       <div className="text-xs font-sans tracking-widest uppercase text-muted-foreground">
         Ephemeris Data
       </div>
-      <div className="space-y-4 rounded-2xl bg-surface-container-low p-4">
-        {/* Solar Distance */}
-        <div>
-          <div className="text-xs font-medium text-on-surface">
-            Solar Distance
+      <div className="rounded-2xl bg-surface-container-low p-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="rounded-xl bg-surface/60 p-3">
+            <div className="text-xs font-medium text-on-surface">
+              Solar Distance
+            </div>
+            <div className="text-sm text-secondary">
+              {point.solarDistance.toFixed(3)} AU
+            </div>
           </div>
-          <div className="text-sm text-secondary">
-            {point.solarDistance.toFixed(3)} AU
-          </div>
-        </div>
 
-        {/* Obliquity */}
-        <div>
-          <div className="text-xs font-medium text-on-surface">
-            Obliquity
+          <div className="rounded-xl bg-surface/60 p-3">
+            <div className="text-xs font-medium text-on-surface">
+              Obliquity
+            </div>
+            <div className="text-sm text-secondary">
+              {decimalToDMS(obliquity)}
+            </div>
           </div>
-          <div className="text-sm text-secondary">
-            {decimalToDMS(obliquity)}
-          </div>
-        </div>
 
-        {/* Geometric Mean Longitude */}
-        <div>
-          <div className="text-xs font-medium text-on-surface">
-            Geometric Mean Longitude
-          </div>
-          <div className="text-sm text-secondary">
-            {geometricMeanLongitude.toFixed(2)}°
+          <div className="rounded-xl bg-surface/60 p-3">
+            <div className="text-xs font-medium text-on-surface">
+              Geometric Mean Longitude
+            </div>
+            <div className="text-sm text-secondary">
+              {geometricMeanLongitude.toFixed(2)}°
+            </div>
           </div>
         </div>
       </div>
