@@ -28,7 +28,7 @@ export default function LandmarksPage() {
         ]}
       />
       <LandmarksClient />
-      <AdUnit adSlot="LANDMARKS_BOTTOM" adFormat="horizontal" className="mt-6" />
+      <AdUnit adSlot="1064596460" adFormat="horizontal" className="mt-6" />
     </>
   );
 }

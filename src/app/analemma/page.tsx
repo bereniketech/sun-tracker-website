@@ -54,7 +54,7 @@ export default function AnalemmaPage() {
         ]}
       />
       <AnalemmaClient />
-      <AdUnit adSlot="ANALEMMA_BOTTOM" adFormat="horizontal" className="mt-6" />
+      <AdUnit adSlot="7267547311" adFormat="horizontal" className="mt-6" />
     </>
   );
 }

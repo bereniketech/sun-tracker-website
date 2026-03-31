@@ -180,7 +180,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <AdUnit adSlot="ABOUT_MID" adFormat="horizontal" className="my-2" />
+      <AdUnit adSlot="9885971792" adFormat="horizontal" className="my-2" />
 
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold text-slate-900">

@@ -122,7 +122,7 @@ export function HomePageClient() {
         </FadeUp>
       </div>
 
-      <AdUnit adSlot="HOME_MID" adFormat="horizontal" className="my-2" />
+      <AdUnit adSlot="3555028435" adFormat="horizontal" className="my-2" />
 
       <FadeUp delay={0.6}>
         <InfoPanel />
