@@ -17,7 +17,8 @@ export interface Landmark {
   lng: number;
   orientationAzimuth: number;
   location?: string;
-  category?: "historic" | "technical" | "custom";
+  citySlug?: string;
+  category?: "historic" | "religious" | "monument" | "modern" | "natural" | "technical" | "custom";
   imageGradient?: string;
 }
 

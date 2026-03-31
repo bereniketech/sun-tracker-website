@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { LANDMARKS } from "@/lib/landmarks";
+import { getUniqueCitySlugs } from "@/lib/landmarks";
+import { CITY_SEEDS } from "@/lib/cities-data";
 import { LandmarkCard } from "@/components/landmarks/landmark-card";
 import { RefractionIndex } from "@/components/landmarks/refraction-index";
 import type { Landmark } from "@/types/sun";
 
-type FilterCategory = "historic" | "technical" | "custom" | "all";
+type FilterCategory = "all" | "historic" | "religious" | "monument" | "modern" | "natural" | "technical" | "custom";
 
 interface LandmarkWithData extends Landmark {
   location?: string;
@@ -18,20 +20,31 @@ interface LandmarkWithData extends Landmark {
 export default function LandmarksPage() {
   const [landmarks, setLandmarks] = useState<LandmarkWithData[]>(LANDMARKS);
   const [filter, setFilter] = useState<FilterCategory>("all");
+  const [cityFilter, setCityFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"proximity" | "name">("proximity");
   const [isLoading, setIsLoading] = useState(true);
+
+  const cityNameMap = useMemo(
+    () => new Map(CITY_SEEDS.map((c) => [c.slug, c.name])),
+    [],
+  );
+
+  const uniqueCitySlugs = useMemo(() => getUniqueCitySlugs(), []);
 
   // Fetch landmark data from API
   useEffect(() => {
     async function fetchLandmarks() {
       try {
         setIsLoading(true);
-        const response = await fetch("/api/landmarks");
+        const params = new URLSearchParams();
+        if (cityFilter !== "all") params.set("city", cityFilter);
+        if (filter !== "all") params.set("category", filter);
+        const url = `/api/landmarks${params.toString() ? `?${params.toString()}` : ""}`;
+        const response = await fetch(url);
         if (!response.ok) throw new Error("Failed to fetch landmarks");
         const data = await response.json();
         setLandmarks(data.landmarks || LANDMARKS);
-      } catch (error) {
-        console.error("Error fetching landmarks:", error);
+      } catch {
         setLandmarks(LANDMARKS);
       } finally {
         setIsLoading(false);
@@ -39,12 +52,13 @@ export default function LandmarksPage() {
     }
 
     fetchLandmarks();
-  }, []);
+  }, [cityFilter, filter]);
 
-  // Filter landmarks based on category
+  // Filter landmarks based on category and city
   const filteredLandmarks = landmarks.filter((landmark) => {
-    if (filter === "all") return true;
-    return landmark.category === filter;
+    const categoryMatch = filter === "all" || landmark.category === filter;
+    const cityMatch = cityFilter === "all" || landmark.citySlug === cityFilter;
+    return categoryMatch && cityMatch;
   });
 
   // Sort landmarks
@@ -57,6 +71,8 @@ export default function LandmarksPage() {
     return a.name.localeCompare(b.name);
   });
 
+  const categories: FilterCategory[] = ["all", "historic", "religious", "monument", "modern", "natural", "technical", "custom"];
+
   return (
     <main className="flex-1 overflow-y-auto">
       {/* Header */}
@@ -67,7 +83,7 @@ export default function LandmarksPage() {
             <span className="font-headline text-3xl font-bold text-primary">Landmarks</span>
           </div>
           <p className="text-sm text-muted-foreground">
-            Explore ancient monuments aligned with the sun&apos;s path across the sky
+            Explore ancient monuments and iconic landmarks aligned with the sun&apos;s path across the sky
           </p>
         </div>
       </div>
@@ -76,9 +92,29 @@ export default function LandmarksPage() {
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Filter and Sort Controls */}
           <div className="space-y-4">
-            {/* Filter tabs */}
+            {/* City filter */}
+            <div className="flex items-center gap-3">
+              <label htmlFor="city-filter" className="text-sm font-medium text-foreground whitespace-nowrap">
+                City:
+              </label>
+              <select
+                id="city-filter"
+                value={cityFilter}
+                onChange={(e) => setCityFilter(e.target.value)}
+                className="rounded-xl px-3 py-2 text-sm bg-surface-container-low border-0 text-foreground max-w-xs"
+              >
+                <option value="all">All Cities</option>
+                {uniqueCitySlugs.map((slug) => (
+                  <option key={slug} value={slug}>
+                    {cityNameMap.get(slug) ?? slug}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Category filter tabs */}
             <div className="flex gap-2 overflow-x-auto pb-2">
-              {(["all", "historic", "technical", "custom"] as FilterCategory[]).map((cat) => (
+              {categories.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setFilter(cat)}
@@ -88,7 +124,7 @@ export default function LandmarksPage() {
                       : "bg-surface-container-low text-foreground hover:bg-surface-container"
                   }`}
                 >
-                  {cat === "all" ? "All Landmarks" : cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  {cat === "all" ? "All" : cat.charAt(0).toUpperCase() + cat.slice(1)}
                 </button>
               ))}
             </div>
@@ -100,6 +136,8 @@ export default function LandmarksPage() {
                 <span className="text-primary">
                   {sortBy === "proximity" ? "SOLAR PROXIMITY" : "A-Z"}
                 </span>
+                {" "}&middot;{" "}
+                <span className="text-muted-foreground">{sortedLandmarks.length} landmarks</span>
               </span>
               <button
                 onClick={() => setSortBy(sortBy === "proximity" ? "name" : "proximity")}
@@ -141,7 +179,10 @@ export default function LandmarksPage() {
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <div className="text-muted-foreground mb-2">No landmarks found</div>
               <button
-                onClick={() => setFilter("all")}
+                onClick={() => {
+                  setFilter("all");
+                  setCityFilter("all");
+                }}
                 className="text-sm text-primary hover:underline"
               >
                 View all landmarks

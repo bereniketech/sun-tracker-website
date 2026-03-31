@@ -155,7 +155,7 @@ export function SearchBar({ onLocationSelect }: SearchBarProps) {
 
   const matchedLandmarks = LANDMARKS.filter((lm) =>
     lm.name.toLowerCase().includes(normalizeSearchQuery(query))
-  );
+  ).slice(0, 5);
 
   const applyLocationSelection = (
     nextLocation: ComparisonLocation,

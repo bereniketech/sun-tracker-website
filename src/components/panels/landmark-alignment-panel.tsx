@@ -3,8 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { findLandmarkAlignmentEvents } from "@/lib/landmark-alignment";
 import { LANDMARKS, getLandmarkById } from "@/lib/landmarks";
+import { CITY_SEEDS } from "@/lib/cities-data";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
-import type { AlignmentEvent } from "@/types/sun";
+import type { AlignmentEvent, Landmark } from "@/types/sun";
 
 const WEEKDAY_LABELS = ["S", "M", "T", "W", "T", "F", "S"] as const;
 const YEAR_WINDOW = 2;
@@ -112,11 +113,34 @@ export function LandmarkAlignmentPanel() {
               aria-label="Select a landmark"
             >
               <option value="">Choose a landmark</option>
-              {LANDMARKS.map((landmark) => (
-                <option key={landmark.id} value={landmark.id}>
-                  {landmark.name}
-                </option>
-              ))}
+              {(() => {
+                const cityNameMap = new Map(CITY_SEEDS.map((c) => [c.slug, c.name]));
+                const grouped = new Map<string, Landmark[]>();
+                const ungrouped: Landmark[] = [];
+                for (const lm of LANDMARKS) {
+                  if (lm.citySlug) {
+                    const list = grouped.get(lm.citySlug) ?? [];
+                    list.push(lm);
+                    grouped.set(lm.citySlug, list);
+                  } else {
+                    ungrouped.push(lm);
+                  }
+                }
+                return (
+                  <>
+                    {ungrouped.map((lm) => (
+                      <option key={lm.id} value={lm.id}>{lm.name}</option>
+                    ))}
+                    {Array.from(grouped.entries()).map(([slug, cityLandmarks]) => (
+                      <optgroup key={slug} label={cityNameMap.get(slug) ?? slug}>
+                        {cityLandmarks.map((lm) => (
+                          <option key={lm.id} value={lm.id}>{lm.name}</option>
+                        ))}
+                      </optgroup>
+                    ))}
+                  </>
+                );
+              })()}
             </select>
           </label>
 

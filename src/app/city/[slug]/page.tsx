@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SeasonalInsights } from "@/components/panels/seasonal-insights";
+import { CityLandmarksSection } from "@/components/landmarks/city-landmarks-section";
 import { computeSunData } from "@/lib/sun";
 import { getAllCities, getCityBySlug, getRelatedCities } from "@/lib/cities";
 import type { MonthlySunSnapshot } from "@/types/cities";
@@ -192,6 +193,8 @@ export default async function CityPage({ params }: CityPageProps) {
         </div>
         <SeasonalInsights lat={city.lat} lng={city.lng} />
       </section>
+
+      <CityLandmarksSection citySlug={city.slug} cityName={city.name} />
 
       <section className="overflow-x-auto rounded-xl border bg-white">
         <h2 className="border-b px-4 py-3 text-lg font-semibold text-slate-900 md:px-6">
