@@ -6,7 +6,7 @@ import type { Landmark } from "@/types/sun";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
 import { getStaticImageUrl } from "@/lib/landmark-static-images";
 
-const MAX_RETRIES = 3;
+const MAX_RETRIES = 5;
 
 interface LandmarkCardProps {
   landmark: Landmark & {
@@ -44,7 +44,7 @@ export function LandmarkCard({ landmark, loadDelay = 0 }: LandmarkCardProps) {
     // Retry with exponential backoff (Wikimedia returns 429 on concurrent requests)
     if (retryCount.current < MAX_RETRIES) {
       retryCount.current += 1;
-      const delay = 1000 * Math.pow(2, retryCount.current) + Math.random() * 500;
+      const delay = 1500 * Math.pow(2, retryCount.current) + Math.random() * 1000;
       setTimeout(() => {
         // Append cache-buster to force browser to retry the request
         const base = landmark.imageUrl ?? "";
