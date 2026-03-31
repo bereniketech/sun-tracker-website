@@ -186,7 +186,7 @@ export function RefractionIndex() {
                       <span className="sm:hidden text-xs text-on-surface/60 uppercase block mb-1">
                         Refraction
                       </span>
-                      {row.refractionArcSec}"
+                      {row.refractionArcSec}&quot;
                     </div>
                   </div>
                 ))}
