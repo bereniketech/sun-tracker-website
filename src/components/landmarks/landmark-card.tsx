@@ -81,7 +81,6 @@ export function LandmarkCard({ landmark, loadDelay = 0 }: LandmarkCardProps) {
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover object-top"
-            unoptimized
             loading="lazy"
             onError={handleImageError}
           />
