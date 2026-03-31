@@ -1,4 +1,5 @@
 import type { SunData } from "@/types/sun";
+import { FadeUp, StaggerContainer, StaggerItem } from "@/components/motion";
 
 const CARDINAL_DIRECTIONS = [
   "N",
@@ -54,7 +55,7 @@ function formatMetric(value: number | null, options?: { signed?: boolean }): str
 
 function MetricCard({ label, value, detail, accentClassName }: MetricCardProps) {
   return (
-    <section className="min-w-0 rounded-2xl bg-surface-container-low p-4">
+    <section className="glass-card metric-card min-w-0 rounded-2xl p-4">
       <p className="text-[0.65rem] font-label font-semibold uppercase tracking-[0.24em] text-secondary">
         {label}
       </p>
@@ -72,40 +73,52 @@ export function SolarMetrics({ sunData, locationName, coordinates }: SolarMetric
 
   return (
     <section className="space-y-4">
-      <header className="space-y-1">
-        <p className="text-xs font-label tracking-widest uppercase text-primary">
-          LIVE CELESTIAL TRACKING
-        </p>
-        <h1 className="font-headline text-3xl font-bold text-on-surface md:text-4xl">
-          {locationName}
-        </h1>
-        <p className="text-sm text-secondary">{coordinates}</p>
-      </header>
+      <FadeUp>
+        <header className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0b1c30] via-[#1a2e4a] to-[#2d1810] px-6 py-8 md:px-8 md:py-10">
+          <div className="hero-sun-glow" />
+          <div className="hero-sun-rays" />
+          <div className="relative z-10">
+            <p className="shimmer-text text-xs font-label font-semibold tracking-widest uppercase">
+              LIVE CELESTIAL TRACKING
+            </p>
+            <h1 className="mt-2 font-headline text-3xl font-bold text-white md:text-4xl">
+              {locationName}
+            </h1>
+            <p className="mt-1 text-sm text-white/60">{coordinates}</p>
+          </div>
+        </header>
+      </FadeUp>
 
-      <div className="grid grid-cols-3 gap-3">
-        <MetricCard
-          label="SOLAR ZENITH"
-          value={formatMetric(zenith)}
-          detail={azimuth === null ? "Awaiting solar direction" : `Offset toward ${directionLabel}`}
-        />
-        <MetricCard
-          label="AZIMUTH"
-          value={formatMetric(azimuth)}
-          detail={azimuth === null ? "Awaiting solar direction" : directionLabel}
-          accentClassName="text-primary"
-        />
-        <MetricCard
-          label="ELEVATION"
-          value={formatMetric(elevation, { signed: true })}
-          detail={
-            elevation === null
-              ? "Awaiting altitude data"
-              : elevation >= 0
-                ? "Above the horizon"
-                : "Below the horizon"
-          }
-        />
-      </div>
+      <StaggerContainer className="grid grid-cols-3 gap-3" initialDelay={0.2}>
+        <StaggerItem>
+          <MetricCard
+            label="SOLAR ZENITH"
+            value={formatMetric(zenith)}
+            detail={azimuth === null ? "Awaiting solar direction" : `Offset toward ${directionLabel}`}
+          />
+        </StaggerItem>
+        <StaggerItem>
+          <MetricCard
+            label="AZIMUTH"
+            value={formatMetric(azimuth)}
+            detail={azimuth === null ? "Awaiting solar direction" : directionLabel}
+            accentClassName="text-primary"
+          />
+        </StaggerItem>
+        <StaggerItem>
+          <MetricCard
+            label="ELEVATION"
+            value={formatMetric(elevation, { signed: true })}
+            detail={
+              elevation === null
+                ? "Awaiting altitude data"
+                : elevation >= 0
+                  ? "Above the horizon"
+                  : "Below the horizon"
+            }
+          />
+        </StaggerItem>
+      </StaggerContainer>
     </section>
   );
 }

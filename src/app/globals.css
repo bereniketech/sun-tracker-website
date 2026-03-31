@@ -37,6 +37,146 @@ body[data-map-fullscreen="true"] {
   background: linear-gradient(180deg, #dbeafe 0%, #e2e8f0 100%);
 }
 
+/* ── Animated sun glow for hero header ── */
+@keyframes sun-glow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+}
+
+@keyframes sun-rays {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.hero-sun-glow {
+  position: absolute;
+  top: 50%;
+  right: 10%;
+  width: 180px;
+  height: 180px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.35) 0%, rgba(249, 115, 22, 0) 70%);
+  animation: sun-glow 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.hero-sun-rays {
+  position: absolute;
+  top: 50%;
+  right: 10%;
+  width: 240px;
+  height: 240px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(249, 115, 22, 0.08) 10deg,
+    transparent 20deg,
+    transparent 90deg,
+    rgba(249, 115, 22, 0.08) 100deg,
+    transparent 110deg,
+    transparent 180deg,
+    rgba(249, 115, 22, 0.08) 190deg,
+    transparent 200deg,
+    transparent 270deg,
+    rgba(249, 115, 22, 0.08) 280deg,
+    transparent 290deg
+  );
+  border-radius: 9999px;
+  animation: sun-rays 30s linear infinite;
+  pointer-events: none;
+}
+
+/* ── Glass card effect ── */
+.glass-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 4px 24px rgba(15, 23, 42, 0.06),
+    0 1px 3px rgba(15, 23, 42, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.glass-card:hover {
+  box-shadow:
+    0 8px 32px rgba(15, 23, 42, 0.1),
+    0 2px 6px rgba(15, 23, 42, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* ── Metric card with accent border ── */
+.metric-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+}
+
+.metric-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #9d4300, #f97316, #fbbf24);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.metric-card:hover::before {
+  opacity: 1;
+}
+
+/* ── Shimmer text effect ── */
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    #9d4300 0%,
+    #f97316 25%,
+    #fbbf24 50%,
+    #f97316 75%,
+    #9d4300 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* ── Sidebar card styling ── */
+.sidebar-card {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-card:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 8px 24px rgba(15, 23, 42, 0.08),
+    0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
 @keyframes corona-pulse {
   0%,
   100% {

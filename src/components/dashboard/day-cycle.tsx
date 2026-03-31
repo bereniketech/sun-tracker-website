@@ -44,7 +44,7 @@ const rows = [
 
 export function DayCycle({ sunData }: DayCycleProps) {
   return (
-    <div className="bg-surface-container-low rounded-2xl p-4">
+    <div className="glass-card sidebar-card rounded-2xl p-4">
       <p className="mb-3 text-xs font-label tracking-widest uppercase text-secondary">
         Day Cycle
       </p>
@@ -56,9 +56,14 @@ export function DayCycle({ sunData }: DayCycleProps) {
             azimuthKey && sunData ? formatAzimuth(sunData[azimuthKey]) : null;
 
           return (
-            <div key={key} className="flex items-center justify-between">
+            <div
+              key={key}
+              className="flex items-center justify-between rounded-xl px-3 py-2 transition-colors hover:bg-surface-container-low/60"
+            >
               <div className="flex items-center gap-2">
-                <Icon className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+                  <Icon className="h-4 w-4 text-primary shrink-0" aria-hidden="true" />
+                </div>
                 <span className="text-sm font-label text-on-surface">{label}</span>
               </div>
               <div className="text-right">

@@ -13,6 +13,7 @@ import { SearchBar } from "@/components/search-bar";
 import { SolarMetrics } from "@/components/dashboard/solar-metrics";
 import { DayCycle } from "@/components/dashboard/day-cycle";
 import { PhotoWindows } from "@/components/dashboard/photo-windows";
+import { FadeUp, ScaleIn } from "@/components/motion";
 import {
   DEFAULT_MAP_LOCATION,
   formatCoordinatePair,
@@ -82,17 +83,19 @@ export function HomePageClient() {
       </Suspense>
 
       {showHint && (
-        <div className="flex items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-          <span>Click anywhere on the map or search for a place to explore sun data.</span>
-          <button
-            type="button"
-            onClick={handleDismissHint}
-            aria-label="Dismiss hint"
-            className="shrink-0 text-amber-600 hover:text-amber-800"
-          >
-            ✕
-          </button>
-        </div>
+        <FadeUp>
+          <div className="flex items-center justify-between gap-3 rounded-2xl border border-amber-200/60 bg-gradient-to-r from-amber-50 to-orange-50 px-4 py-3 text-sm text-amber-900 shadow-sm">
+            <span>Click anywhere on the map or search for a place to explore sun data.</span>
+            <button
+              type="button"
+              onClick={handleDismissHint}
+              aria-label="Dismiss hint"
+              className="shrink-0 text-amber-600 hover:text-amber-800 transition-colors"
+            >
+              ✕
+            </button>
+          </div>
+        </FadeUp>
       )}
 
       <SolarMetrics
@@ -101,13 +104,15 @@ export function HomePageClient() {
         coordinates={coordinateLabel}
       />
 
-      <SearchBar />
+      <FadeUp delay={0.35}>
+        <SearchBar />
+      </FadeUp>
 
       {/* Main 3-col grid: stacked on mobile, 3-col on desktop */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[280px_1fr_320px] lg:items-start">
         {/* Left col: controls card */}
-        <div className="flex flex-col gap-4">
-          <div className="bg-surface-container-low rounded-2xl p-4">
+        <FadeUp delay={0.4} className="flex flex-col gap-4">
+          <div className="glass-card sidebar-card rounded-2xl p-4">
             <div className="space-y-4">
               <TimeSlider />
               <div className="grid grid-cols-2 gap-3">
@@ -125,29 +130,35 @@ export function HomePageClient() {
             <DayCycle sunData={sunData} />
             <PhotoWindows sunData={sunData} />
           </div>
-        </div>
+        </FadeUp>
 
         {/* Center col: map */}
-        <div className="min-w-0">
+        <ScaleIn delay={0.3} className="min-w-0">
           <InteractiveMap />
-        </div>
+        </ScaleIn>
 
         {/* Right col: day cycle + photo windows — desktop only */}
-        <div className="hidden flex-col gap-4 lg:flex">
+        <FadeUp delay={0.5} className="hidden flex-col gap-4 lg:flex">
           <DayCycle sunData={sunData} />
           <PhotoWindows sunData={sunData} />
-        </div>
+        </FadeUp>
       </div>
 
-      <InfoPanel />
+      <FadeUp delay={0.6}>
+        <InfoPanel />
+      </FadeUp>
 
       <p className="sr-only" aria-live="polite">
         Active location {resolvedLocationName}. Sunrise {formatTime(sunData?.sunrise ?? null)}.
         Sunset {formatTime(sunData?.sunset ?? null)}.
       </p>
 
-      <SharePanel />
-      <FavoritesPanel />
+      <FadeUp delay={0.65}>
+        <SharePanel />
+      </FadeUp>
+      <FadeUp delay={0.7}>
+        <FavoritesPanel />
+      </FadeUp>
     </div>
   );
 }

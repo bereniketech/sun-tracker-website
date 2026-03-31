@@ -1,8 +1,9 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, LogOut, Settings, UserRound } from "lucide-react";
+import { Bell, LogOut, Search, Settings, UserRound } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { SearchBar } from "@/components/search-bar";
 
@@ -29,6 +30,34 @@ function isActivePath(pathname: string, href: string): boolean {
 export function TopBar() {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchPanelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isSearchOpen) {
+      return;
+    }
+
+    function handleClickOutside(event: MouseEvent): void {
+      if (searchPanelRef.current && !searchPanelRef.current.contains(event.target as Node)) {
+        setIsSearchOpen(false);
+      }
+    }
+
+    function handleEscape(event: KeyboardEvent): void {
+      if (event.key === "Escape") {
+        setIsSearchOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isSearchOpen]);
 
   if (pathname.startsWith("/login")) {
     return null;
@@ -39,13 +68,13 @@ export function TopBar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-white/20 bg-white/70 backdrop-blur-2xl shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
       <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between gap-4 px-4 py-3 md:px-6">
-        <div className="flex items-center gap-2">
-          <span className="text-lg leading-none text-primary" aria-hidden="true">
+        <div className="flex items-center gap-2.5 group">
+          <span className="text-lg leading-none text-primary transition-transform duration-300 group-hover:rotate-90 group-hover:scale-110" aria-hidden="true">
             ✦
           </span>
-          <span className="font-headline text-xl font-bold uppercase tracking-widest text-primary">
+          <span className="font-headline text-xl font-bold uppercase tracking-widest bg-gradient-to-r from-primary to-primary-container bg-clip-text text-transparent">
             HELIOS CHRONO
           </span>
         </div>
@@ -70,8 +99,22 @@ export function TopBar() {
           })}
         </nav>
 
-        <div className="hidden w-64 md:block mx-4">
-          <SearchBar />
+        <div className="relative hidden md:block" ref={searchPanelRef}>
+          <button
+            type="button"
+            aria-label="Search for a location"
+            aria-expanded={isSearchOpen}
+            onClick={() => setIsSearchOpen((prev) => !prev)}
+            className="flex h-11 w-11 items-center justify-center rounded-full text-secondary transition-colors hover:bg-surface-container hover:text-on-surface"
+          >
+            <Search className="h-5 w-5" />
+          </button>
+
+          {isSearchOpen ? (
+            <div className="absolute right-0 top-full mt-2 w-[min(56rem,calc(100vw-2rem))] z-50">
+              <SearchBar />
+            </div>
+          ) : null}
         </div>
 
         <div className="flex items-center gap-2">

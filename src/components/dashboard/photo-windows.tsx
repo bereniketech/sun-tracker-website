@@ -28,12 +28,12 @@ export function PhotoWindows({ sunData }: PhotoWindowsProps) {
   const blueEveEnd = sunData ? formatTime(sunData.blueHourEvening.end) : "—";
 
   return (
-    <div className="bg-surface-container-low rounded-2xl p-4">
+    <div className="glass-card sidebar-card rounded-2xl p-4">
       <div className="mb-3 flex items-center justify-between">
         <p className="text-xs font-label tracking-widest uppercase text-secondary">
           Photographic Windows
         </p>
-        <div className="flex items-center gap-1 rounded-full bg-[#505f76] px-2 py-0.5">
+        <div className="flex items-center gap-1 rounded-full bg-gradient-to-r from-[#505f76] to-[#3d4d64] px-2 py-0.5 shadow-sm">
           <Sparkles className="h-3 w-3 text-white" aria-hidden="true" />
           <span className="text-[10px] font-label font-semibold uppercase tracking-wider text-white">
             Optimal
