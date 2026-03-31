@@ -67,7 +67,7 @@ export interface CalibrationState {
 }
 
 export interface SunTrackerState {
-  location: Coordinates | null;
+  location: Coordinates;
   locationName: string;
   dateTime: Date;
   isAnimating: boolean;
