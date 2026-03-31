@@ -1,5 +1,7 @@
 "use client";
 
+import type { ReactNode } from "react";
+import { EducationalTooltip } from "@/components/panels/educational-tooltip";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
 
 function formatTime(value: Date): string {
@@ -41,7 +43,7 @@ function formatDegrees(value: number): string {
 }
 
 interface DataRowProps {
-  label: string;
+  label: ReactNode;
   value: string;
 }
 
@@ -73,7 +75,10 @@ export function SunDataDisplay() {
       <div className="grid gap-2">
         <DataRow label="Sunrise" value={formatTime(sunData.sunrise)} />
         <DataRow label="Sunset" value={formatTime(sunData.sunset)} />
-        <DataRow label="Solar noon" value={formatTime(sunData.solarNoon)} />
+        <DataRow
+          label={<EducationalTooltip term="solar-noon">Solar noon</EducationalTooltip>}
+          value={formatTime(sunData.solarNoon)}
+        />
         <DataRow label="Day length" value={formatDayLength(sunData.dayLength)} />
         <DataRow label="Day length change" value={formatDayLengthChange(sunData.dayLengthChange)} />
         <DataRow label="Golden hour (AM)" value={formatWindow(sunData.goldenHour.start, sunData.goldenHour.end)} />
@@ -86,8 +91,8 @@ export function SunDataDisplay() {
           label="Blue hour (PM)"
           value={formatWindow(sunData.blueHourEvening.start, sunData.blueHourEvening.end)}
         />
-        <DataRow label="Sun azimuth" value={formatDegrees(sunData.sunAzimuth)} />
-        <DataRow label="Sun elevation" value={formatDegrees(sunData.sunElevation)} />
+        <DataRow label={<EducationalTooltip term="azimuth">Azimuth</EducationalTooltip>} value={formatDegrees(sunData.sunAzimuth)} />
+        <DataRow label={<EducationalTooltip term="elevation">Elevation</EducationalTooltip>} value={formatDegrees(sunData.sunElevation)} />
       </div>
     </section>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import { EducationalTooltip } from "@/components/panels/educational-tooltip";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
 
 function normalizeDegrees(value: number): number {
@@ -51,7 +52,7 @@ export function ShadowInfo() {
             </span>
           </p>
           <p className="text-sm text-slate-700">
-            Length:{" "}
+            <EducationalTooltip term="shadow-ratio">Shadow ratio</EducationalTooltip>: {" "}
             <span className="font-semibold text-slate-900">
               {formatShadowRatio(sunData.shadowLengthRatio)}
             </span>

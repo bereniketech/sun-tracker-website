@@ -1,3 +1,7 @@
+---
+status: complete
+---
+
 # Task 004 — UX polish: Photographer Mode label + copy coordinates
 
 ## Summary

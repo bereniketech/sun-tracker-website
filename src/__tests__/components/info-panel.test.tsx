@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { Compass } from "@/components/compass/compass";
 import { InfoPanel } from "@/components/panels/info-panel";
 import { ShadowInfo } from "@/components/panels/shadow-info";
@@ -63,9 +63,9 @@ describe("task 7 info panel components", () => {
     expect(screen.getByText("12h 15m")).toBeInTheDocument();
     expect(screen.getByText("Day length change")).toBeInTheDocument();
     expect(screen.getByText("+2m 15s")).toBeInTheDocument();
-    expect(screen.getByText("Sun azimuth")).toBeInTheDocument();
+    expect(screen.getByText("Azimuth")).toBeInTheDocument();
     expect(screen.getByText("165°")).toBeInTheDocument();
-    expect(screen.getByText("Sun elevation")).toBeInTheDocument();
+    expect(screen.getByText("Elevation")).toBeInTheDocument();
     expect(screen.getByText("48°")).toBeInTheDocument();
   });
 
@@ -117,21 +117,30 @@ describe("task 7 info panel components", () => {
     expect(panelContent).toHaveClass("hidden");
   });
 
-  it("toggles photographer mode from the panel toolbar", async () => {
+  it("toggles photographer mode from the panel toolbar", () => {
     render(<InfoPanel />);
 
-    const modeButton = screen.getByRole("button", { name: "Photographer Off" });
+    const modeButton = screen.getByRole("button", { name: "Photographer Mode" });
     expect(modeButton).toBeInTheDocument();
+    expect(modeButton).toHaveAttribute("aria-pressed", "false");
 
     fireEvent.click(modeButton);
 
-    expect(screen.getByRole("button", { name: "Photographer On" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Photographer Mode" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
     expect(useSunTrackerStore.getState().photographerMode).toBe(true);
-    
-    // Wait for lazy-loaded PhotographerPanel to load
-    await waitFor(() => {
-      expect(screen.getByText("7-Day Lighting Forecast")).toBeInTheDocument();
-    });
+
+    expect(screen.getByRole("status")).toBeInTheDocument();
     expect(screen.getByLabelText("Sun direction compass")).toBeInTheDocument();
+  });
+
+  it("opens educational glossary from Learn more button", () => {
+    render(<InfoPanel />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Learn more" }));
+
+    expect(screen.getByRole("dialog", { name: "Sun Photography Glossary" })).toBeInTheDocument();
   });
 });

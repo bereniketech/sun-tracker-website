@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Analemma Visualization | Helios Chrono</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-high": "#dce9ff",
+              "on-tertiary-fixed-variant": "#38485d",
+              "on-primary-container": "#582200",
+              "surface-container-low": "#eff4ff",
+              "on-primary": "#ffffff",
+              "on-surface-variant": "#584237",
+              "surface-dim": "#cbdbf5",
+              "on-tertiary-fixed": "#0b1c30",
+              "surface-container-highest": "#d3e4fe",
+              "outline-variant": "#e0c0b1",
+              "tertiary": "#505f76",
+              "primary-fixed": "#ffdbca",
+              "secondary-container": "#dae2fd",
+              "on-error": "#ffffff",
+              "secondary-fixed-dim": "#bec6e0",
+              "primary-container": "#f97316",
+              "on-secondary": "#ffffff",
+              "on-primary-fixed-variant": "#783200",
+              "surface-bright": "#f8f9ff",
+              "error": "#ba1a1a",
+              "background": "#f8f9ff",
+              "tertiary-fixed-dim": "#b7c8e1",
+              "on-tertiary": "#ffffff",
+              "secondary-fixed": "#dae2fd",
+              "primary-fixed-dim": "#ffb690",
+              "inverse-primary": "#ffb690",
+              "on-secondary-fixed-variant": "#3f465c",
+              "surface-container-lowest": "#ffffff",
+              "on-surface": "#0b1c30",
+              "error-container": "#ffdad6",
+              "primary": "#9d4300",
+              "surface-variant": "#d3e4fe",
+              "on-primary-fixed": "#341100",
+              "on-secondary-fixed": "#131b2e",
+              "on-background": "#0b1c30",
+              "secondary": "#565e74",
+              "on-tertiary-container": "#243348",
+              "surface-tint": "#9d4300",
+              "inverse-surface": "#213145",
+              "tertiary-fixed": "#d3e4fe",
+              "outline": "#8c7164",
+              "tertiary-container": "#8c9cb4",
+              "on-error-container": "#93000a",
+              "surface": "#f8f9ff",
+              "on-secondary-container": "#5c647a",
+              "inverse-on-surface": "#eaf1ff",
+              "surface-container": "#e5eeff"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .analemma-curve {
+        stroke-dasharray: 4 4;
+      }
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(12px);
+      }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl shadow-sm dark:shadow-none bg-gradient-to-b from-slate-100/50 to-transparent dark:from-slate-800/50">
+<nav class="flex justify-between items-center h-20 px-8 max-w-[1920px] mx-auto">
+<div class="text-2xl font-bold tracking-tighter text-slate-900 dark:text-slate-50 font-headline uppercase">
+                Helios Chrono
+            </div>
+<div class="hidden md:flex items-center space-x-12">
+<a class="font-['Space_Grotesk'] uppercase tracking-widest text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors" href="#">Dashboard</a>
+<a class="font-['Space_Grotesk'] uppercase tracking-widest text-sm font-medium text-orange-600 dark:text-orange-500 border-b-2 border-orange-600 dark:border-orange-500 pb-1" href="#">Analemma</a>
+<a class="font-['Space_Grotesk'] uppercase tracking-widest text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors" href="#">Landmarks</a>
+<a class="font-['Space_Grotesk'] uppercase tracking-widest text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors" href="#">Observatory</a>
+</div>
+<div class="flex items-center space-x-6">
+<button class="hover:opacity-80 transition-opacity active:scale-95 duration-150 ease-in-out text-orange-600 dark:text-orange-500">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<button class="hover:opacity-80 transition-opacity active:scale-95 duration-150 ease-in-out text-orange-600 dark:text-orange-500">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</nav>
+</header>
+<main class="pt-28 pb-12 px-8 max-w-[1920px] mx-auto">
+<!-- Main Visualization Content Area (Asymmetric Layout) -->
+<div class="grid grid-cols-12 gap-12">
+<!-- Left: Large Analemma Visualization -->
+<div class="col-span-12 lg:col-span-8 space-y-8">
+<header>
+<h1 class="font-headline text-5xl font-bold tracking-tight text-on-surface">Analemma Curve</h1>
+<p class="text-secondary font-medium tracking-tight mt-2 uppercase text-xs">Solar position tracking over 365 days at 12:00 UTC</p>
+</header>
+<div class="relative aspect-[16/10] bg-surface-container-low rounded-xl overflow-hidden shadow-sm group">
+<!-- Technical Brackets -->
+<div class="absolute top-6 left-6 w-8 h-8 border-t-2 border-l-2 border-outline-variant/30"></div>
+<div class="absolute top-6 right-6 w-8 h-8 border-t-2 border-r-2 border-outline-variant/30"></div>
+<div class="absolute bottom-6 left-6 w-8 h-8 border-b-2 border-l-2 border-outline-variant/30"></div>
+<div class="absolute bottom-6 right-6 w-8 h-8 border-b-2 border-r-2 border-outline-variant/30"></div>
+<!-- SVG Analemma Visual -->
+<svg class="w-full h-full p-12" fill="none" viewbox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="curveGradient" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#9d4300"></stop>
+<stop offset="100%" stop-color="#f97316"></stop>
+</lineargradient>
+</defs>
+<!-- Axis -->
+<line stroke="#d3e4fe" stroke-width="1" x1="100" x2="700" y1="250" y2="250"></line>
+<line stroke="#d3e4fe" stroke-width="1" x1="400" x2="400" y1="50" y2="450"></line>
+<!-- The Figure Eight Curve -->
+<path class="analemma-curve" d="M400,100 C550,150 550,350 400,400 C250,350 250,150 400,100 Z" fill="none" stroke="url(#curveGradient)" stroke-width="3"></path>
+<!-- Active Point -->
+<circle class="drop-shadow-lg" cx="475" cy="180" fill="#9d4300" r="8"></circle>
+<circle cx="475" cy="180" r="16" stroke="#9d4300" stroke-opacity="0.2" stroke-width="2"></circle>
+</svg>
+<!-- Glassmorphic Tooltip / Scrubber Label -->
+<div class="absolute bottom-10 left-1/2 -translate-x-1/2 glass-panel px-6 py-3 rounded-full flex items-center gap-4 border border-white/20">
+<span class="font-headline text-lg font-bold">OCTOBER 24</span>
+<div class="h-4 w-[1px] bg-outline-variant"></div>
+<span class="font-label text-sm uppercase tracking-widest text-secondary">Phase: Waxing</span>
+</div>
+</div>
+<!-- Time Scrubber Component -->
+<div class="bg-surface-container-lowest p-8 rounded-xl">
+<div class="flex justify-between items-center mb-6">
+<label class="font-headline text-sm font-bold tracking-widest uppercase">Chronological Scrubber</label>
+<span class="text-primary font-bold">Day 297 of 365</span>
+</div>
+<div class="relative h-2 bg-surface-container w-full rounded-full">
+<div class="absolute top-0 left-0 h-full w-[81%] bg-gradient-to-r from-primary to-primary-container rounded-full"></div>
+<div class="absolute top-1/2 left-[81%] -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-white border-4 border-primary rounded-full shadow-md cursor-pointer hover:scale-110 transition-transform"></div>
+</div>
+<div class="flex justify-between mt-4 text-[10px] font-bold text-secondary uppercase tracking-tighter">
+<span>Winter Solstice</span>
+<span>Vernal Equinox</span>
+<span>Summer Solstice</span>
+<span>Autumnal Equinox</span>
+<span>Winter Solstice</span>
+</div>
+</div>
+</div>
+<!-- Right: Metrics Sidebar -->
+<aside class="col-span-12 lg:col-span-4 space-y-6">
+<div class="bg-surface-container-low p-8 rounded-xl space-y-8">
+<h2 class="font-headline text-xl font-bold tracking-tight">Solar Metrics</h2>
+<!-- Metric Block 1 -->
+<div class="space-y-1">
+<p class="font-label text-[10px] uppercase tracking-[0.2em] text-secondary font-bold">Mean Anomaly</p>
+<div class="flex items-baseline justify-between">
+<span class="font-headline text-4xl font-light text-on-surface">294.12°</span>
+<span class="text-xs text-primary font-bold">+0.14/hr</span>
+</div>
+</div>
+<!-- Metric Block 2 -->
+<div class="space-y-1">
+<p class="font-label text-[10px] uppercase tracking-[0.2em] text-secondary font-bold">Solar Azimuth</p>
+<div class="flex items-baseline justify-between">
+<span class="font-headline text-4xl font-light text-on-surface">192.4°</span>
+<span class="text-xs text-secondary font-bold">S - SSW</span>
+</div>
+</div>
+<!-- Metric Block 3 -->
+<div class="space-y-1">
+<p class="font-label text-[10px] uppercase tracking-[0.2em] text-secondary font-bold">Right Ascension</p>
+<div class="flex items-baseline justify-between">
+<span class="font-headline text-4xl font-light text-on-surface">13h 52m</span>
+<span class="text-xs text-secondary font-bold">J2000</span>
+</div>
+</div>
+<!-- Metric Block 4 -->
+<div class="space-y-1">
+<p class="font-label text-[10px] uppercase tracking-[0.2em] text-secondary font-bold">Altitude</p>
+<div class="flex items-baseline justify-between">
+<span class="font-headline text-4xl font-light text-on-surface">34.8°</span>
+<span class="material-symbols-outlined text-primary" data-icon="south_east">south_east</span>
+</div>
+</div>
+</div>
+<!-- Coordinate Settings -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm space-y-6">
+<h3 class="font-headline text-sm font-bold tracking-widest uppercase">Coordinate Lock</h3>
+<div class="space-y-4">
+<div class="relative group">
+<label class="font-label text-xs text-secondary block mb-1">Latitude</label>
+<input class="w-full bg-surface-container-low border-0 border-b-2 border-transparent focus:border-primary focus:ring-0 font-headline font-medium py-2 px-0 transition-colors" readonly="" type="text" value="51.4779° N"/>
+</div>
+<div class="relative group">
+<label class="font-label text-xs text-secondary block mb-1">Longitude</label>
+<input class="w-full bg-surface-container-low border-0 border-b-2 border-transparent focus:border-primary focus:ring-0 font-headline font-medium py-2 px-0 transition-colors" readonly="" type="text" value="0.0015° W"/>
+</div>
+</div>
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 rounded-xl font-headline font-bold uppercase tracking-widest text-xs hover:opacity-90 transition-opacity">
+                        Update Observatory
+                    </button>
+</div>
+</aside>
+</div>
+<!-- Bottom Section: Seasonal Variance -->
+<section class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-12">
+<!-- Seasonal Intensity Chart -->
+<div class="bg-surface-container-low p-8 rounded-xl space-y-8">
+<div class="flex justify-between items-center">
+<h2 class="font-headline text-xl font-bold">Seasonal Intensity</h2>
+<span class="font-label text-[10px] uppercase font-bold tracking-widest text-secondary">kW/m² Peak</span>
+</div>
+<div class="flex items-end justify-between h-48 gap-4 px-4">
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full bg-primary/20 rounded-t-lg h-[20%]"></div>
+<span class="text-[10px] font-bold text-secondary uppercase">Win</span>
+</div>
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full bg-primary/40 rounded-t-lg h-[55%]"></div>
+<span class="text-[10px] font-bold text-secondary uppercase">Spr</span>
+</div>
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full bg-gradient-to-t from-primary to-primary-container rounded-t-lg h-[95%]"></div>
+<span class="text-[10px] font-bold text-primary uppercase">Sum</span>
+</div>
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full bg-primary/40 rounded-t-lg h-[65%]"></div>
+<span class="text-[10px] font-bold text-secondary uppercase">Aut</span>
+</div>
+</div>
+</div>
+<!-- Day Duration Variance -->
+<div class="bg-surface-container-low p-8 rounded-xl space-y-8">
+<div class="flex justify-between items-center">
+<h2 class="font-headline text-xl font-bold">Duration Variance</h2>
+<span class="font-label text-[10px] uppercase font-bold tracking-widest text-secondary">Hrs / Light</span>
+</div>
+<div class="space-y-6">
+<div class="space-y-2">
+<div class="flex justify-between text-[10px] font-bold uppercase tracking-tighter">
+<span>Max Daylength (Jun 21)</span>
+<span>16h 38m</span>
+</div>
+<div class="h-1.5 bg-surface-container w-full rounded-full">
+<div class="h-full w-[90%] bg-primary-container rounded-full"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[10px] font-bold uppercase tracking-tighter">
+<span>Equinox (Mar/Sep)</span>
+<span>12h 00m</span>
+</div>
+<div class="h-1.5 bg-surface-container w-full rounded-full">
+<div class="h-full w-[65%] bg-primary rounded-full"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[10px] font-bold uppercase tracking-tighter">
+<span>Min Daylength (Dec 21)</span>
+<span>07h 49m</span>
+</div>
+<div class="h-1.5 bg-surface-container w-full rounded-full">
+<div class="h-full w-[35%] bg-on-tertiary-container rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Contextual Map Card (Bento Style) -->
+<section class="mt-12">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="md:col-span-2 bg-surface-container-low rounded-xl overflow-hidden relative min-h-[400px]">
+<img alt="Satellite topography view" class="w-full h-full object-cover opacity-60 mix-blend-multiply" data-alt="high-resolution topographical satellite map view of coastal landscape with sharp terrain details and blue ocean" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYCkLYkknshHx0QYgu4LQjKZWl3p-TXccAuyDwmRjG_S8pdgk1i6wRZlY2YLt-Vd_I-XWnVoHPICIp0v-lcpOvLrqORuXM_UFlPRQvVbL_pEd1mT1u1saiXPwzXk1o14I1-1NKfatS8eFgnZIZ6-pqSKh3U_f14IgciW9TCTWORe5ByLbBzTPFel6Jtpk2__mcNmQ_C9ZmoWhvN1E2rJG8bx1tISUti11xiPSHCoOS4NmmiQR_L8-KWCAtrnub4_Rcdfle7VK6uPE"/>
+<div class="absolute inset-0 bg-gradient-to-r from-surface-container-low via-transparent to-transparent"></div>
+<div class="absolute top-12 left-12 max-w-sm space-y-4">
+<h3 class="font-headline text-3xl font-bold tracking-tight">Active Observation Point</h3>
+<p class="text-sm text-secondary leading-relaxed">Royal Observatory, Greenwich. Calculations optimized for the Prime Meridian. All timestamps adjusted for Mean Solar Time.</p>
+<div class="flex gap-4 pt-4">
+<span class="px-4 py-2 bg-white rounded-full font-label text-[10px] font-bold uppercase border border-outline-variant/30">WGS84 Datum</span>
+<span class="px-4 py-2 bg-white rounded-full font-label text-[10px] font-bold uppercase border border-outline-variant/30">UTC+00:00</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-highest p-8 rounded-xl flex flex-col justify-between">
+<div class="space-y-4">
+<span class="material-symbols-outlined text-primary text-4xl" data-icon="wb_sunny">wb_sunny</span>
+<h3 class="font-headline text-2xl font-bold">Zenith Transit</h3>
+<p class="text-sm text-on-surface-variant">Next solar noon occurs at 11:58:32 AM. Precision calculated at 0.001 arcseconds.</p>
+</div>
+<div class="pt-8">
+<div class="text-[10px] font-bold uppercase text-secondary tracking-widest mb-2">Equation of Time</div>
+<div class="font-headline text-3xl font-bold text-primary">-15m 24s</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full border-t border-slate-200/50 dark:border-slate-800/50 bg-slate-50 dark:bg-slate-900 mt-20">
+<div class="flex flex-col md:flex-row justify-between items-center py-12 px-8 max-w-[1920px] mx-auto">
+<div class="flex flex-col items-center md:items-start gap-2 mb-8 md:mb-0">
+<span class="text-lg font-bold text-slate-900 dark:text-slate-50 font-headline">Helios Chrono</span>
+<span class="font-['Inter'] text-xs tracking-tight text-slate-400">© 2024 Helios Chrono. Celestial Precision.</span>
+</div>
+<div class="flex gap-12">
+<a class="font-['Inter'] text-xs tracking-tight text-slate-400 hover:text-orange-500 transition-colors" href="#">Privacy</a>
+<a class="font-['Inter'] text-xs tracking-tight text-slate-400 hover:text-orange-500 transition-colors" href="#">Terms</a>
+<a class="font-['Inter'] text-xs tracking-tight text-slate-400 hover:text-orange-500 transition-colors" href="#">API Documentation</a>
+</div>
+</div>
+</footer>
+</body></html>

@@ -37,7 +37,7 @@ describe("time/date controls", () => {
 	it("updates store time when the slider moves", () => {
 		render(<TimeSlider />);
 
-		fireEvent.change(screen.getByLabelText("Time of day"), {
+		fireEvent.change(screen.getByLabelText("Time of day slider"), {
 			target: { value: "830" },
 		});
 
@@ -49,7 +49,7 @@ describe("time/date controls", () => {
 	it("updates store date when date picker changes", () => {
 		render(<DatePicker />);
 
-		fireEvent.change(screen.getByLabelText("Date"), {
+		fireEvent.change(screen.getByLabelText("Date picker"), {
 			target: { value: "2026-07-04" },
 		});
 
@@ -70,30 +70,16 @@ describe("time/date controls", () => {
 		expect(useSunTrackerStore.getState().isAnimating).toBe(false);
 	});
 
-	it("animates time forward while playing", () => {
-		let frameCallback: FrameRequestCallback | undefined;
-		let frameId = 0;
-
-		vi.stubGlobal(
-			"requestAnimationFrame",
-			vi.fn((callback: FrameRequestCallback) => {
-				frameCallback = callback;
-				frameId += 1;
-				return frameId;
-			}),
-		);
-		vi.stubGlobal("cancelAnimationFrame", vi.fn());
-
+	it("animates time forward while playing", async () => {
 		render(<AnimateButton />);
 
 		const beforeMs = useSunTrackerStore.getState().dateTime.getTime();
 
-		fireEvent.click(screen.getByRole("button", { name: "Animate" }));
+		fireEvent.click(screen.getByRole("button", { name: "Animate sun movement" }));
 		expect(useSunTrackerStore.getState().isAnimating).toBe(true);
 
-		act(() => {
-			frameCallback?.(0);
-			frameCallback?.(1000);
+		await act(async () => {
+			vi.advanceTimersByTime(1000);
 		});
 
 		const nextDateTime = useSunTrackerStore.getState().dateTime;

@@ -1,3 +1,7 @@
+---
+status: complete
+---
+
 # Task 007 — Animation Controls Verification & Fix
 
 ## Requirement

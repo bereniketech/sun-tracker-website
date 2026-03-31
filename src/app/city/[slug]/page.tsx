@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { SeasonalInsights } from "@/components/panels/seasonal-insights";
 import { computeSunData } from "@/lib/sun";
 import { getAllCities, getCityBySlug, getRelatedCities } from "@/lib/cities";
 import type { MonthlySunSnapshot } from "@/types/cities";
@@ -180,6 +181,16 @@ export default async function CityPage({ params }: CityPageProps) {
           <p className="text-sm font-medium text-slate-500">Day length</p>
           <p className="mt-1 text-sm text-slate-800">{formatDuration(todaySunData.dayLength)}</p>
         </div>
+      </section>
+
+      <section className="rounded-xl border bg-white p-4 md:p-6">
+        <div className="mb-4 space-y-1">
+          <h2 className="text-lg font-semibold text-slate-900">Seasonal daylight chart</h2>
+          <p className="text-sm text-slate-600">
+            Compare sunrise, sunset, and daylight length across the year in {city.name}.
+          </p>
+        </div>
+        <SeasonalInsights lat={city.lat} lng={city.lng} />
       </section>
 
       <section className="overflow-x-auto rounded-xl border bg-white">

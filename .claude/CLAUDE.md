@@ -10,11 +10,10 @@
 @C:/Users/Hp/Desktop/Experiment/claude_kit/skills/data-backend/postgres-patterns/SKILL.md
 
 ## Active Feature
-Feature: issue-fixes
-Spec: .spec/issue-fixes/requirements.md, design.md
-Tasks: .spec/issue-fixes/tasks/
-Current task: .spec/issue-fixes/tasks/task-001.md
-Branch: feature/issue-fixes
+Feature: helios-chrono-ui — COMPLETE (all 13 tasks done)
+Spec: .spec/helios-chrono-ui/requirements.md, design.md
+Tasks: .spec/helios-chrono-ui/tasks/ (all complete)
+Branch: feature/sun-tracker-v2
 
 ## Start Here
 1. Read `## Active Feature` above — note the current task path.

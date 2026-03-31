@@ -1,3 +1,7 @@
+---
+status: complete
+---
+
 # Task 001 — Fix initial store hydration
 
 ## Summary

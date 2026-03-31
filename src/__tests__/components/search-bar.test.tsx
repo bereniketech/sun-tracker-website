@@ -51,7 +51,7 @@ describe("SearchBar", () => {
     render(<SearchBar />);
 
     await act(async () => {
-      fireEvent.change(screen.getByLabelText("Search city, landmark, or address"), {
+      fireEvent.change(screen.getByLabelText("Search for a place"), {
         target: { value: "Paris" },
       });
 
@@ -82,7 +82,7 @@ describe("SearchBar", () => {
     fireEvent.change(screen.getByLabelText("Longitude"), {
       target: { value: "-118.2437" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Center map on coordinates" }));
+    fireEvent.click(screen.getByRole("button", { name: "Go to location" }));
 
     expect(useSunTrackerStore.getState().location).toEqual({
       lat: 34.0522,
@@ -114,7 +114,7 @@ describe("SearchBar", () => {
 
     expect(
       screen.getByText(
-        "Location access was denied. Search for a place or enter coordinates manually.",
+        "Location access was denied. Search for a place or enter coordinates.",
       ),
     ).toBeInTheDocument();
   });
