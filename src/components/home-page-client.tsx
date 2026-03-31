@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { Suspense, useEffect, useState } from "react";
 import { AnimateButton } from "@/components/controls/animate-button";
 import { DatePicker } from "@/components/controls/date-picker";
@@ -9,7 +8,6 @@ import { TimeSlider } from "@/components/controls/time-slider";
 import { InteractiveMap } from "@/components/map/interactive-map";
 import { InfoPanel } from "@/components/panels/info-panel";
 import { SharePanel } from "@/components/panels/share-panel";
-import { SearchBar } from "@/components/search-bar";
 import { SolarMetrics } from "@/components/dashboard/solar-metrics";
 import { DayCycle } from "@/components/dashboard/day-cycle";
 import { PhotoWindows } from "@/components/dashboard/photo-windows";
@@ -20,21 +18,6 @@ import {
 } from "@/components/map/location-utils";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
 import { useUrlState } from "@/hooks/use-url-state";
-
-const FavoritesPanel = dynamic(
-  () => import("@/components/panels/favorites-panel").then((module) => module.FavoritesPanel),
-  {
-    loading: () => (
-      <section
-        className="rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-600"
-        role="status"
-        aria-live="polite"
-      >
-        Loading favorites...
-      </section>
-    ),
-  },
-);
 
 /** Inner component so useSearchParams is inside a Suspense boundary. */
 function UrlStateSyncer() {
@@ -104,10 +87,6 @@ export function HomePageClient() {
         coordinates={coordinateLabel}
       />
 
-      <FadeUp delay={0.35}>
-        <SearchBar />
-      </FadeUp>
-
       {/* Main 3-col grid: stacked on mobile, 3-col on desktop */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[280px_1fr_320px] lg:items-start">
         {/* Left col: controls card */}
@@ -155,9 +134,6 @@ export function HomePageClient() {
 
       <FadeUp delay={0.65}>
         <SharePanel />
-      </FadeUp>
-      <FadeUp delay={0.7}>
-        <FavoritesPanel />
       </FadeUp>
     </div>
   );

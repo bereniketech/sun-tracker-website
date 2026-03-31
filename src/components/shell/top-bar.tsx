@@ -3,8 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, LogOut, Search, Settings, UserRound } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
+import { Search } from "lucide-react";
 import { SearchBar } from "@/components/search-bar";
 
 interface TopBarItem {
@@ -29,7 +28,6 @@ function isActivePath(pathname: string, href: string): boolean {
 
 export function TopBar() {
   const pathname = usePathname();
-  const { user, signOut } = useAuth();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchPanelRef = useRef<HTMLDivElement>(null);
 
@@ -61,10 +59,6 @@ export function TopBar() {
 
   if (pathname.startsWith("/login")) {
     return null;
-  }
-
-  async function handleSignOut(): Promise<void> {
-    await signOut();
   }
 
   return (
@@ -117,42 +111,7 @@ export function TopBar() {
           ) : null}
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            aria-label="Notifications"
-            className="flex h-11 w-11 items-center justify-center rounded-full text-secondary transition-colors hover:bg-surface-container hover:text-on-surface"
-          >
-            <Bell className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            aria-label="Settings"
-            className="hidden h-11 w-11 items-center justify-center rounded-full text-secondary transition-colors hover:bg-surface-container hover:text-on-surface md:flex"
-          >
-            <Settings className="h-5 w-5" />
-          </button>
-          {user ? (
-            <button
-              type="button"
-              aria-label="Sign out"
-              title="Sign out"
-              onClick={() => void handleSignOut()}
-              className="hidden h-11 items-center gap-2 rounded-full bg-surface-container-high px-4 text-sm font-semibold text-on-surface transition-colors hover:bg-surface-container md:flex"
-            >
-              <LogOut className="h-4 w-4" aria-hidden="true" />
-              Sign out
-            </button>
-          ) : (
-            <Link
-              href="/login"
-              aria-label="Go to login"
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-surface-container-high text-on-surface transition-colors hover:bg-surface-container"
-            >
-              <UserRound className="h-5 w-5" aria-hidden="true" />
-            </Link>
-          )}
-        </div>
+        <div className="flex items-center" />
       </div>
     </header>
   );
