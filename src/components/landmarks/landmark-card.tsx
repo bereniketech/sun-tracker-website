@@ -73,14 +73,14 @@ export function LandmarkCard({ landmark, loadDelay = 0 }: LandmarkCardProps) {
       className="cursor-pointer rounded-2xl overflow-hidden bg-surface-container-lowest shadow-[0_4px_24px_rgba(11,28,48,0.06)] hover:shadow-[0_8px_32px_rgba(11,28,48,0.12)] transition-shadow duration-300"
     >
       {/* Image area with gradient fallback */}
-      <div className={`h-40 bg-gradient-to-br ${imageGradient} relative overflow-hidden`}>
+      <div className={`h-48 bg-gradient-to-br ${imageGradient} relative overflow-hidden`}>
         {showImage && (
           <Image
             src={currentSrc!}
             alt={landmark.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover"
+            className="object-cover object-top"
             unoptimized
             loading="lazy"
             onError={handleImageError}
