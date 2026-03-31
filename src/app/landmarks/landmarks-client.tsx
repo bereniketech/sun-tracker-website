@@ -242,7 +242,7 @@ export default function LandmarksClient() {
           )}
 
           {/* Empty state */}
-          {!isLoading && sortedLandmarks.length === 0 && (
+          {!isLoading && !isDiscovering && sortedLandmarks.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <div className="text-muted-foreground mb-2">No landmarks found</div>
               <button
