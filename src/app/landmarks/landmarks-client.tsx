@@ -258,7 +258,7 @@ export default function LandmarksClient() {
           )}
 
           {/* Atmospheric Refraction Index Widget */}
-          <RefractionIndex />
+          <RefractionIndex landmarks={sortedLandmarks} />
         </div>
       </div>
     </main>

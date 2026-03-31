@@ -177,11 +177,7 @@ export function LandmarkAlignmentPanel() {
             Selecting a landmark recenters the map and turns the overlay into a sight line for that axis.
           </p>
         </div>
-      ) : (
-        <p className="mt-3 rounded-lg border border-dashed border-sky-300 bg-white px-3 py-2 text-sm text-slate-600">
-          Select a landmark to calculate alignment dates and draw its axis on the map.
-        </p>
-      )}
+      ) : null}
 
       {selectedLandmark && events.length === 0 && (
         <p className="mt-3 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">

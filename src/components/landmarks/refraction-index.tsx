@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
 import { computeSunData } from "@/lib/sun";
-import { LANDMARKS } from "@/lib/landmarks";
+import type { Landmark } from "@/types/sun";
 
 /**
  * Compute atmospheric refraction using Bennett formula
@@ -33,16 +33,44 @@ function refractionToPercentage(arcMinutes: number): number {
 }
 
 interface LandmarkRefraction {
+  id: string;
   name: string;
   elevation: number;
   refractionArcSec: number;
 }
 
-export function RefractionIndex() {
+interface RefractionIndexProps {
+  landmarks: Landmark[];
+}
+
+function buildDiagnosticData(landmarks: Landmark[], dateTime: Date): LandmarkRefraction[] {
+  return landmarks.map((landmark) => {
+    const landmarkSunData = computeSunData(landmark.lat, landmark.lng, dateTime);
+    const landmarkRefraction = calculateRefraction(landmarkSunData.sunElevation);
+    const arcSeconds = landmarkRefraction * 60;
+
+    return {
+      id: landmark.id,
+      name: landmark.name,
+      elevation: landmarkSunData.sunElevation,
+      refractionArcSec: Math.round(arcSeconds * 10) / 10,
+    };
+  });
+}
+
+export function RefractionIndex({ landmarks }: RefractionIndexProps) {
   const sunData = useSunTrackerStore((state) => state.sunData);
   const dateTime = useSunTrackerStore((state) => state.dateTime);
   const [isDiagnosticRunning, setIsDiagnosticRunning] = useState(false);
   const [diagnosticData, setDiagnosticData] = useState<LandmarkRefraction[]>([]);
+
+  useEffect(() => {
+    if (!isDiagnosticRunning) {
+      return;
+    }
+
+    setDiagnosticData(buildDiagnosticData(landmarks, dateTime));
+  }, [dateTime, isDiagnosticRunning, landmarks]);
 
   if (!sunData) {
     return null;
@@ -63,20 +91,7 @@ export function RefractionIndex() {
       return;
     }
 
-    // Compute refraction for all landmarks
-    const data: LandmarkRefraction[] = LANDMARKS.map((landmark) => {
-      const landmarkSunData = computeSunData(landmark.lat, landmark.lng, dateTime);
-      const landmarkRefraction = calculateRefraction(landmarkSunData.sunElevation);
-      const arcSeconds = landmarkRefraction * 60; // Convert arc-minutes to arc-seconds
-
-      return {
-        name: landmark.name,
-        elevation: landmarkSunData.sunElevation,
-        refractionArcSec: Math.round(arcSeconds * 10) / 10, // Round to 1 decimal
-      };
-    });
-
-    setDiagnosticData(data);
+    setDiagnosticData(buildDiagnosticData(landmarks, dateTime));
     setIsDiagnosticRunning(true);
   };
 
@@ -165,9 +180,9 @@ export function RefractionIndex() {
 
               {/* Table rows */}
               <div className="space-y-3">
-                {diagnosticData.map((row, idx) => (
+                {diagnosticData.map((row) => (
                   <div
-                    key={idx}
+                    key={row.id}
                     className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-3 sm:p-0 sm:border-none bg-surface-container-low sm:bg-transparent rounded-lg sm:rounded-none text-sm"
                   >
                     <div className="font-medium text-on-surface">
