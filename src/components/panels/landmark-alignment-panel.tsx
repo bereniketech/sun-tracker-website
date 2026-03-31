@@ -3,9 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { findLandmarkAlignmentEvents } from "@/lib/landmark-alignment";
 import { LANDMARKS, getLandmarkById } from "@/lib/landmarks";
-import { CITY_SEEDS } from "@/lib/cities-data";
+import { findNearestCitySlug } from "@/lib/cities-data";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
-import type { AlignmentEvent, Landmark } from "@/types/sun";
+import type { AlignmentEvent } from "@/types/sun";
 
 const WEEKDAY_LABELS = ["S", "M", "T", "W", "T", "F", "S"] as const;
 const YEAR_WINDOW = 2;
@@ -57,11 +57,35 @@ function yearOptions(centerYear: number): number[] {
 }
 
 export function LandmarkAlignmentPanel() {
+  const location = useSunTrackerStore((state) => state.location);
   const dateTime = useSunTrackerStore((state) => state.dateTime);
   const selectedLandmark = useSunTrackerStore((state) => state.selectedLandmark);
   const setSelectedLandmark = useSunTrackerStore((state) => state.setSelectedLandmark);
 
   const [selectedYear, setSelectedYear] = useState<number>(dateTime.getFullYear());
+
+  const nearestCitySlug = useMemo(
+    () => findNearestCitySlug(location.lat, location.lng),
+    [location.lat, location.lng],
+  );
+
+  const cityLandmarks = useMemo(() => {
+    if (!nearestCitySlug) {
+      return [];
+    }
+    return LANDMARKS.filter((lm) => lm.citySlug === nearestCitySlug);
+  }, [nearestCitySlug]);
+
+  // Clear selected landmark when city changes and it no longer belongs to the new city
+  useEffect(() => {
+    if (
+      selectedLandmark &&
+      nearestCitySlug &&
+      selectedLandmark.citySlug !== nearestCitySlug
+    ) {
+      setSelectedLandmark(null);
+    }
+  }, [nearestCitySlug, selectedLandmark, setSelectedLandmark]);
 
   useEffect(() => {
     setSelectedYear(dateTime.getFullYear());
@@ -112,35 +136,14 @@ export function LandmarkAlignmentPanel() {
               }}
               aria-label="Select a landmark"
             >
-              <option value="">Choose a landmark</option>
-              {(() => {
-                const cityNameMap = new Map(CITY_SEEDS.map((c) => [c.slug, c.name]));
-                const grouped = new Map<string, Landmark[]>();
-                const ungrouped: Landmark[] = [];
-                for (const lm of LANDMARKS) {
-                  if (lm.citySlug) {
-                    const list = grouped.get(lm.citySlug) ?? [];
-                    list.push(lm);
-                    grouped.set(lm.citySlug, list);
-                  } else {
-                    ungrouped.push(lm);
-                  }
-                }
-                return (
-                  <>
-                    {ungrouped.map((lm) => (
-                      <option key={lm.id} value={lm.id}>{lm.name}</option>
-                    ))}
-                    {Array.from(grouped.entries()).map(([slug, cityLandmarks]) => (
-                      <optgroup key={slug} label={cityNameMap.get(slug) ?? slug}>
-                        {cityLandmarks.map((lm) => (
-                          <option key={lm.id} value={lm.id}>{lm.name}</option>
-                        ))}
-                      </optgroup>
-                    ))}
-                  </>
-                );
-              })()}
+              <option value="">
+                {cityLandmarks.length === 0
+                  ? "No landmarks near this location"
+                  : "Choose a landmark"}
+              </option>
+              {cityLandmarks.map((lm) => (
+                <option key={lm.id} value={lm.id}>{lm.name}</option>
+              ))}
             </select>
           </label>
 
