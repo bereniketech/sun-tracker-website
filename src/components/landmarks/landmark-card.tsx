@@ -25,28 +25,24 @@ export function LandmarkCard({ landmark, locationLabel }: LandmarkCardProps) {
       }`}
     >
       {/* Header row */}
-      <div className="flex items-start justify-between gap-3 mb-4">
-        <div className="min-w-0">
-          <div className="relative max-w-full">
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 rounded-md bg-gradient-to-r from-amber-100/90 via-amber-50/60 to-transparent"
-            />
-            <h3 className="relative block truncate px-1 font-headline text-lg font-bold text-amber-700">
+      <div className="mb-4 -mx-5 -mt-5 w-auto bg-gradient-to-r from-amber-100/90 via-amber-50/60 to-orange-50/40 px-5 pb-2 pt-4 sm:pt-5">
+        <div className="flex min-h-[3.5rem] w-full items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <h3 className="block truncate font-headline text-lg font-bold text-amber-700">
               {landmark.name}
             </h3>
+            {locationLabel && (
+              <p className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">
+                {locationLabel}
+              </p>
+            )}
           </div>
-          {locationLabel && (
-            <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1">
-              {locationLabel}
-            </p>
+          {landmark.category && (
+            <span className="shrink-0 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium uppercase tracking-wider text-primary">
+              {landmark.category}
+            </span>
           )}
         </div>
-        {landmark.category && (
-          <span className="shrink-0 text-xs font-medium uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-full">
-            {landmark.category}
-          </span>
-        )}
       </div>
 
       {/* Data row */}
