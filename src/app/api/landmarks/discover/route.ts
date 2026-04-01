@@ -220,43 +220,38 @@ export async function POST(request: Request) {
   }
 
   const supabase = getServiceRoleClient();
-  if (!supabase) {
-    return NextResponse.json(
-      { error: "Database not configured." },
-      { status: 503 },
-    );
-  }
-
   const citySlug = toSlug(locationName);
 
-  // Ensure a city row exists to satisfy the FK constraint on landmarks.city_slug
-  await supabase
-    .from("cities")
-    .upsert(
-      { slug: citySlug, name: locationName, country: "Unknown", lat, lng, timezone: "UTC" },
-      { onConflict: "slug", ignoreDuplicates: true },
-    );
+  if (supabase) {
+    // Ensure a city row exists to satisfy the FK constraint on landmarks.city_slug
+    await supabase
+      .from("cities")
+      .upsert(
+        { slug: citySlug, name: locationName, country: "Unknown", lat, lng, timezone: "UTC" },
+        { onConflict: "slug", ignoreDuplicates: true },
+      );
 
-  // Check if landmarks already exist for this city
-  const { data: existing } = await supabase
-    .from("landmarks")
-    .select("landmark_id")
-    .eq("city_slug", citySlug)
-    .limit(1);
-
-  if (existing && existing.length > 0) {
-    // Already have landmarks for this city — fetch and return them
-    const { data: allExisting } = await supabase
+    // Check if landmarks already exist for this city
+    const { data: existing } = await supabase
       .from("landmarks")
-      .select("*")
+      .select("landmark_id")
       .eq("city_slug", citySlug)
-      .order("name");
+      .limit(1);
 
-    return NextResponse.json({
-      landmarks: (allExisting ?? []).map(mapRow),
-      source: "cache",
-      citySlug,
-    });
+    if (existing && existing.length > 0) {
+      // Already have landmarks for this city — fetch and return them
+      const { data: allExisting } = await supabase
+        .from("landmarks")
+        .select("*")
+        .eq("city_slug", citySlug)
+        .order("name");
+
+      return NextResponse.json({
+        landmarks: (allExisting ?? []).map(mapRow),
+        source: "cache",
+        citySlug,
+      });
+    }
   }
 
   // Fetch from Overpass API
@@ -301,7 +296,16 @@ export async function POST(request: Request) {
     });
   }
 
-  // Upsert landmarks into DB
+  // Upsert landmarks into DB when Supabase is available
+  if (!supabase) {
+    // No DB — return Overpass results directly without persisting
+    return NextResponse.json({
+      landmarks: rows.map(mapRow),
+      source: "overpass",
+      citySlug,
+    });
+  }
+
   const { error: upsertError } = await supabase
     .from("landmarks")
     .upsert(rows, { onConflict: "landmark_id" });
