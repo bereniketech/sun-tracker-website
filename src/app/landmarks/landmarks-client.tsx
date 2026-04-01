@@ -34,6 +34,19 @@ export default function LandmarksClient() {
   const [isLoading, setIsLoading] = useState(true);
   const [isDiscovering, setIsDiscovering] = useState(false);
 
+  const storeLocation = useSunTrackerStore((state) => state.location);
+  const storeLocationName = useSunTrackerStore((state) => state.locationName);
+
+  // Sync cityFilter when the user picks a new location via the search bar
+  useEffect(() => {
+    const nearest = findNearestCitySlug(storeLocation.lat, storeLocation.lng);
+    if (nearest) {
+      setCityFilter(nearest);
+    } else if (storeLocationName) {
+      setCityFilter(toSlug(storeLocationName));
+    }
+  }, [storeLocation.lat, storeLocation.lng, storeLocationName]);
+
   const cityNameMap = useMemo(() => {
     const map = new Map(CITY_SEEDS.map((c) => [c.slug, c.name]));
     // Add display names from discovered landmarks (e.g. "kuwait" → "Kuwait")
@@ -68,13 +81,24 @@ export default function LandmarksClient() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ lat: location.lat, lng: location.lng, locationName }),
       });
-      if (!res.ok) return;
+      if (!res.ok) {
+        // Discover unavailable — fall back to all landmarks
+        setLandmarks(LANDMARKS);
+        setCityFilter("all");
+        return;
+      }
       const data = await res.json();
       if (data.landmarks?.length > 0) {
         setLandmarks(data.landmarks);
+      } else {
+        // Nothing found nearby — fall back to all landmarks
+        setLandmarks(LANDMARKS);
+        setCityFilter("all");
       }
     } catch {
-      // Discovery failed silently — user still sees empty state
+      // Discovery failed — fall back to all landmarks
+      setLandmarks(LANDMARKS);
+      setCityFilter("all");
     } finally {
       setIsDiscovering(false);
     }
@@ -99,6 +123,7 @@ export default function LandmarksClient() {
         } else if (cityFilter !== "all") {
           // No landmarks found for this city — try discovering from OpenStreetMap
           setLandmarks([]);
+          setIsDiscovering(true);
           void discoverLandmarks(cityFilter);
         } else {
           setLandmarks(LANDMARKS);
