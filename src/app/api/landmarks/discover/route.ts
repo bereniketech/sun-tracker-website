@@ -183,7 +183,7 @@ function deduplicateRows(rows: LandmarkInsertRow[]): LandmarkInsertRow[] {
 
 // ─── Row mapper ─────────────────────────────────────────────────────
 
-function mapRow(row: Record<string, unknown>) {
+function mapRow(row: LandmarkInsertRow) {
   return {
     id: row.landmark_id,
     name: row.name,

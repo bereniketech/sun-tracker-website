@@ -344,7 +344,6 @@ export function SearchBar({ onLocationSelect, onClose }: SearchBarProps) {
     );
   };
 
-  const normalizedQuery = normalizeSearchQuery(query);
   const hasLandmarkMatches = matchedLandmarks.length > 0;
   const showSuggestions =
     hasLandmarkMatches || isDiscovering || suggestions.length > 0 || isSearching || Boolean(searchError);
