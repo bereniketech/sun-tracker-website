@@ -1,7 +1,7 @@
 "use client";
 
 import { type FormEvent, useCallback, useEffect, useId, useRef, useState } from "react";
-import { LoaderCircle, LocateFixed, MapPin, Search, Sparkles } from "lucide-react";
+import { LoaderCircle, LocateFixed, Search, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   createSearchCacheKey,
@@ -425,9 +425,8 @@ export function SearchBar({ onLocationSelect, onClose }: SearchBarProps) {
                           type="button"
                           onClick={() => handleLandmarkSelect(lm)}
                           aria-label={`Select ${lm.name}`}
-                          className="flex w-full items-start gap-3 rounded-xl bg-sky-50 px-3 py-2 text-left transition hover:bg-sky-100 focus:bg-sky-100 focus:outline-none"
+                          className="w-full rounded-xl bg-sky-50 px-3 py-2 text-left transition hover:bg-sky-100 focus:bg-sky-100 focus:outline-none"
                         >
-                          <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-sky-600" />
                           <div>
                             <span className="text-sm font-semibold text-slate-900">{lm.name}</span>
                             <span className="block text-xs text-slate-500">
