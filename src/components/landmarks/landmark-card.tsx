@@ -27,7 +27,7 @@ export function LandmarkCard({ landmark, locationLabel }: LandmarkCardProps) {
       {/* Header row */}
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="min-w-0">
-          <h3 className="block truncate bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 bg-clip-text font-headline text-lg font-bold text-transparent">
+          <h3 className="block truncate bg-gradient-to-r from-primary to-primary-container bg-clip-text font-headline text-lg font-bold text-transparent">
             {landmark.name}
           </h3>
           {locationLabel && (
