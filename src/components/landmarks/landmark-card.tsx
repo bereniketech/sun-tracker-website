@@ -27,9 +27,15 @@ export function LandmarkCard({ landmark, locationLabel }: LandmarkCardProps) {
       {/* Header row */}
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="min-w-0">
-          <h3 className="block truncate bg-gradient-to-r from-primary to-primary-container bg-clip-text font-headline text-lg font-bold text-transparent">
-            {landmark.name}
-          </h3>
+          <div className="relative max-w-full">
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 rounded-md bg-gradient-to-r from-amber-100/90 via-amber-50/60 to-transparent"
+            />
+            <h3 className="relative block truncate px-1 font-headline text-lg font-bold text-amber-700">
+              {landmark.name}
+            </h3>
+          </div>
           {locationLabel && (
             <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1">
               {locationLabel}

@@ -1,7 +1,7 @@
 "use client";
 
 import { type FormEvent, useCallback, useEffect, useId, useRef, useState } from "react";
-import { LoaderCircle, LocateFixed, Search, Sparkles } from "lucide-react";
+import { LoaderCircle, LocateFixed, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   createSearchCacheKey,
@@ -353,11 +353,6 @@ export function SearchBar({ onLocationSelect, onClose }: SearchBarProps) {
   return (
     <section className="grid gap-4 rounded-[1.75rem] border border-slate-200 bg-white/95 p-4 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur md:p-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(18rem,1fr)]">
       <div className="space-y-3">
-        <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
-          <Search className="h-4 w-4" />
-          Search
-        </div>
-
         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
           <label htmlFor={inputId} className="text-sm font-medium text-slate-900">
             Search for a place
