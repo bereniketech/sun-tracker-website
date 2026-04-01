@@ -27,9 +27,16 @@ export function LandmarkCard({ landmark }: LandmarkCardProps) {
       {/* Header row */}
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="min-w-0">
-          <h3 className="font-headline text-lg font-bold text-foreground truncate">
-            {landmark.name}
-          </h3>
+          <div className="flex items-center gap-2 min-w-0">
+            <h3 className="font-headline text-lg font-bold text-orange-600 truncate">
+              {landmark.name}
+            </h3>
+            {landmark.category && (
+              <span className="shrink-0 border-l border-orange-200 pl-2 inline-block text-xs font-medium uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-full">
+                {landmark.category}
+              </span>
+            )}
+          </div>
           {landmark.location && (
             <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1">
               {landmark.location}
@@ -42,15 +49,6 @@ export function LandmarkCard({ landmark }: LandmarkCardProps) {
           </span>
         )}
       </div>
-
-      {/* Category badge */}
-      {landmark.category && (
-        <div className="mb-4">
-          <span className="inline-block text-xs font-medium uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-full">
-            {landmark.category}
-          </span>
-        </div>
-      )}
 
       {/* Data row */}
       <div className="grid grid-cols-3 gap-4 text-center border-t border-surface-variant/20 pt-3">
