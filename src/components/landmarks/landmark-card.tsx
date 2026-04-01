@@ -5,13 +5,13 @@ import { useSunTrackerStore } from "@/store/sun-tracker-store";
 
 interface LandmarkCardProps {
   landmark: Landmark & {
-    location?: string;
     currentAzimuth?: number;
     currentAltitude?: number;
   };
+  locationLabel?: string;
 }
 
-export function LandmarkCard({ landmark }: LandmarkCardProps) {
+export function LandmarkCard({ landmark, locationLabel }: LandmarkCardProps) {
   const { selectedLandmark, setSelectedLandmark } = useSunTrackerStore();
   const isSelected = selectedLandmark?.id === landmark.id;
   const isVisible =
@@ -27,25 +27,18 @@ export function LandmarkCard({ landmark }: LandmarkCardProps) {
       {/* Header row */}
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="min-w-0">
-          <div className="flex items-center gap-2 min-w-0">
-            <h3 className="font-headline text-lg font-bold text-orange-600 truncate">
-              {landmark.name}
-            </h3>
-            {landmark.category && (
-              <span className="shrink-0 border-l border-orange-200 pl-2 inline-block text-xs font-medium uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-full">
-                {landmark.category}
-              </span>
-            )}
-          </div>
-          {landmark.location && (
+          <h3 className="font-headline text-lg font-bold text-amber-500 truncate">
+            {landmark.name}
+          </h3>
+          {locationLabel && (
             <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1">
-              {landmark.location}
+              {locationLabel}
             </p>
           )}
         </div>
-        {isSelected && (
-          <span className="shrink-0 bg-orange-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
-            LIVE TRACKING
+        {landmark.category && (
+          <span className="shrink-0 text-xs font-medium uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-full">
+            {landmark.category}
           </span>
         )}
       </div>
