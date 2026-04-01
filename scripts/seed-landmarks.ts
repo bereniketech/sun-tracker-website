@@ -10,7 +10,6 @@ interface LandmarkInsertRow {
   location: string | null;
   city_slug: string | null;
   category: string;
-  image_gradient: string | null;
   updated_at: string;
 }
 
@@ -34,7 +33,6 @@ function createRows(): LandmarkInsertRow[] {
     location: lm.location ?? null,
     city_slug: lm.citySlug ?? null,
     category: lm.category ?? "historic",
-    image_gradient: lm.imageGradient ?? null,
     updated_at,
   }));
 }

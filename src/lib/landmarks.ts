@@ -5,10 +5,6 @@ import { LANDMARKS_DATA } from "@/lib/landmarks-data";
 // ─── Fallback: static seed data used when Supabase is unavailable ───
 const FALLBACK_LANDMARKS: Landmark[] = LANDMARKS_DATA;
 
-// ─── Static image map: id → imageUrl, for merging into DB results ──
-const STATIC_IMAGE_MAP = new Map<string, string>(
-  FALLBACK_LANDMARKS.filter((l) => l.imageUrl).map((l) => [l.id, l.imageUrl as string]),
-);
 // ─── DB row → Landmark mapping ──────────────────────────────────────
 
 function mapRowToLandmark(row: Record<string, unknown>): Landmark | null {
@@ -31,9 +27,6 @@ function mapRowToLandmark(row: Record<string, unknown>): Landmark | null {
     location: typeof row.location === "string" ? row.location : undefined,
     citySlug: typeof row.city_slug === "string" ? row.city_slug : undefined,
     category: isValidCategory(row.category) ? row.category : undefined,
-    imageGradient:
-      typeof row.image_gradient === "string" ? row.image_gradient : undefined,
-    imageUrl: typeof row.image_url === "string" ? row.image_url : undefined,
   };
 }
 
@@ -93,7 +86,6 @@ export async function getAllLandmarks(): Promise<Landmark[]> {
   const rows = data
     .map((row) => mapRowToLandmark(row as Record<string, unknown>))
     .filter((row): row is Landmark => row !== null)
-    .map((lm) => (lm.imageUrl ? lm : { ...lm, imageUrl: STATIC_IMAGE_MAP.get(lm.id) }));
 
   return rows.length > 0 ? rows : FALLBACK_LANDMARKS;
 }
@@ -120,7 +112,6 @@ export async function getLandmarksByCitySlugAsync(
   return data
     .map((row) => mapRowToLandmark(row as Record<string, unknown>))
     .filter((row): row is Landmark => row !== null)
-    .map((lm) => (lm.imageUrl ? lm : { ...lm, imageUrl: STATIC_IMAGE_MAP.get(lm.id) }));
 }
 
 // ─── Synchronous helpers (use fallback data) ────────────────────────

@@ -128,7 +128,6 @@ export function SearchBar({ onLocationSelect, onClose }: SearchBarProps) {
             location: typeof row.location === "string" ? row.location : undefined,
             citySlug: typeof row.city_slug === "string" ? row.city_slug : undefined,
             category: typeof row.category === "string" ? (row.category as Landmark["category"]) : undefined,
-            imageGradient: typeof row.image_gradient === "string" ? row.image_gradient : undefined,
           }))
           .filter((lm) => lm.name.length > 0);
 

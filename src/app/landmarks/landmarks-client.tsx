@@ -13,7 +13,6 @@ type FilterCategory = "all" | "historic" | "religious" | "monument" | "modern" |
 
 interface LandmarkWithData extends Landmark {
   location?: string;
-  imageGradient?: string;
   currentAzimuth?: number;
   currentAltitude?: number;
 }
@@ -236,7 +235,7 @@ export default function LandmarksClient() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {sortedLandmarks.map((landmark, index) => (
-                <LandmarkCard key={landmark.id} landmark={landmark} loadDelay={index * 300} />
+                <LandmarkCard key={landmark.id} landmark={landmark} />
               ))}
             </div>
           )}

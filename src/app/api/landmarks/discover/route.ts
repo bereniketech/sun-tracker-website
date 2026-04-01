@@ -193,8 +193,6 @@ function mapRow(row: Record<string, unknown>) {
     location: row.location,
     citySlug: row.city_slug,
     category: row.category,
-    imageGradient: row.image_gradient,
-    imageUrl: row.image_url ?? null,
   };
 }
 

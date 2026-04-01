@@ -29,9 +29,6 @@ export async function CityLandmarksSection({ citySlug, cityName }: CityLandmarks
             key={landmark.id}
             className="rounded-lg border bg-white p-4 transition hover:shadow-md"
           >
-            <div
-              className={`mb-3 h-24 rounded-md bg-gradient-to-br ${landmark.imageGradient ?? "from-slate-700 to-slate-900"}`}
-            />
             <h3 className="font-semibold text-slate-900">{landmark.name}</h3>
             <p className="mt-1 text-xs text-slate-500">
               Axis {Math.round(landmark.orientationAzimuth)}&deg; &middot;{" "}
