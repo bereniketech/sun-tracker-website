@@ -39,7 +39,11 @@ export interface DiscoverResult {
 
 // ─── Constants ──────────────────────────────────────────────────────
 
-const OVERPASS_API = "https://overpass-api.de/api/interpreter";
+const OVERPASS_ENDPOINTS = [
+  "https://overpass-api.de/api/interpreter",
+  "https://overpass.kumi.systems/api/interpreter",
+  "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+];
 const SEARCH_RADIUS_M = 15000;
 const MAX_LANDMARKS = 15;
 
@@ -260,25 +264,35 @@ export async function discoverLandmarksForCity(
     }
   }
 
-  // Fetch from Overpass API
+  // Fetch from Overpass API with fallback servers
   const query = buildOverpassQuery(lat, lng);
 
-  let overpassData: OverpassResponse;
-  try {
-    const response = await fetch(OVERPASS_API, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `data=${encodeURIComponent(query)}`,
-      signal: AbortSignal.timeout(20000),
-    });
+  let overpassData: OverpassResponse | null = null;
+  for (const endpoint of OVERPASS_ENDPOINTS) {
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `data=${encodeURIComponent(query)}`,
+        signal: AbortSignal.timeout(20000),
+      });
 
-    if (!response.ok) {
-      return { landmarks: [], source: "overpass", citySlug, message: "Overpass API unavailable." };
+      if (!response.ok) continue;
+
+      const text = await response.text();
+      // Guard against HTML error pages from overloaded servers
+      if (text.startsWith("<") || !text.startsWith("{")) continue;
+
+      overpassData = JSON.parse(text) as OverpassResponse;
+      if (overpassData.elements) break;
+      overpassData = null;
+    } catch {
+      // Try next endpoint
     }
+  }
 
-    overpassData = (await response.json()) as OverpassResponse;
-  } catch {
-    return { landmarks: [], source: "overpass", citySlug, message: "Failed to fetch from OpenStreetMap." };
+  if (!overpassData) {
+    return { landmarks: [], source: "overpass", citySlug, message: "All landmark discovery services are busy. Please try again." };
   }
 
   const rows = deduplicateRows(

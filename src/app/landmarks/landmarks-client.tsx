@@ -33,6 +33,7 @@ export default function LandmarksClient() {
   const [sortBy, setSortBy] = useState<"proximity" | "name">("proximity");
   const [isLoading, setIsLoading] = useState(true);
   const [isDiscovering, setIsDiscovering] = useState(false);
+  const [discoveryError, setDiscoveryError] = useState<string | null>(null);
 
   const storeLocation = useSunTrackerStore((state) => state.location);
   const storeLocationName = useSunTrackerStore((state) => state.locationName);
@@ -72,9 +73,12 @@ export default function LandmarksClient() {
 
   // Fetch landmark data from API (auto-discovers unknown cities server-side)
   useEffect(() => {
+    let cancelled = false;
+
     async function fetchLandmarks() {
       try {
         setIsLoading(true);
+        setDiscoveryError(null);
         const params = new URLSearchParams();
         if (cityFilter !== "all") params.set("city", cityFilter);
         if (filter !== "all") params.set("category", filter);
@@ -89,26 +93,39 @@ export default function LandmarksClient() {
 
         const url = `/api/landmarks${params.toString() ? `?${params.toString()}` : ""}`;
         const response = await fetch(url);
+        if (cancelled) return;
         if (!response.ok) throw new Error("Failed to fetch landmarks");
         const data = await response.json();
         const fetched = data.landmarks ?? [];
 
         if (fetched.length > 0) {
           setLandmarks(fetched);
-        } else {
+        } else if (cityFilter === "all") {
           setLandmarks(LANDMARKS);
-          if (cityFilter !== "all") setCityFilter("all");
+        } else {
+          // Keep the city filter active so the user sees the empty state for their city
+          setLandmarks([]);
+          setDiscoveryError("No landmarks found for this location. Try searching a nearby city.");
         }
       } catch {
-        setLandmarks(LANDMARKS);
+        if (!cancelled) {
+          setLandmarks(LANDMARKS);
+          if (cityFilter !== "all") {
+            setDiscoveryError("Could not load landmarks. Please try again.");
+          }
+        }
       } finally {
-        setIsLoading(false);
-        setIsDiscovering(false);
+        if (!cancelled) {
+          setIsLoading(false);
+          setIsDiscovering(false);
+        }
       }
     }
 
     if (cityFilter !== "all") setIsDiscovering(true);
     fetchLandmarks();
+
+    return () => { cancelled = true; };
   }, [cityFilter, filter]);
 
   // Filter landmarks based on category and city
@@ -253,16 +270,34 @@ export default function LandmarksClient() {
           {/* Empty state */}
           {!isLoading && !isDiscovering && sortedLandmarks.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="text-muted-foreground mb-2">No landmarks found</div>
-              <button
-                onClick={() => {
-                  setFilter("all");
-                  setCityFilter("all");
-                }}
-                className="text-sm text-primary hover:underline"
-              >
-                View all landmarks
-              </button>
+              <div className="text-muted-foreground mb-2">
+                {discoveryError ?? "No landmarks found"}
+              </div>
+              <div className="flex gap-3 mt-2">
+                {cityFilter !== "all" && (
+                  <button
+                    onClick={() => {
+                      // Retry discovery by toggling filter to force re-fetch
+                      const current = cityFilter;
+                      setCityFilter("all");
+                      setTimeout(() => setCityFilter(current), 50);
+                    }}
+                    className="text-sm text-primary hover:underline"
+                  >
+                    Retry
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    setFilter("all");
+                    setCityFilter("all");
+                    setDiscoveryError(null);
+                  }}
+                  className="text-sm text-primary hover:underline"
+                >
+                  View all landmarks
+                </button>
+              </div>
             </div>
           )}
 
