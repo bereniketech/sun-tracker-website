@@ -25,8 +25,8 @@ export function LandmarkCard({ landmark, locationLabel }: LandmarkCardProps) {
       }`}
     >
       {/* Header row */}
-      <div className="mb-4 -mx-5 -mt-5 w-auto bg-gradient-to-r from-amber-100/90 via-amber-50/60 to-orange-50/40 px-5 pb-2 pt-4 sm:pt-5">
-        <div className="flex min-h-[3.5rem] w-full items-start justify-between gap-3">
+      <div className="mb-4 -mx-5 -mt-5 w-auto bg-gradient-to-r from-amber-300/85 via-orange-200/65 to-orange-100/45 px-5 pb-1.5 pt-3 sm:pt-3.5">
+        <div className="flex min-h-[2.6rem] w-full items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             <h3 className="block truncate font-headline text-lg font-bold text-amber-700">
               {landmark.name}
