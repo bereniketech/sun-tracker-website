@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { LANDMARKS } from "@/lib/landmarks";
 import { findNearestCitySlug, CITY_SEEDS } from "@/lib/cities-data";
 import { toSlug } from "@/lib/slug";
@@ -70,41 +70,7 @@ export default function LandmarksClient() {
     return Array.from(slugs).sort();
   }, [landmarks]);
 
-  const discoverLandmarks = useCallback(async (slug: string) => {
-    const { location, locationName } = useSunTrackerStore.getState();
-    if (!locationName || slug === "all") return;
-
-    setIsDiscovering(true);
-    try {
-      const res = await fetch("/api/landmarks/discover", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lat: location.lat, lng: location.lng, locationName }),
-      });
-      if (!res.ok) {
-        // Discover unavailable — fall back to all landmarks
-        setLandmarks(LANDMARKS);
-        setCityFilter("all");
-        return;
-      }
-      const data = await res.json();
-      if (data.landmarks?.length > 0) {
-        setLandmarks(data.landmarks);
-      } else {
-        // Nothing found nearby — fall back to all landmarks
-        setLandmarks(LANDMARKS);
-        setCityFilter("all");
-      }
-    } catch {
-      // Discovery failed — fall back to all landmarks
-      setLandmarks(LANDMARKS);
-      setCityFilter("all");
-    } finally {
-      setIsDiscovering(false);
-    }
-  }, []);
-
-  // Fetch landmark data from API
+  // Fetch landmark data from API (auto-discovers unknown cities server-side)
   useEffect(() => {
     async function fetchLandmarks() {
       try {
@@ -112,6 +78,15 @@ export default function LandmarksClient() {
         const params = new URLSearchParams();
         if (cityFilter !== "all") params.set("city", cityFilter);
         if (filter !== "all") params.set("category", filter);
+
+        // Pass location info so the API can auto-discover landmarks for unknown cities
+        const { location, locationName } = useSunTrackerStore.getState();
+        if (cityFilter !== "all" && locationName) {
+          params.set("lat", String(location.lat));
+          params.set("lng", String(location.lng));
+          params.set("locationName", locationName);
+        }
+
         const url = `/api/landmarks${params.toString() ? `?${params.toString()}` : ""}`;
         const response = await fetch(url);
         if (!response.ok) throw new Error("Failed to fetch landmarks");
@@ -120,23 +95,21 @@ export default function LandmarksClient() {
 
         if (fetched.length > 0) {
           setLandmarks(fetched);
-        } else if (cityFilter !== "all") {
-          // No landmarks found for this city — try discovering from OpenStreetMap
-          setLandmarks([]);
-          setIsDiscovering(true);
-          void discoverLandmarks(cityFilter);
         } else {
           setLandmarks(LANDMARKS);
+          if (cityFilter !== "all") setCityFilter("all");
         }
       } catch {
         setLandmarks(LANDMARKS);
       } finally {
         setIsLoading(false);
+        setIsDiscovering(false);
       }
     }
 
+    if (cityFilter !== "all") setIsDiscovering(true);
     fetchLandmarks();
-  }, [cityFilter, filter, discoverLandmarks]);
+  }, [cityFilter, filter]);
 
   // Filter landmarks based on category and city
   const filteredLandmarks = landmarks.filter((landmark) => {
