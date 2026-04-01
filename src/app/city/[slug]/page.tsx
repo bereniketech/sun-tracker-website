@@ -11,7 +11,12 @@ import {
   buildDataset,
 } from "@/lib/schema";
 import { computeSunData } from "@/lib/sun";
-import { getAllCities, getCityBySlug, getRelatedCities } from "@/lib/cities";
+import {
+  computeMonthlySunSnapshots,
+  getAllCities,
+  getCityBySlug,
+  getRelatedCities,
+} from "@/lib/cities";
 import type { MonthlySunSnapshot } from "@/types/cities";
 
 export const revalidate = 86400;
@@ -88,20 +93,27 @@ export default async function CityPage({ params }: CityPageProps) {
   }
 
   const todaySunData = computeSunData(city.lat, city.lng, new Date());
-  const monthly = monthlyRows(city.precomputed_data, city.timezone);
+  const monthlyData = city.precomputed_data.length > 0
+    ? city.precomputed_data
+    : computeMonthlySunSnapshots(city.lat, city.lng);
+  const monthly = monthlyRows(monthlyData, city.timezone);
   const relatedCities = await getRelatedCities(city.country, city.slug, 6);
 
-  const sunrisesByTime = city.precomputed_data
+  const sunrisesByTime = monthlyData
     .map((m) => ({ month: m.monthLabel, time: new Date(m.sunriseIso).getTime() }))
+    .filter((item) => Number.isFinite(item.time))
     .sort((a, b) => a.time - b.time);
-  const earliestSunrise = sunrisesByTime[0];
-  const latestSunrise = sunrisesByTime[sunrisesByTime.length - 1];
+  const fallbackSunriseTime = todaySunData.sunrise.getTime();
+  const earliestSunrise = sunrisesByTime[0] ?? { month: "today", time: fallbackSunriseTime };
+  const latestSunrise = sunrisesByTime[sunrisesByTime.length - 1] ?? { month: "today", time: fallbackSunriseTime };
 
-  const sunsetsByTime = city.precomputed_data
+  const sunsetsByTime = monthlyData
     .map((m) => ({ month: m.monthLabel, time: new Date(m.sunsetIso).getTime() }))
+    .filter((item) => Number.isFinite(item.time))
     .sort((a, b) => a.time - b.time);
-  const earliestSunset = sunsetsByTime[0];
-  const latestSunset = sunsetsByTime[sunsetsByTime.length - 1];
+  const fallbackSunsetTime = todaySunData.sunset.getTime();
+  const earliestSunset = sunsetsByTime[0] ?? { month: "today", time: fallbackSunsetTime };
+  const latestSunset = sunsetsByTime[sunsetsByTime.length - 1] ?? { month: "today", time: fallbackSunsetTime };
 
   const todaySunriseStr = formatTimeForZone(todaySunData.sunrise.toISOString(), city.timezone);
   const todaySunsetStr = formatTimeForZone(todaySunData.sunset.toISOString(), city.timezone);
