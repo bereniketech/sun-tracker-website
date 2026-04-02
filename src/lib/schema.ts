@@ -5,8 +5,18 @@ export function buildWebSite() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: SITE_NAME,
+    alternateName: "Sun Tracker",
     description: SITE_DESCRIPTION,
     url: siteUrl("/"),
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: siteUrl("/"),
+      logo: {
+        "@type": "ImageObject",
+        url: siteUrl("/icon.svg"),
+      },
+    },
     potentialAction: {
       "@type": "SearchAction",
       target: {
@@ -14,6 +24,19 @@ export function buildWebSite() {
         urlTemplate: `${siteUrl("/")}?lat={latitude}&lng={longitude}`,
       },
       "query-input": "required name=latitude required name=longitude",
+    },
+  };
+}
+
+export function buildOrganization() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: SITE_NAME,
+    url: siteUrl("/"),
+    logo: {
+      "@type": "ImageObject",
+      url: siteUrl("/icon.svg"),
     },
   };
 }

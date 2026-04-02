@@ -7,7 +7,7 @@ import "leaflet/dist/leaflet.css";
 import { BottomNav } from "@/components/shell/bottom-nav";
 import { TopBar } from "@/components/shell/top-bar";
 import { JsonLd } from "@/components/seo/json-ld";
-import { buildWebSite, buildSoftwareApplication } from "@/lib/schema";
+import { buildOrganization, buildWebSite, buildSoftwareApplication } from "@/lib/schema";
 import { SITE_NAME, SITE_DESCRIPTION, siteUrl } from "@/lib/seo-constants";
 import "./globals.css";
 
@@ -39,6 +39,8 @@ export const metadata: Metadata = {
   },
   description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
   keywords: [
     "sun tracker",
     "sun tracking",
@@ -114,7 +116,7 @@ export default function RootLayout({
           </div>
         </main>
         <BottomNav />
-        <JsonLd data={[buildWebSite(), buildSoftwareApplication()]} />
+        <JsonLd data={[buildOrganization(), buildWebSite(), buildSoftwareApplication()]} />
         <Analytics />
         <SpeedInsights />
       </body>
