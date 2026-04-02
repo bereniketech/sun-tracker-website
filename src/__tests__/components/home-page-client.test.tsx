@@ -71,7 +71,7 @@ describe("HomePageClient", () => {
     });
   });
 
-  it("renders the live dashboard header with solar metric cards", () => {
+  it("renders the homepage hero copy with solar metric cards", () => {
     useSunTrackerStore.setState({
       location: { lat: 40.7128, lng: -74.006 },
       locationName: "New York City",
@@ -86,7 +86,8 @@ describe("HomePageClient", () => {
     });
     expect(useSunTrackerStore.getState().locationName).toBe("New York City");
     expect(screen.getByTestId("interactive-map")).toBeInTheDocument();
-    expect(screen.getByText("LIVE CELESTIAL TRACKING")).toBeInTheDocument();
+    expect(screen.getByText("REAL-TIME SUN TRACKER")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Track the Sun in Real Time" })).toBeInTheDocument();
     expect(screen.getByText("New York City")).toBeInTheDocument();
     expect(screen.getByText("SOLAR ZENITH")).toBeInTheDocument();
     expect(screen.getByText("AZIMUTH")).toBeInTheDocument();

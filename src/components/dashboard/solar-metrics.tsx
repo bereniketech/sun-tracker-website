@@ -79,12 +79,23 @@ export function SolarMetrics({ sunData, locationName, coordinates }: SolarMetric
           <div className="hero-sun-rays" />
           <div className="relative z-10">
             <p className="shimmer-text text-xs font-label font-semibold tracking-widest uppercase">
-              LIVE CELESTIAL TRACKING
+              REAL-TIME SUN TRACKER
             </p>
             <h1 className="mt-2 font-headline text-3xl font-bold text-white md:text-4xl">
-              {locationName}
+              Track the Sun in Real Time
             </h1>
-            <p className="mt-1 text-sm text-white/60">{coordinates}</p>
+            <p className="mt-3 max-w-2xl text-sm text-white/75 md:text-base">
+              See sunrise, sunset, golden hour, and blue hour timing for any location with
+              live solar direction and map controls.
+            </p>
+            <div className="mt-4 flex flex-col gap-1 text-sm text-white/65 md:flex-row md:flex-wrap md:items-center md:gap-3">
+              <span className="text-[0.65rem] font-label font-semibold uppercase tracking-[0.24em] text-white/55">
+                Current location
+              </span>
+              <span className="text-base font-semibold text-white">{locationName}</span>
+              <span className="hidden text-white/35 md:inline">•</span>
+              <span>{coordinates}</span>
+            </div>
           </div>
         </header>
       </FadeUp>

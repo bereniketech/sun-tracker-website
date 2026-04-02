@@ -4,10 +4,21 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { buildWebPage, buildBreadcrumbList } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Sun Tracker Dashboard - Real-Time Sun Position Map",
+  title: "Real-Time Sun Tracker, Sunrise & Golden Hour Times",
   description:
-    "Track the sun's position in real time on an interactive map. Find sunrise, sunset, golden hour, and blue hour times for any location worldwide. Free sun tracking app and precision solar calculator for photographers and astronomers.",
+    "Track the sun in real time for any location. Get sunrise, sunset, golden hour, and blue hour times on an interactive map built for photographers, travelers, and outdoor planning.",
   alternates: { canonical: "/" },
+  openGraph: {
+    title: "Real-Time Sun Tracker, Sunrise & Golden Hour Times",
+    description:
+      "Track the sun in real time for any location. Get sunrise, sunset, golden hour, and blue hour times on an interactive map built for photographers, travelers, and outdoor planning.",
+    url: "/",
+  },
+  twitter: {
+    title: "Real-Time Sun Tracker, Sunrise & Golden Hour Times",
+    description:
+      "Track the sun in real time for any location. Get sunrise, sunset, golden hour, and blue hour times on an interactive map built for photographers, travelers, and outdoor planning.",
+  },
 };
 
 export default function HomePage() {
@@ -16,8 +27,8 @@ export default function HomePage() {
       <JsonLd
         data={[
           buildWebPage(
-            "Sun Tracker Dashboard",
-            "Real-time sun position tracking with interactive map, sunrise/sunset times, golden hour and blue hour windows for any location.",
+            "Real-Time Sun Tracker, Sunrise & Golden Hour Times",
+            "Track the sun in real time for any location with sunrise, sunset, golden hour, and blue hour timing on an interactive map.",
             "/",
           ),
           buildBreadcrumbList([{ name: "Home", url: "/" }]),
