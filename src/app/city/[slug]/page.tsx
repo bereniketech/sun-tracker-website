@@ -25,6 +25,33 @@ interface CityPageProps {
   params: Promise<{ slug: string }>;
 }
 
+export async function generateMetadata({
+  params,
+}: CityPageProps): Promise<import("next").Metadata> {
+  const { slug } = await params;
+  const city = await getCityBySlug(slug);
+
+  if (!city) {
+    return {
+      title: "City Not Found",
+      robots: { index: false },
+    };
+  }
+
+  return {
+    title: `Sunrise and Sunset Times in ${city.name}, ${city.country}`,
+    description: `Find sunrise, sunset, golden hour, and blue hour times in ${city.name}, ${city.country}. Monthly solar data tables and an interactive sun tracker link for ${city.name}.`,
+    alternates: {
+      canonical: `/city/${city.slug}`,
+    },
+    openGraph: {
+      title: `Sunrise and Sunset Times in ${city.name}, ${city.country}`,
+      description: `Sunrise, sunset, golden hour, and blue hour times for ${city.name}. Monthly solar data for photographers and outdoor planners.`,
+      url: `/city/${city.slug}`,
+    },
+  };
+}
+
 function formatTimeForZone(iso: string, timezone: string): string {
   try {
     return new Intl.DateTimeFormat("en-US", {
