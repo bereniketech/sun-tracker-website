@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { computeSunData } from "@/lib/sun";
+import { fetchWeather } from "@/lib/weather";
 import { DEFAULT_MAP_LOCATION } from "@/components/map/location-utils";
 import type { SunTrackerState } from "@/types/sun";
 
@@ -34,6 +35,9 @@ export const useSunTrackerStore = create<SunTrackerState>((set) => ({
   photographerMode: false,
   isMobile: false,
   calibration: { focusOffset: 0, exposureBias: 0, captureRate: 10 },
+  weatherData: null,
+  weatherLoading: false,
+  weatherError: null,
 
   setLocation: (lat, lng, name) => {
     set((state) => ({
@@ -135,5 +139,27 @@ export const useSunTrackerStore = create<SunTrackerState>((set) => ({
     set((state) => ({
       calibration: { ...state.calibration, ...c },
     }));
+  },
+
+  fetchWeatherForLocation: async (lat, lng) => {
+    set(() => ({
+      weatherLoading: true,
+      weatherError: null,
+    }));
+
+    try {
+      const data = await fetchWeather(lat, lng);
+      set(() => ({
+        weatherData: data,
+        weatherLoading: false,
+        weatherError: null,
+      }));
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      set(() => ({
+        weatherLoading: false,
+        weatherError: errorMessage,
+      }));
+    }
   },
 }));

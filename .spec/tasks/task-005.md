@@ -40,3 +40,25 @@ Integrate the Open-Meteo API (free, no API key) to show a cloud cover and precip
 8. Add `ForecastWidget` to the sidebar or a collapsible panel below the map
 9. Add loading skeleton (`src/components/weather/ForecastSkeleton.tsx`) shown while `weatherLoading` is true
 10. Write `src/__tests__/lib/weather.test.ts` — mock `fetch`, test happy path, test error handling; run `bun test` and `/verify`
+
+## Status
+COMPLETE
+
+## Completed
+2026-04-21T16:15:00Z
+
+## Implementation Summary
+Weather overlay fully implemented with Open-Meteo API integration:
+- `fetchWeather(lat, lng)` function calling Open-Meteo API with full error handling
+- `WeatherData`, `DailyForecast`, `WeatherCurrent` types defined in `src/types/weather.ts`
+- Weather state (data, loading, error) added to Zustand store with `fetchWeatherForLocation` action
+- `useWeatherFetch` hook provides debounced (1000ms) weather fetching on location change
+- `WeatherOverlay.tsx` renders cloud cover as color-coded circle with 5km radius
+- `ForecastWidget.tsx` displays 7-day forecast with cards in horizontal scroll
+- `ForecastCard.tsx` shows day, weather emoji icon, temp range, precipitation %
+- `ForecastSkeleton.tsx` provides loading UI
+- "Cloud cover" toggle added to overlay control UI
+- Integration in `src/components/home-page-client.tsx` with error boundary
+- All 5 unit tests pass (fetchWeather happy path, daily data mapping, error handling, API errors, type structure)
+- Build passes without errors
+- All acceptance criteria met

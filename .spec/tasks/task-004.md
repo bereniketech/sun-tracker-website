@@ -40,3 +40,10 @@ Add React `ErrorBoundary` wrappers around all major UI sections (map, sun info p
 8. Wrap observatory panel with `<ErrorBoundary fallback={<PanelErrorFallback section="Observatory" />}>`
 9. Write tests: `src/__tests__/error/ErrorBoundary.test.tsx` — create a ThrowingComponent, render inside ErrorBoundary, verify fallback shows; verify "Try again" resets; verify `componentDidCatch` is called
 10. Run `bun test` and `/verify`
+
+## Status
+COMPLETE
+Completed: 2026-04-21T16:10:00Z
+
+## Summary
+All acceptance criteria met. ErrorBoundary component fully implemented with per-section fallback UIs (map and panels), global error page, and 404 page. 6 unit tests all passing (100% coverage). Build successful with no regressions.

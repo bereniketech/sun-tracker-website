@@ -1,4 +1,5 @@
 import type { ComparisonLocation } from "@/types/comparison";
+import type { WeatherData } from "@/types/weather";
 
 export type OverlayType =
   | "sunrise-line"
@@ -8,7 +9,8 @@ export type OverlayType =
   | "golden-hour-arc"
   | "blue-hour-arc"
   | "sun-path"
-  | "landmark-alignment";
+  | "landmark-alignment"
+  | "weather";
 
 export interface Landmark {
   id: string;
@@ -78,6 +80,9 @@ export interface SunTrackerState {
   photographerMode: boolean;
   isMobile: boolean;
   calibration: CalibrationState;
+  weatherData: WeatherData | null;
+  weatherLoading: boolean;
+  weatherError: string | null;
   setLocation: (lat: number, lng: number, name?: string) => void;
   setDateTime: (dateTime: Date) => void;
   setAnimating: (isAnimating: boolean) => void;
@@ -88,4 +93,5 @@ export interface SunTrackerState {
   setSelectedLandmark: (landmark: Landmark | null) => void;
   togglePhotographerMode: () => void;
   setCalibration: (c: Partial<CalibrationState>) => void;
+  fetchWeatherForLocation: (lat: number, lng: number) => Promise<void>;
 }

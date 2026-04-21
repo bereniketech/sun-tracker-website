@@ -10,14 +10,19 @@ import { SharePanel } from "@/components/panels/share-panel";
 import { SolarMetrics } from "@/components/dashboard/solar-metrics";
 import { DayCycle } from "@/components/dashboard/day-cycle";
 import { PhotoWindows } from "@/components/dashboard/photo-windows";
+import { ForecastWidget } from "@/components/weather/forecast-widget";
 import { AdUnit } from "@/components/ads/ad-unit";
 import { FadeUp, ScaleIn } from "@/components/motion";
+import { ErrorBoundary } from "@/components/error/ErrorBoundary";
+import { MapErrorFallback } from "@/components/error/MapErrorFallback";
+import { PanelErrorFallback } from "@/components/error/PanelErrorFallback";
 import {
   DEFAULT_MAP_LOCATION,
   formatCoordinatePair,
 } from "@/components/map/location-utils";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
 import { useUrlState } from "@/hooks/use-url-state";
+import { useWeatherFetch } from "@/hooks/use-weather-fetch";
 
 /** Inner component so useSearchParams is inside a Suspense boundary. */
 function UrlStateSyncer() {
@@ -46,6 +51,9 @@ export function HomePageClient() {
     ? formatCoordinatePair(location.lat, location.lng)
     : formatCoordinatePair(DEFAULT_MAP_LOCATION.lat, DEFAULT_MAP_LOCATION.lng);
 
+  // Fetch weather data when location changes (debounced)
+  useWeatherFetch();
+
   return (
     <div className="flex flex-col gap-4">
       <Suspense fallback={null}>
@@ -70,6 +78,13 @@ export function HomePageClient() {
             </div>
           </div>
 
+          {/* Forecast widget */}
+          <div className="glass-card sidebar-card rounded-2xl p-4 relative z-10">
+            <ErrorBoundary fallback={<PanelErrorFallback section="Weather Forecast" />}>
+              <ForecastWidget />
+            </ErrorBoundary>
+          </div>
+
           {/* Day Cycle + Photo Windows shown in left col on mobile, hidden on desktop */}
           <div className="flex flex-col gap-4 lg:hidden">
             <DayCycle sunData={sunData} />
@@ -79,7 +94,9 @@ export function HomePageClient() {
 
         {/* Center col: map */}
         <ScaleIn delay={0.3} className="min-w-0">
-          <InteractiveMap />
+          <ErrorBoundary fallback={<MapErrorFallback />}>
+            <InteractiveMap />
+          </ErrorBoundary>
         </ScaleIn>
 
         {/* Right col: day cycle + photo windows — desktop only */}
@@ -92,7 +109,9 @@ export function HomePageClient() {
       <AdUnit adSlot="3555028435" adFormat="horizontal" className="my-2" />
 
       <FadeUp delay={0.6}>
-        <InfoPanel />
+        <ErrorBoundary fallback={<PanelErrorFallback section="Sun Info" />}>
+          <InfoPanel />
+        </ErrorBoundary>
       </FadeUp>
 
       <p className="sr-only" aria-live="polite">

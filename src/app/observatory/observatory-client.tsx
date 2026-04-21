@@ -4,6 +4,8 @@ import { useSunTrackerStore } from "@/store/sun-tracker-store";
 import { SolarFeed } from "@/components/observatory/solar-feed";
 import { SystemStatus } from "@/components/observatory/system-status";
 import { Calibration } from "@/components/observatory/calibration";
+import { ErrorBoundary } from "@/components/error/ErrorBoundary";
+import { PanelErrorFallback } from "@/components/error/PanelErrorFallback";
 
 export default function ObservatoryClient() {
   const sunData = useSunTrackerStore((state) => state.sunData);
@@ -44,15 +46,21 @@ export default function ObservatoryClient() {
       {/* Solar feed */}
       <div className="flex justify-center">
         <div className="w-full max-w-sm">
-          <SolarFeed azimuth={azimuth} altitude={altitude} />
+          <ErrorBoundary fallback={<PanelErrorFallback section="Solar Feed" />}>
+            <SolarFeed azimuth={azimuth} altitude={altitude} />
+          </ErrorBoundary>
         </div>
       </div>
 
       {/* System status */}
-      <SystemStatus elevation={altitude} />
+      <ErrorBoundary fallback={<PanelErrorFallback section="System Status" />}>
+        <SystemStatus elevation={altitude} />
+      </ErrorBoundary>
 
       {/* Calibration */}
-      <Calibration />
+      <ErrorBoundary fallback={<PanelErrorFallback section="Calibration" />}>
+        <Calibration />
+      </ErrorBoundary>
     </div>
   );
 }

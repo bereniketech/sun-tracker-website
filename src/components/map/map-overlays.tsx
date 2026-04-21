@@ -10,6 +10,7 @@ import {
   normalizeAzimuth,
 } from "@/components/map/overlay-geometry";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
+import { WeatherOverlay } from "@/components/map/weather-overlay";
 import type { Coordinates, OverlayType } from "@/types/sun";
 
 const DIRECTION_LINE_DISTANCE_METERS = 5_500;
@@ -29,6 +30,7 @@ const OVERLAY_OPTIONS: Array<{ id: OverlayType; label: string }> = [
   { id: "blue-hour-arc", label: "Blue hour arcs" },
   { id: "sun-path", label: "Sun path" },
   { id: "landmark-alignment", label: "Landmark axis" },
+  { id: "weather", label: "Cloud cover" },
 ];
 
 function toLatLngPairs(points: Coordinates[]): Array<[number, number]> {
@@ -362,6 +364,7 @@ export function MapOverlays() {
       <ShadowOverlay center={location} />
       <SunPathArc center={location} />
       <LandmarkAlignmentOverlay />
+      <WeatherOverlay />
     </>
   );
 }
