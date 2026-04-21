@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Geist, Geist_Mono, Inter, Space_Grotesk } from "next/font/google";
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { ThemeProvider } from "next-themes";
 import "leaflet/dist/leaflet.css";
 import { BottomNav } from "@/components/shell/bottom-nav";
 import { TopBar } from "@/components/shell/top-bar";
@@ -97,6 +98,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${inter.variable}`}
+      suppressHydrationWarning
     >
       {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (
         <head>
@@ -109,16 +111,18 @@ export default function RootLayout({
         </head>
       )}
       <body className="min-h-screen flex flex-col bg-surface font-body text-on-surface">
-        <TopBar />
-        <main className="flex-1 p-3 pb-20 md:p-5 md:pb-0">
-          <div className="mx-auto w-full max-w-[1600px]">
-            {children}
-          </div>
-        </main>
-        <BottomNav />
-        <JsonLd data={[buildOrganization(), buildWebSite(), buildSoftwareApplication()]} />
-        <Analytics />
-        <SpeedInsights />
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="sun-tracker-theme">
+          <TopBar />
+          <main className="flex-1 p-3 pb-20 md:p-5 md:pb-0">
+            <div className="mx-auto w-full max-w-[1600px]">
+              {children}
+            </div>
+          </main>
+          <BottomNav />
+          <JsonLd data={[buildOrganization(), buildWebSite(), buildSoftwareApplication()]} />
+          <Analytics />
+          <SpeedInsights />
+        </ThemeProvider>
       </body>
     </html>
   );

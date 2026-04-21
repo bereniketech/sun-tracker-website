@@ -34,7 +34,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-lowest shadow-[0_-4px_24px_rgba(11,28,48,0.06)] md:hidden"
+      className="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-lowest shadow-[0_-4px_24px_rgba(11,28,48,0.06)] dark:bg-slate-900 dark:shadow-[0_-4px_24px_rgba(0,0,0,0.4)] md:hidden"
       aria-label="Mobile primary"
     >
       <div className="grid grid-cols-4">
@@ -49,7 +49,7 @@ export function BottomNav() {
               className={`flex min-h-14 flex-col items-center justify-center gap-1 border-t-2 px-2 py-2 text-xs font-semibold tracking-wide transition-colors ${
                 isActive
                   ? "border-primary text-primary"
-                  : "border-transparent text-secondary hover:text-on-surface"
+                  : "border-transparent text-secondary hover:text-on-surface dark:text-slate-400 dark:hover:text-slate-100"
               }`}
             >
               <Icon className="h-4 w-4" aria-hidden="true" />

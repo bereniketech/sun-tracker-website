@@ -1,81 +1,40 @@
----
-task: 001
-feature: sun-tracker-website
-status: complete
-depends_on: []
----
+# Task 001: Dark Mode
 
-# Task 001: Initialize Next.js project, install dependencies, configure tooling
+## Skills
+- .kit/skills/ui-design/frontend-ui-dark-ts/SKILL.md
+- .kit/skills/core/karpathy-principles/SKILL.md
+- .kit/skills/frameworks-frontend/nextjs-best-practices/SKILL.md
+- .kit/skills/frameworks-frontend/react-best-practices/SKILL.md
 
-## Session Bootstrap
-> Load these before reading anything else. Do not load skills not listed here.
+## Agents
+- @web-frontend-expert
+- @code-reviewer
 
-Skills: /build-website-web-app, /code-writing-software-development
-Commands: /verify, /task-handoff
+## Commands
+- /verify
+- /tdd
+- /task-handoff
 
----
-
-## Objective
-Scaffold a Next.js 15 App Router project with TypeScript, Tailwind CSS, shadcn/ui, and all core dependencies. Set up Vitest for testing. Create a responsive base layout shell (header, main content area, sidebar) that works from 320px to 2560px.
-
----
-
-## Codebase Context
-> Pre-populated by Task Enrichment. No file reading required.
-
-### Key Code Snippets
-[greenfield — no existing files to reference]
-
-### Key Patterns in Use
-[greenfield — no existing files to reference]
-
-### Architecture Decisions Affecting This Task
-- ADR-3: Zustand for state management (install but don't configure yet)
-- ADR-2: Nominatim for geocoding (no Mapbox dependency)
-- Package manager: bun
-
----
-
-## Handoff from Previous Task
-> Populated by /task-handoff after prior task completes. Empty for task-001.
-
-**Files changed by previous task:** _(none yet)_
-**Decisions made:** _(none yet)_
-**Context for this task:** _(none yet)_
-**Open questions left:** _(none yet)_
-
----
-
-## Implementation Steps
-1. Run `bunx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"` in project root
-2. Install core deps: `bun add suncalc zustand react-leaflet leaflet @supabase/supabase-js`
-3. Install dev deps: `bun add -d @types/leaflet @types/suncalc vitest @vitejs/plugin-react jsdom @testing-library/react @testing-library/jest-dom`
-4. Initialize shadcn/ui: `bunx shadcn@latest init`
-5. Configure path aliases in `tsconfig.json` (`@/*` → `./src/*`)
-6. Create base layout in `src/app/layout.tsx` — responsive shell with header, main, collapsible sidebar
-7. Create `src/app/page.tsx` — placeholder home page
-8. Write a smoke test: `src/__tests__/smoke.test.tsx` — renders layout without errors
-9. Verify: `bun dev` starts, `bun test` passes
-
-_Requirements: 10.1, 10.2_
-_Skills: /build-website-web-app, /code-writing-software-development_
-
----
+## Overview
+Implement full dark mode support using `next-themes` with Tailwind `dark:` classes, system preference detection via `prefers-color-scheme`, and a persistent toggle in localStorage. All existing UI components must render correctly in both light and dark variants.
 
 ## Acceptance Criteria
-- [ ] `bun dev` starts without errors
-- [ ] Tailwind classes render correctly in the browser
-- [ ] Vitest runs with a passing smoke test
-- [ ] Layout is responsive at 320px, 768px, 1440px, 2560px
-- [ ] All dependencies installed and importable
-- [ ] `/verify` passes
+- [ ] `next-themes` installed and `ThemeProvider` wrapping the root layout in `src/app/layout.tsx`
+- [ ] `DarkModeToggle` component in `src/components/ui/DarkModeToggle.tsx` — icon switches between sun/moon
+- [ ] System preference (`prefers-color-scheme`) is detected on first load
+- [ ] Theme persists in localStorage across page reloads
+- [ ] All Tailwind `dark:` variants applied to every existing component (header, sidebar, map panel, sun info panel)
+- [ ] No flash of unstyled content (FOUC) on initial load — `suppressHydrationWarning` set on `<html>`
+- [ ] Vitest unit test for `DarkModeToggle` toggle behavior
 
----
-
-## Handoff to Next Task
-> Fill via `/task-handoff` after completing this task.
-
-**Files changed:** _(fill via /task-handoff)_
-**Decisions made:** _(fill via /task-handoff)_
-**Context for next task:** _(fill via /task-handoff)_
-**Open questions:** _(fill via /task-handoff)_
+## Steps
+1. Install `next-themes`: `bun add next-themes`
+2. Wrap root layout: in `src/app/layout.tsx` add `<ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="sun-tracker-theme">` around `{children}`
+3. Add `suppressHydrationWarning` to the `<html>` element in the root layout
+4. Set `darkMode: 'class'` in `tailwind.config.ts`
+5. Create `src/components/ui/DarkModeToggle.tsx` — `useTheme()` hook, toggle between `"light"` and `"dark"`, render `<SunIcon>` / `<MoonIcon>` from `lucide-react`
+6. Add `DarkModeToggle` to the site header (`src/components/layout/Header.tsx`)
+7. Audit every component under `src/components/` — add `dark:` variants for all background, text, border, and shadow Tailwind classes
+8. Audit `src/app/globals.css` — ensure CSS variables cover both light and dark values
+9. Test: create `src/__tests__/DarkModeToggle.test.tsx` — renders, clicking toggles theme, localStorage key `sun-tracker-theme` is set
+10. Run `bun test` and `/verify` to confirm all pass

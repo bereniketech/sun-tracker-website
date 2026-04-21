@@ -1,89 +1,42 @@
----
-task: 005
-feature: sun-tracker-website
-status: completed
-depends_on: [002, 003]
----
+# Task 005: Weather Overlay
 
-# Task 005: Build time/date controls and sun animation
+## Skills
+- .kit/skills/development/api-design/SKILL.md
+- .kit/skills/frameworks-frontend/react-best-practices/SKILL.md
+- .kit/skills/core/karpathy-principles/SKILL.md
 
-## Session Bootstrap
-> Load these before reading anything else. Do not load skills not listed here.
+## Agents
+- @web-frontend-expert
+- @web-backend-expert
 
-Skills: /build-website-web-app, /code-writing-software-development
-Commands: /verify, /task-handoff
+## Commands
+- /verify
+- /tdd
+- /task-handoff
 
----
-
-## Objective
-Create time slider (minute-resolution), date picker, animate button, and "Now" reset button. All controls update the Zustand store, which triggers sun data recalculation and map overlay updates. Display daylight duration and change vs previous day.
-
----
-
-## Codebase Context
-> Pre-populated by Task Enrichment. No file reading required.
-
-### Key Code Snippets
-[greenfield — no existing files to reference]
-
-### Key Patterns in Use
-[greenfield — no existing files to reference]
-
-### Architecture Decisions Affecting This Task
-- Store's `setDateTime` triggers `computeSunData` recomputation (task-002)
-- Animation uses `requestAnimationFrame` loop advancing time in configurable increments
-
----
-
-## Handoff from Previous Task
-**Files changed by previous task:** _(none yet)_
-**Decisions made:** _(none yet)_
-**Context for this task:** _(none yet)_
-**Open questions left:** _(none yet)_
-
----
-
-## Implementation Steps
-1. Create `src/components/controls/TimeSlider.tsx`:
-   - Range input: 0–1439 (minutes in a day)
-   - Display formatted time (HH:MM)
-   - On change → update store dateTime with new hour/minute
-2. Create `src/components/controls/DatePicker.tsx`:
-   - Calendar date selector (shadcn/ui Calendar or native input)
-   - On change → update store dateTime with new date
-3. Create `src/components/controls/AnimateButton.tsx`:
-   - Play/pause toggle
-   - `requestAnimationFrame` loop: advance time by N minutes per frame
-   - Speed control (1x, 2x, 5x)
-   - Stop at end of day or on pause
-4. Create `src/components/controls/NowButton.tsx`:
-   - Reset store dateTime to `new Date()`
-5. Create `src/components/controls/DaylightInfo.tsx`:
-   - Display day length from sun data (formatted hours:minutes)
-   - Display change vs previous day (e.g., "+2m 15s")
-6. Integrate all controls into the ControlPanel area of the layout
-
-_Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
-_Skills: /build-website-web-app, /code-writing-software-development_
-
----
+## Overview
+Integrate the Open-Meteo API (free, no API key) to show a cloud cover and precipitation overlay on the Leaflet map, plus a 7-day forecast widget. Weather data automatically updates when the user's selected location changes.
 
 ## Acceptance Criteria
-- [ ] Moving time slider updates sun data and any visible map overlays in real time
-- [ ] Date picker changes recalculate all sun data
-- [ ] Animation smoothly moves sun position across the day
-- [ ] "Now" button resets to current date/time
-- [ ] Daylight duration displays correctly
-- [ ] Day length change vs previous day shown
-- [ ] All existing tests still pass
+- [ ] `src/lib/weather.ts` — `fetchWeather(lat, lng): Promise<WeatherData>` calling Open-Meteo API; includes current cloud cover %, precipitation, wind speed; 7-day daily forecast
+- [ ] `WeatherData` type defined in `src/types/weather.ts`
+- [ ] Weather is fetched on location change (debounced, 1s) via a Zustand slice or React Query
+- [ ] `src/components/map/WeatherOverlay.tsx` — Leaflet layer that renders cloud cover tiles or a custom color overlay based on cloud percentage; toggled via the existing overlay controls
+- [ ] `src/components/weather/ForecastWidget.tsx` — 7-day forecast panel showing day, icon (sunny/cloudy/rainy), high/low temp, precipitation %; visible in the sidebar
+- [ ] Weather overlay toggle added to existing overlay control UI
+- [ ] Loading skeleton while weather data fetches
+- [ ] Error state shown if Open-Meteo request fails
+- [ ] Unit tests for `src/lib/weather.ts` (mock fetch)
 - [ ] `/verify` passes
 
----
-
-## Handoff to Next Task
-> Fill via `/task-handoff` after completing this task.
-
-**Files changed:** _(fill via /task-handoff)_
-**Decisions made:** _(fill via /task-handoff)_
-**Context for next task:** _(fill via /task-handoff)_
-**Open questions:** _(fill via /task-handoff)_
+## Steps
+1. Create `src/types/weather.ts` — define `WeatherData`, `DailyForecast`, `WeatherCurrent` interfaces mapping Open-Meteo response fields (`cloud_cover`, `precipitation`, `wind_speed_10m`, `temperature_2m`, etc.)
+2. Create `src/lib/weather.ts` — `fetchWeather(lat, lng)` calls `https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lng}&current=cloud_cover,precipitation,wind_speed_10m,temperature_2m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,cloud_cover_mean&forecast_days=7&timezone=auto`; parse and return typed `WeatherData`
+3. Add `weather` slice to Zustand store (`src/store/sun-tracker-store.ts`): `weatherData`, `weatherLoading`, `fetchWeatherForLocation(lat, lng)` action
+4. Subscribe to location changes in a `useEffect` hook at the page level — call `fetchWeatherForLocation` with 1s debounce
+5. Create `src/components/map/WeatherOverlay.tsx` — custom Leaflet layer using `L.CircleMarker` or `L.Rectangle` at location center with color coded by cloud cover percentage (0% = clear yellow, 100% = dark grey); render only when weather overlay is active
+6. Add "Weather" to the overlay toggle buttons
+7. Create `src/components/weather/ForecastWidget.tsx` — horizontal scroll of 7 days; each card: day name, cloud icon (dynamic), max/min temp, precipitation chance; styled with Tailwind + `dark:` variants
+8. Add `ForecastWidget` to the sidebar or a collapsible panel below the map
+9. Add loading skeleton (`src/components/weather/ForecastSkeleton.tsx`) shown while `weatherLoading` is true
+10. Write `src/__tests__/lib/weather.test.ts` — mock `fetch`, test happy path, test error handling; run `bun test` and `/verify`

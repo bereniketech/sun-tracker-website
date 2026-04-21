@@ -14,12 +14,36 @@
   --border: 214 32% 91%;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: 217 33% 17%;
+    --foreground: 210 40% 96%;
+    --surface: 217 33% 12%;
+    --muted: 215 28% 27%;
+    --muted-foreground: 215 14% 66%;
+    --border: 215 28% 27%;
+  }
+}
+
+.dark {
+  --background: 217 33% 17%;
+  --foreground: 210 40% 96%;
+  --surface: 217 33% 12%;
+  --muted: 215 28% 27%;
+  --muted-foreground: 215 14% 66%;
+  --border: 215 28% 27%;
+}
+
 * {
   @apply border-border;
 }
 
 body {
   @apply bg-surface font-body text-on-surface antialiased;
+}
+
+.dark body {
+  @apply bg-slate-950 text-slate-100;
 }
 
 body[data-map-fullscreen="true"] {
@@ -35,6 +59,10 @@ body[data-map-fullscreen="true"] {
   height: 100%;
   width: 100%;
   background: linear-gradient(180deg, #dbeafe 0%, #e2e8f0 100%);
+}
+
+.dark .leaflet-container {
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
 }
 
 /* ── Animated sun glow for hero header ── */
@@ -121,6 +149,22 @@ body[data-map-fullscreen="true"] {
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
+.dark .glass-card {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(71, 85, 105, 0.5);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(148, 163, 184, 0.2);
+}
+
+.dark .glass-card:hover {
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 2px 6px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(148, 163, 184, 0.2);
+}
+
 /* ── Metric card with accent border ── */
 .metric-card {
   position: relative;
@@ -146,6 +190,10 @@ body[data-map-fullscreen="true"] {
 
 .metric-card:hover::before {
   opacity: 1;
+}
+
+.dark .metric-card::before {
+  background: linear-gradient(90deg, #fb923c, #facc15, #fbbf24);
 }
 
 /* ── Shimmer text effect ── */
@@ -175,6 +223,12 @@ body[data-map-fullscreen="true"] {
   box-shadow:
     0 8px 24px rgba(15, 23, 42, 0.08),
     0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
+.dark .sidebar-card:hover {
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.3),
+    0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes corona-pulse {

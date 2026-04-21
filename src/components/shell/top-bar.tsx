@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search } from "lucide-react";
 import { SearchBar } from "@/components/search-bar";
+import { DarkModeToggle } from "@/components/ui/DarkModeToggle";
 
 interface TopBarItem {
   href: string;
@@ -62,7 +63,7 @@ export function TopBar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/20 bg-white/70 backdrop-blur-2xl shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+    <header className="sticky top-0 z-50 border-b border-white/20 bg-white/70 backdrop-blur-2xl shadow-[0_1px_3px_rgba(0,0,0,0.04)] dark:border-slate-700/40 dark:bg-slate-950/70 dark:shadow-[0_1px_3px_rgba(0,0,0,0.4)]">
       <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between gap-4 px-4 py-3 md:px-6">
         <div className="flex items-center gap-2.5 group">
           <span className="text-lg leading-none text-primary transition-transform duration-300 group-hover:rotate-90 group-hover:scale-110" aria-hidden="true">
@@ -72,7 +73,7 @@ export function TopBar() {
             <span className="font-headline text-base font-bold uppercase tracking-[0.22em] bg-gradient-to-r from-primary to-primary-container bg-clip-text text-transparent md:text-lg">
               SUN TRACKER
             </span>
-            <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-secondary">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-secondary dark:text-slate-400">
               by Helios Chrono
             </span>
           </div>
@@ -89,7 +90,7 @@ export function TopBar() {
                 className={`border-b-2 pb-1 text-sm font-semibold tracking-wide transition-colors ${
                   isActive
                     ? "border-primary text-primary"
-                    : "border-transparent text-secondary hover:text-on-surface"
+                    : "border-transparent text-secondary hover:text-on-surface dark:text-slate-300 dark:hover:text-slate-100"
                 }`}
               >
                 {item.label}
@@ -104,7 +105,7 @@ export function TopBar() {
             aria-label="Search for a location"
             aria-expanded={isSearchOpen}
             onClick={() => setIsSearchOpen((prev) => !prev)}
-            className="flex h-11 items-center justify-center gap-2 rounded-full px-4 text-secondary transition-colors hover:bg-surface-container hover:text-on-surface"
+            className="flex h-11 items-center justify-center gap-2 rounded-full px-4 text-secondary transition-colors hover:bg-surface-container hover:text-on-surface dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
           >
             <Search className="h-5 w-5" />
             <span className="text-sm font-medium">Search</span>
@@ -117,7 +118,9 @@ export function TopBar() {
           ) : null}
         </div>
 
-        <div className="flex items-center" />
+        <div className="flex items-center gap-2">
+          <DarkModeToggle />
+        </div>
       </div>
     </header>
   );

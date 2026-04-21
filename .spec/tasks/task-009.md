@@ -1,89 +1,46 @@
----
-task: 009
-feature: sun-tracker-website
-status: complete
-depends_on: [005, 006]
----
+# Task 009: Continuous Geolocation
 
-# Task 009: Implement shareable URLs and data export
+## Skills
+- .kit/skills/frameworks-frontend/react-best-practices/SKILL.md
+- .kit/skills/core/karpathy-principles/SKILL.md
+- .kit/skills/performance/web-performance-optimization/SKILL.md
 
-## Session Bootstrap
-> Load these before reading anything else. Do not load skills not listed here.
+## Agents
+- @web-frontend-expert
+- @software-developer-expert
 
-Skills: /code-writing-software-development, /build-website-web-app
-Commands: /verify, /task-handoff
+## Commands
+- /verify
+- /tdd
+- /task-handoff
 
----
-
-## Objective
-Encode the full app state (location, date, time, active overlays) in URL search params so views are shareable. Restore state from URL on page load. Add CSV and JSON export of sun data, and social share buttons.
-
----
-
-## Codebase Context
-> Pre-populated by Task Enrichment. No file reading required.
-
-### Key Code Snippets
-[greenfield — no existing files to reference]
-
-### Key Patterns in Use
-[greenfield — no existing files to reference]
-
-### Architecture Decisions Affecting This Task
-- URL params: `?lat=40.71&lng=-74.00&date=2025-06-21&time=14:30&overlays=sunrise-line,shadow`
-- Use `next/navigation` `useSearchParams` and `useRouter` for URL sync
-- Export generates files client-side using Blob + download link
-
----
-
-## Handoff from Previous Task
-**Files changed by previous task:** _(none yet)_
-**Decisions made:** _(none yet)_
-**Context for this task:** _(none yet)_
-**Open questions left:** _(none yet)_
-
----
-
-## Implementation Steps
-1. Create `src/lib/url-state.ts`:
-   - `stateToParams(state): URLSearchParams` — serialize location, date, time, overlays
-   - `paramsToState(params): Partial<SunTrackerState>` — deserialize and validate
-2. Create `src/hooks/useUrlSync.ts`:
-   - On store change → update URL (debounced, replace not push)
-   - On mount → read URL params → initialize store
-3. Create `src/lib/export.ts`:
-   - `exportCSV(location, startDate, endDate): string` — compute sun data for date range, format as CSV
-   - `exportJSON(location, startDate, endDate): string` — same as JSON
-   - `downloadFile(content, filename, mimeType)` — trigger browser download
-4. Create `src/components/ShareExportBar.tsx`:
-   - "Copy link" button — copy current URL to clipboard
-   - "Export CSV" / "Export JSON" buttons with date range selector
-   - Social share buttons: Twitter (X), Facebook — open share URLs in new tab
-5. Write tests for url-state serialization/deserialization round-trip
-6. Write tests for export CSV/JSON format correctness
-
-_Requirements: 8.1, 8.2, 8.3, 8.4_
-_Skills: /code-writing-software-development, /build-website-web-app_
-
----
+## Overview
+Implement a "Follow Me" mode using `navigator.geolocation.watchPosition` that continuously updates the map center and sun position as the user physically moves. Include battery-aware throttling to reduce update frequency when the device battery is low.
 
 ## Acceptance Criteria
-- [ ] Changing location/time/date/overlays updates URL search params
-- [ ] Loading a shared URL restores exact view state (location, date, time, overlays)
-- [ ] CSV export downloads file with correct sun data columns
-- [ ] JSON export downloads file with correct structure
-- [ ] "Copy link" copies URL to clipboard
-- [ ] Social share buttons open correct share dialogs
-- [ ] URL round-trip tests pass (serialize → deserialize → equal)
-- [ ] All existing tests still pass
+- [ ] `src/hooks/useGeolocation.ts` — manages `watchPosition`, returns `{ position, error, watching, startWatching, stopWatching }`
+- [ ] "Follow Me" toggle button in the map UI — activates `watchPosition`, auto-centers map on new position, updates Zustand store location
+- [ ] Map pans smoothly to new position with each GPS update
+- [ ] Sun data recalculates on every position update
+- [ ] Battery-aware throttling: check `navigator.getBattery()`, if battery level < 20% and not charging → set `maximumAge: 30000` (30s) and `timeout: 60000`; otherwise use 5s interval
+- [ ] GPS accuracy indicator shown (circle on map representing accuracy radius via `L.Circle`)
+- [ ] "Follow Me" automatically disabled when user manually pans the map
+- [ ] Proper cleanup on component unmount (`clearWatch`)
+- [ ] Unit tests for `useGeolocation` hook (mock `navigator.geolocation`)
 - [ ] `/verify` passes
 
----
-
-## Handoff to Next Task
-> Fill via `/task-handoff` after completing this task.
-
-**Files changed:** _(fill via /task-handoff)_
-**Decisions made:** _(fill via /task-handoff)_
-**Context for next task:** _(fill via /task-handoff)_
-**Open questions:** _(fill via /task-handoff)_
+## Steps
+1. Create `src/hooks/useGeolocation.ts`:
+   - State: `position: GeolocationPosition | null`, `error: GeolocationPositionError | null`, `watching: boolean`
+   - `startWatching()`: check `getBattery()` API, set options accordingly, call `watchPosition`, save watchId ref
+   - `stopWatching()`: call `clearWatch(watchId)`
+   - Cleanup in `useEffect` return
+2. Create `src/hooks/useBattery.ts` — wraps `navigator.getBattery()` (feature detect), returns `{ level, charging }` or `null` if unavailable
+3. Add `followMeActive` flag to Zustand store
+4. Create `src/components/map/FollowMeButton.tsx` — toggle button with GPS icon; `active` state shows green; calls `startWatching` / `stopWatching`; placed as Leaflet control or floating button
+5. In `useGeolocation` `positionCallback`: call `store.setLocation(lat, lng)`, if `followMeActive` also call Leaflet `map.panTo([lat, lng])` smoothly
+6. Create `src/components/map/AccuracyCircle.tsx` — `L.Circle` centered on position with radius = `position.coords.accuracy` in meters; styled with transparent fill + dashed border
+7. Detect manual pan: listen to Leaflet `dragstart` event → if `followMeActive`, set `followMeActive = false` and call `stopWatching()`
+8. Add `FollowMeButton` and `AccuracyCircle` to the map component
+9. Write `src/__tests__/hooks/useGeolocation.test.ts` — mock `navigator.geolocation.watchPosition` and `clearWatch`; test `startWatching` calls watchPosition, `stopWatching` calls clearWatch, position updates propagate
+10. Run `bun test` and `/verify`

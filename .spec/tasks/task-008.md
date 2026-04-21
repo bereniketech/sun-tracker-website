@@ -1,90 +1,48 @@
----
-task: 008
-feature: sun-tracker-website
-status: completed
-depends_on: [005, 007]
----
+# Task 008: Solar Panel Planner
 
-# Task 008: Build photographer mode panel
+## Skills
+- .kit/skills/frameworks-frontend/react-best-practices/SKILL.md
+- .kit/skills/core/karpathy-principles/SKILL.md
+- .kit/skills/development/api-design/SKILL.md
 
-## Session Bootstrap
-> Load these before reading anything else. Do not load skills not listed here.
+## Agents
+- @web-frontend-expert
+- @software-developer-expert
 
-Skills: /build-website-web-app, /code-writing-software-development
-Commands: /verify, /task-handoff
+## Commands
+- /tdd
+- /verify
+- /task-handoff
 
----
-
-## Objective
-Create a toggleable photographer mode that displays golden/blue hour countdowns, a best-direction indicator for sunrise/sunset shots, a 7-day lighting forecast, and recommended shooting days. The compass should be prominently visible in this mode.
-
----
-
-## Codebase Context
-> Pre-populated by Task Enrichment. No file reading required.
-
-### Key Code Snippets
-[greenfield — no existing files to reference]
-
-### Key Patterns in Use
-[greenfield — no existing files to reference]
-
-### Architecture Decisions Affecting This Task
-- Photographer mode toggles via `store.togglePhotographerMode()`
-- Sun data recomputation for 7 days requires calling `computeSunData` for each day
-- Countdown timers use `setInterval` or `requestAnimationFrame`
-
----
-
-## Handoff from Previous Task
-**Files changed by previous task:** _(none yet)_
-**Decisions made:** _(none yet)_
-**Context for this task:** _(none yet)_
-**Open questions left:** _(none yet)_
-
----
-
-## Implementation Steps
-1. Create `src/components/panels/PhotographerPanel.tsx`:
-   - Only renders when `store.photographerMode === true`
-   - Toggle button in the header/toolbar to enable/disable
-2. Create `src/components/panels/GoldenHourCountdown.tsx`:
-   - Countdown to next golden hour (morning or evening)
-   - Live updating every second
-   - Shows "NOW" badge when currently in golden hour
-3. Create `src/components/panels/BlueHourCountdown.tsx`:
-   - Same pattern as golden hour countdown
-4. Create `src/components/panels/BestDirectionIndicator.tsx`:
-   - Arrow/compass indicator pointing toward the best direction for sunrise/sunset photos
-   - Based on current sun azimuth and time of day
-5. Create `src/components/panels/WeeklyForecast.tsx`:
-   - Compute sun data for today + 6 days
-   - Display table: date, golden hour AM/PM times, blue hour AM/PM times
-   - Highlight "recommended" days (criteria: clear golden hour window, longest duration)
-6. Ensure Compass component (task-007) is prominently displayed in photographer mode
-
-_Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
-_Skills: /build-website-web-app, /code-writing-software-development_
-
----
+## Overview
+Build a solar panel optimizer tool that uses SunCalc annual irradiance data to recommend the optimal panel tilt and azimuth for a given location. Display the estimated optimal angle and annual kWh output based on user-configurable panel size.
 
 ## Acceptance Criteria
-- [x] Toggle enables/disables photographer mode
-- [x] Golden hour countdown ticks every second and shows "NOW" when active
-- [x] Blue hour countdown works identically
-- [x] Best direction indicator points correctly based on sun azimuth
-- [x] 7-day forecast shows correct golden/blue hour times for each day
-- [x] Recommended days are highlighted
-- [x] Compass is visible in photographer mode
-- [x] All existing tests still pass
-- [x] `/verify` passes
+- [ ] `src/lib/solar.ts` — `computeOptimalPanelAngle(lat, lng): SolarResult` — samples sun elevation/azimuth at hourly intervals across the year, sums irradiance, finds tilt/azimuth that maximizes total; returns `{ optimalTilt, optimalAzimuth, annualKwhEstimate, monthlyKwh[] }`
+- [ ] `SolarResult` type in `src/types/solar.ts`
+- [ ] `src/components/solar/SolarPlannerPanel.tsx` — input: `panelSizeKw` (number slider, 1–20 kW), location from Zustand store; output: optimal tilt, optimal azimuth, estimated annual kWh, monthly chart
+- [ ] Monthly kWh bar chart using a lightweight chart lib (Recharts — `bun add recharts`) or a simple Tailwind-based bar chart
+- [ ] "Calculate" button triggers computation (runs in a Web Worker or with `setTimeout` chunking to avoid blocking UI)
+- [ ] Result includes a sun path diagram showing the optimal angle relative to local horizon
+- [ ] Panel accessible from a "Solar Planner" tab or button in the sidebar
+- [ ] Unit tests for `computeOptimalPanelAngle` — verify NYC returns tilt ≈ latitude (within ±10°), azimuth ≈ 180° south
+- [ ] `/verify` passes
 
----
-
-## Handoff to Next Task
-> Fill via `/task-handoff` after completing this task.
-
-**Files changed:** _(fill via /task-handoff)_
-**Decisions made:** _(fill via /task-handoff)_
-**Context for next task:** _(fill via /task-handoff)_
-**Open questions:** _(fill via /task-handoff)_
+## Steps
+1. Create `src/types/solar.ts` — `SolarResult` interface: `{ optimalTilt: number, optimalAzimuth: number, annualKwhEstimate: number, monthlyKwh: number[], panelSizeKw: number }`
+2. Create `src/lib/solar.ts`:
+   - `computeOptimalPanelAngle(lat, lng, panelSizeKw = 1)`:
+     - Iterate every day of the year (365), every hour (24)
+     - Use `SunCalc.getPosition(date, lat, lng)` to get `altitude` and `azimuth`
+     - For each tilt/azimuth combination (grid search: tilt 0–90 step 5°, azimuth 90–270 step 5°), compute irradiance: `max(0, sin(altitude) * cos(panelNormal - sunAzimuth) * cos(tilt - altitude))` × 1000 W/m²
+     - Sum over year to get annual kWh per kWp
+     - Pick combination with maximum sum
+   - Return `SolarResult` with monthly breakdown
+3. Create Web Worker at `public/workers/solar.worker.ts` — run computation off main thread; post result back; handle with `useWorker` hook or inline `new Worker()`
+4. Create `src/hooks/useSolarPlanner.ts` — manages worker lifecycle, loading state, result
+5. Create `src/components/solar/SolarPlannerPanel.tsx` — panel size slider, "Calculate" button, loading spinner, result cards (optimal tilt, optimal azimuth, annual kWh), monthly bar chart
+6. Install Recharts: `bun add recharts` — use `BarChart` for monthly kWh breakdown
+7. Add sun path diagram: SVG overlay showing sun arc with optimal panel plane line
+8. Add "Solar Planner" button to sidebar navigation that opens `SolarPlannerPanel` in a modal or slide-over
+9. Write `src/__tests__/lib/solar.test.ts` — test NYC (40.7, -74.0), verify tilt is within ±10° of latitude, azimuth is between 170°–190°
+10. Run `bun test` and `/verify`

@@ -1,86 +1,42 @@
----
-task: 004
-feature: sun-tracker-website
-status: complete
-depends_on: [003]
----
+# Task 004: Error Boundaries
 
-# Task 004: Build search bar with Nominatim geocoding and geolocation
+## Skills
+- .kit/skills/frameworks-frontend/react-best-practices/SKILL.md
+- .kit/skills/core/karpathy-principles/SKILL.md
+- .kit/skills/testing-quality/tdd-workflow/SKILL.md
 
-## Session Bootstrap
-> Load these before reading anything else. Do not load skills not listed here.
+## Agents
+- @web-frontend-expert
+- @code-reviewer
 
-Skills: /build-website-web-app, /code-writing-software-development
-Commands: /verify, /task-handoff
+## Commands
+- /tdd
+- /verify
+- /task-handoff
 
----
-
-## Objective
-Create a search bar with autocomplete powered by Nominatim geocoding, manual coordinate input, and browser geolocation. Selecting a result or entering coordinates updates the map and sun data via the Zustand store.
-
----
-
-## Codebase Context
-> Pre-populated by Task Enrichment. No file reading required.
-
-### Key Code Snippets
-[greenfield — no existing files to reference]
-
-### Key Patterns in Use
-[greenfield — no existing files to reference]
-
-### Architecture Decisions Affecting This Task
-- ADR-2: Nominatim with 500ms debounce, session storage caching, User-Agent header
-- Nominatim usage policy: max 1 request/sec, must include User-Agent
-
----
-
-## Handoff from Previous Task
-**Files changed by previous task:** _(none yet)_
-**Decisions made:** _(none yet)_
-**Context for this task:** _(none yet)_
-**Open questions left:** _(none yet)_
-
----
-
-## Implementation Steps
-1. Create `src/lib/geo.ts`:
-   - `searchLocation(query: string): Promise<GeoResult[]>` — Nominatim search with User-Agent header
-   - `reverseGeocode(lat, lng): Promise<string>` — get place name from coords
-   - Session storage cache for recent queries
-   - 500ms debounce utility
-2. Create `src/components/SearchBar.tsx`:
-   - Text input with autocomplete dropdown
-   - Debounced Nominatim search on input change
-   - Click suggestion → `store.setLocation(lat, lng, name)`
-3. Add manual coordinate input: two number fields (lat, lng) with validation [-90,90] and [-180,180]
-4. Add "Use my location" button:
-   - Call `navigator.geolocation.getCurrentPosition`
-   - On success → reverse geocode → `store.setLocation`
-   - On error → show toast/message with fallback instructions
-5. Write tests for `src/lib/geo.ts` — mock fetch, test debounce, test cache
-
-_Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
-_Skills: /build-website-web-app, /code-writing-software-development_
-
----
+## Overview
+Add React `ErrorBoundary` wrappers around all major UI sections (map, sun info panel, observatory panel) so that a crash in one section does not bring down the entire app. Provide per-section fallback UIs and a global error page.
 
 ## Acceptance Criteria
-- [ ] Typing in search shows autocomplete suggestions from Nominatim
-- [ ] Selecting a suggestion centers the map and computes sun data
-- [ ] Manual coordinate input validates and centers map
-- [ ] "Use my location" button requests geolocation and works (or shows fallback)
-- [ ] Nominatim requests are debounced (500ms) and cached
-- [ ] User-Agent header sent with all Nominatim requests
-- [ ] All existing tests still pass
+- [ ] `src/components/error/ErrorBoundary.tsx` — reusable class component with `componentDidCatch` + `getDerivedStateFromError`, accepts `fallback` prop
+- [ ] `src/components/error/MapErrorFallback.tsx` — fallback for map section crash
+- [ ] `src/components/error/PanelErrorFallback.tsx` — fallback for sun info / observatory panel crash
+- [ ] `src/app/error.tsx` — Next.js global error page (catches unhandled errors in App Router layouts)
+- [ ] `src/app/not-found.tsx` — custom 404 page
+- [ ] Map component wrapped in `<ErrorBoundary fallback={<MapErrorFallback />}>`
+- [ ] Sun info panel wrapped in `<ErrorBoundary fallback={<PanelErrorFallback section="Sun Info" />}>`
+- [ ] Observatory panel wrapped in `<ErrorBoundary fallback={<PanelErrorFallback section="Observatory" />}>`
+- [ ] Vitest tests confirm boundary catches render errors and shows fallback
 - [ ] `/verify` passes
 
----
-
-## Handoff to Next Task
-> Fill via `/task-handoff` after completing this task.
-
-**Files changed:** _(fill via /task-handoff)_
-**Decisions made:** _(fill via /task-handoff)_
-**Context for next task:** _(fill via /task-handoff)_
-**Open questions:** _(fill via /task-handoff)_
+## Steps
+1. Create `src/components/error/ErrorBoundary.tsx` — class component implementing `componentDidCatch` (log to console + optional error reporting), `getDerivedStateFromError` sets `hasError: true`, renders `fallback` prop when in error state, exposes `resetErrorBoundary` via a "Try again" button that resets state
+2. Create `src/components/error/MapErrorFallback.tsx` — styled card with map icon, "Map failed to load" message, and "Reload map" button that calls `resetErrorBoundary`
+3. Create `src/components/error/PanelErrorFallback.tsx` — accepts `section: string` prop, shows section name, "This section encountered an error" message, and reset button
+4. Create `src/app/error.tsx` — Next.js `error.tsx` client component with `reset()` function from props; styled with Tailwind; shows friendly message
+5. Create `src/app/not-found.tsx` — 404 page with navigation back to home
+6. Wrap `<MapContainer>` usage in main page with `<ErrorBoundary fallback={<MapErrorFallback />}>`
+7. Wrap sun info panel component with `<ErrorBoundary fallback={<PanelErrorFallback section="Sun Info" />}>`
+8. Wrap observatory panel with `<ErrorBoundary fallback={<PanelErrorFallback section="Observatory" />}>`
+9. Write tests: `src/__tests__/error/ErrorBoundary.test.tsx` — create a ThrowingComponent, render inside ErrorBoundary, verify fallback shows; verify "Try again" resets; verify `componentDidCatch` is called
+10. Run `bun test` and `/verify`

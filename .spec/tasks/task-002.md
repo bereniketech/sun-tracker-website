@@ -1,117 +1,41 @@
----
-task: 002
-feature: sun-tracker-website
-status: complete
-depends_on: [001]
----
+# Task 002: PWA / Offline Mode
 
-# Task 002: Build SunCalc wrapper and Zustand store
+## Skills
+- .kit/skills/frameworks-desktop/progressive-web-app/SKILL.md
+- .kit/skills/core/karpathy-principles/SKILL.md
+- .kit/skills/frameworks-frontend/nextjs-best-practices/SKILL.md
+- .kit/skills/performance/web-performance-optimization/SKILL.md
 
-## Session Bootstrap
-> Load these before reading anything else. Do not load skills not listed here.
+## Agents
+- @web-frontend-expert
+- @software-developer-expert
 
-Skills: /code-writing-software-development, /tdd-workflow
-Commands: /verify, /task-handoff
+## Commands
+- /verify
+- /quality-gate
+- /task-handoff
 
----
-
-## Objective
-Create a typed SunCalc wrapper (`src/lib/sun.ts`) that computes all sun data fields from the `SunData` interface. Create the Zustand store (`src/store/sun-tracker-store.ts`) that holds location, time, sun data, and UI state. Write comprehensive unit tests achieving 90%+ coverage on `lib/sun.ts`.
-
----
-
-## Codebase Context
-> Pre-populated by Task Enrichment. No file reading required.
-
-### Key Code Snippets
-[greenfield — no existing files to reference]
-
-### Key Patterns in Use
-[greenfield — no existing files to reference]
-
-### Architecture Decisions Affecting This Task
-- ADR-1: Client-side SunCalc — all calculations run in the browser, no server round-trips
-- ADR-3: Zustand for state management — selective subscriptions prevent unnecessary re-renders
-- SunData interface and SunTrackerState interface defined in design.md
-
----
-
-## Handoff from Previous Task
-**Files changed by previous task:** _(none yet)_
-**Decisions made:** _(none yet)_
-**Context for this task:** _(none yet)_
-**Open questions left:** _(none yet)_
-
----
-
-## Implementation Steps
-1. Create `src/types/sun.ts` — define `SunData`, `OverlayType`, `SunTrackerState` interfaces from design doc
-2. Create `src/lib/sun.ts`:
-   - `computeSunData(lat, lng, dateTime): SunData` — wraps SunCalc.getTimes, SunCalc.getPosition, SunCalc.getMoonPosition
-   - Compute golden hour: sun altitude between 0° and 6° above horizon (evening: before sunset; morning: after sunrise)
-   - Compute blue hour: sun altitude between -6° and -4° below horizon
-   - Compute shadow direction: sun azimuth + 180° (mod 360)
-   - Compute shadow length ratio: `1 / Math.tan(elevation in radians)` (when elevation > 0)
-   - Compute day length: sunset - sunrise in seconds
-   - Compute day length change: compare with previous day
-3. Create `src/store/sun-tracker-store.ts` — Zustand store implementing `SunTrackerState`
-   - `setLocation` recomputes sun data
-   - `setDateTime` recomputes sun data
-   - `toggleOverlay` adds/removes from activeOverlays set
-4. Write tests in `src/__tests__/lib/sun.test.ts`:
-   - Test NYC (40.7128, -74.0060) on June 21 2025 — verify sunrise, sunset, azimuth within ±2 minutes / ±1°
-   - Test edge cases: polar region (Tromsø in summer — midnight sun), equator
-   - Test shadow calculations
-5. Write tests in `src/__tests__/store/sun-tracker-store.test.ts`:
-   - Test setLocation updates sunData
-   - Test setDateTime updates sunData
-   - Test toggleOverlay
-
-_Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
-_Skills: /code-writing-software-development, /tdd-workflow_
-
----
+## Overview
+Convert the Sun Tracker Website into a Progressive Web App using `next-pwa`. Add a service worker for offline support, cache SunCalc calculations so sun data works without network access, and provide a complete app manifest for installability.
 
 ## Acceptance Criteria
-- [ ] `computeSunData` returns all SunData fields correctly for NYC June 21
-- [ ] Golden/blue hour times are accurate within ±5 minutes of reference values
-- [ ] Shadow direction = sun azimuth + 180° (mod 360)
-- [ ] Shadow length ratio correct for known elevations
-- [ ] Day length change computed correctly
-- [ ] Zustand store actions update state and recompute sun data
-- [ ] 90%+ test coverage on `lib/sun.ts`
-- [ ] All tests pass
+- [ ] `next-pwa` installed and configured in `next.config.ts`
+- [ ] `public/manifest.json` created with name, icons (192×192, 512×512), theme color, display `standalone`
+- [ ] Service worker registered and active in production build
+- [ ] Offline fallback page at `src/app/offline/page.tsx` renders when network is unavailable
+- [ ] SunCalc calculations execute offline (no network dependency on the core lib)
+- [ ] Core pages cached via Workbox strategies (`CacheFirst` for static assets, `NetworkFirst` for API routes)
+- [ ] Lighthouse PWA score ≥ 90 in production build
 - [ ] `/verify` passes
 
----
-
-## Handoff to Next Task
-> Fill via `/task-handoff` after completing this task.
-
-**Files changed:**
-- `src/types/sun.ts`
-- `src/lib/sun.ts`
-- `src/store/sun-tracker-store.ts`
-- `src/__tests__/lib/sun.test.ts`
-- `src/__tests__/store/sun-tracker-store.test.ts`
-- `eslint.config.mjs` (fixed flat-config compatibility for lint)
-- `.spec/tasks.md` (Task 2 marked complete)
-
-**Decisions made:**
-- Implemented a typed `SunData` + `SunTrackerState` contract in `src/types/sun.ts` based on `design.md`.
-- Built `computeSunData` in `src/lib/sun.ts` using `SunCalc.getTimes`, `SunCalc.getPosition`, and `SunCalc.getMoonPosition`.
-- Converted SunCalc azimuth to degrees-from-north and elevation to degrees.
-- Implemented blue-hour calculation (`-6°` to `-4°`) using altitude crossing search around sunrise/sunset.
-- Added polar fallback behavior for day length when sunrise/sunset are unavailable.
-- Implemented immutable Zustand actions for location, datetime, overlays, and photographer mode.
-
-**Context for next task:**
-- Store is ready for map integration:
-   - `setLocation(lat, lng, name?)` recomputes `sunData`
-   - `setDateTime(dt)` recomputes `sunData` when location is set
-   - `activeOverlays` is a `Set<OverlayType>` with defaults for sun/shadow/path layers
-- `sunData` now contains sunrise/sunset/noon, golden/blue windows, azimuth/elevation, shadow metrics, and day-length delta.
-- Tests are in place and passing for both `lib/sun.ts` and the store.
-
-**Open questions:**
-- None blocking for Task 3. The map layer can consume the existing store and sun data directly.
+## Steps
+1. Install: `bun add next-pwa` and `bun add -d @types/next-pwa`
+2. Update `next.config.ts` — wrap config with `withPWA({ dest: 'public', disable: process.env.NODE_ENV === 'development', register: true, skipWaiting: true })`
+3. Create `public/manifest.json` with `name: "Sun Tracker"`, `short_name: "SunTracker"`, `start_url: "/"`, `display: "standalone"`, `theme_color: "#f59e0b"`, `background_color: "#0f172a"`, and icon entries for 192 and 512 sizes
+4. Add manifest link tag to `<head>` in `src/app/layout.tsx`: `<link rel="manifest" href="/manifest.json" />`
+5. Add app icons — generate from existing logo or create SVG-based icons at `public/icons/icon-192.png` and `public/icons/icon-512.png`
+6. Create `src/app/offline/page.tsx` — minimal offline page with "You're offline" message and last-cached sun data display from Zustand store
+7. Create `src/lib/suncalc-offline.ts` — wrapper around SunCalc that checks `navigator.onLine` and falls back to Zustand store's last known `sunData` when offline
+8. Add `meta name="theme-color"` and `apple-mobile-web-app-capable` meta tags to root layout
+9. Add `public/sw.js` is generated by next-pwa on build — verify it includes runtime caching for `/api/` routes with NetworkFirst strategy
+10. Test: run `bun build && bun start`, open Chrome DevTools → Application → Manifest and Service Workers to verify registration; run Lighthouse PWA audit; run `/verify`

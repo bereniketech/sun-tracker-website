@@ -1,91 +1,48 @@
----
-task: 006
-feature: sun-tracker-website
-status: complete
-depends_on: [003, 005]
----
+# Task 006: Device Orientation (Compass)
 
-# Task 006: Implement map overlays (sun lines, arcs, shadow, sun path)
+## Skills
+- .kit/skills/frameworks-frontend/react-best-practices/SKILL.md
+- .kit/skills/core/karpathy-principles/SKILL.md
+- .kit/skills/frameworks-frontend/nextjs-best-practices/SKILL.md
 
-## Session Bootstrap
-> Load these before reading anything else. Do not load skills not listed here.
+## Agents
+- @web-frontend-expert
+- @software-developer-expert
 
-Skills: /build-website-web-app, /code-writing-software-development
-Commands: /verify, /task-handoff
+## Commands
+- /verify
+- /tdd
+- /task-handoff
 
----
-
-## Objective
-Create Leaflet map overlays for sunrise/sunset/current sun direction lines, golden/blue hour arcs, shadow direction, and the full-day sun path arc. Add a layer control to toggle each overlay independently. All overlays react to Zustand store changes.
-
----
-
-## Codebase Context
-> Pre-populated by Task Enrichment. No file reading required.
-
-### Key Code Snippets
-[greenfield — no existing files to reference]
-
-### Key Patterns in Use
-[greenfield — no existing files to reference]
-
-### Architecture Decisions Affecting This Task
-- Overlays are Leaflet polylines/polygons drawn from the pin location outward at computed azimuths
-- OverlayType enum defined in types/sun.ts (task-002)
-- Store's `activeOverlays` Set controls visibility
-
----
-
-## Handoff from Previous Task
-**Files changed by previous task:** _(none yet)_
-**Decisions made:** _(none yet)_
-**Context for this task:** _(none yet)_
-**Open questions left:** _(none yet)_
-
----
-
-## Implementation Steps
-1. Create `src/lib/map-utils.ts`:
-   - `azimuthToLatLng(origin, azimuth, distance): LatLng` — project a point from origin along azimuth
-   - `createArc(origin, startAzimuth, endAzimuth, radius, steps): LatLng[]` — generate arc polygon
-2. Create `src/components/map/SunDirectionLines.tsx`:
-   - Three polylines from pin location: sunrise azimuth (orange), sunset azimuth (red), current sun azimuth (yellow)
-   - Length: ~500m or proportional to zoom level
-3. Create `src/components/map/HourArcOverlays.tsx`:
-   - Golden hour arc: filled polygon between golden hour start/end azimuths
-   - Blue hour arc: filled polygon between blue hour start/end azimuths
-   - Semi-transparent fills with distinct colors
-4. Create `src/components/map/ShadowOverlay.tsx`:
-   - Polyline from pin in shadow direction (dark gray, dashed)
-5. Create `src/components/map/SunPathArc.tsx`:
-   - Compute sun positions every 15 minutes throughout the day
-   - Draw arc/polyline showing the sun's trajectory
-6. Create `src/components/map/LayerControl.tsx`:
-   - Checkbox list toggling each OverlayType in the store
-   - Only render overlays that are in `activeOverlays`
-7. All overlay components subscribe to relevant store slices and re-render on changes
-
-_Requirements: 3.1, 3.2, 3.3, 3.4_
-_Skills: /build-website-web-app, /code-writing-software-development_
-
----
+## Overview
+Use the `DeviceOrientationEvent` API to display a live compass needle that follows the phone's physical orientation. Include a permissions prompt (required on iOS 13+), a direction lock toggle to freeze the heading, and a bearing display showing the angle to the sun's current azimuth.
 
 ## Acceptance Criteria
-- [ ] Sunrise/sunset/current sun lines render at correct azimuths from pin
-- [ ] Golden/blue hour arcs render as filled polygons at correct angular ranges
-- [ ] Shadow direction line renders opposite to sun azimuth
-- [ ] Sun path arc shows full day trajectory
-- [ ] Layer control toggles each overlay independently
-- [ ] All overlays update when time slider or date changes
-- [ ] All existing tests still pass
+- [ ] `src/hooks/useDeviceOrientation.ts` — custom hook that requests permission (iOS), listens to `deviceorientationabsolute` or `deviceorientation`, returns `{ heading, alpha, beta, gamma, supported, permissionState }`
+- [ ] `src/components/compass/CompassNeedle.tsx` — SVG or CSS-based compass rose that rotates to match `heading`; red needle points north; animated with CSS `transform: rotate()`
+- [ ] Permissions prompt component shows on first use on iOS (calls `DeviceOrientationEvent.requestPermission()`)
+- [ ] "Direction lock" toggle button freezes the heading at its current value until unlocked
+- [ ] Bearing to sun: computed as `(sunAzimuth - heading + 360) % 360` — displayed as degrees and cardinal direction (N/NE/E/...)
+- [ ] Compass visible in a dedicated panel or floating widget on mobile breakpoints
+- [ ] Gracefully disabled on desktop (shows "Not available on this device")
+- [ ] Unit tests for `useDeviceOrientation` hook (mock `window.DeviceOrientationEvent`)
 - [ ] `/verify` passes
 
----
-
-## Handoff to Next Task
-> Fill via `/task-handoff` after completing this task.
-
-**Files changed:** _(fill via /task-handoff)_
-**Decisions made:** _(fill via /task-handoff)_
-**Context for next task:** _(fill via /task-handoff)_
-**Open questions:** _(fill via /task-handoff)_
+## Steps
+1. Create `src/hooks/useDeviceOrientation.ts`:
+   - Feature detect: `'DeviceOrientationEvent' in window`
+   - iOS permission check: if `typeof DeviceOrientationEvent.requestPermission === 'function'`, call it and handle `'granted'` / `'denied'`
+   - Add event listener for `'deviceorientationabsolute'` (fall back to `'deviceorientation'` with `webkitCompassHeading`)
+   - Return `{ heading: number | null, supported: boolean, permissionState: 'unknown' | 'granted' | 'denied' }`
+   - Clean up listener on unmount
+2. Create `src/components/compass/CompassPermissionPrompt.tsx` — button that calls `requestPermission` on iOS; rendered conditionally when `permissionState === 'unknown'` on iOS
+3. Create `src/components/compass/CompassNeedle.tsx`:
+   - SVG compass rose with N/S/E/W labels
+   - Red needle SVG element rotated by `heading` degrees using `style={{ transform: \`rotate(\${heading}deg)\` }}`
+   - Framer Motion `animate={{ rotate: heading }}` for smooth interpolation
+4. Add `directionLocked` state and a lock toggle button in the compass component
+5. Compute bearing to sun: import `sunData.azimuth` from Zustand store; `bearingToSun = (sunData.azimuth - heading + 360) % 360`; display with `cardinalDirection(bearingToSun)` helper
+6. Create `src/components/compass/CompassPanel.tsx` — wraps CompassNeedle + permission prompt + bearing display; shown as a floating card on mobile, hidden on `lg:` breakpoint and above
+7. Add `CompassPanel` to main page layout
+8. Test: `src/__tests__/hooks/useDeviceOrientation.test.ts` — mock `window.DeviceOrientationEvent`, dispatch synthetic events, verify heading updates; verify cleanup
+9. Run `bun test` and `/verify`

@@ -350,13 +350,13 @@ export function SearchBar({ onLocationSelect, onClose }: SearchBarProps) {
   const statusMessage = coordinateError || locationMessage;
 
   return (
-    <section className="grid gap-4 rounded-[1.75rem] border border-slate-200 bg-white/95 p-4 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur md:p-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(18rem,1fr)]">
+    <section className="grid gap-4 rounded-[1.75rem] border border-slate-200 bg-white/95 p-4 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur dark:border-slate-700 dark:bg-slate-800/95 dark:shadow-[0_18px_60px_rgba(0,0,0,0.3)] md:p-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(18rem,1fr)]">
       <div className="space-y-3">
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-          <label htmlFor={inputId} className="text-sm font-medium text-slate-900">
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-900">
+          <label htmlFor={inputId} className="text-sm font-medium text-slate-900 dark:text-slate-100">
             Search for a place
           </label>
-          <p className="mt-0.5 text-xs text-slate-500">
+          <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
             Enter a city, landmark, or address to view sun data for that location.
           </p>
           <div className="mt-2 flex flex-col gap-3 md:flex-row">
@@ -371,7 +371,7 @@ export function SearchBar({ onLocationSelect, onClose }: SearchBarProps) {
                 placeholder="City, neighborhood, or address"
                 autoComplete="off"
                 aria-label="Search for a place"
-                className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100"
+                className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-amber-400 focus:ring-4 focus:ring-amber-100 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:border-amber-500 dark:focus:ring-amber-900/40"
               />
             </div>
 
@@ -380,7 +380,7 @@ export function SearchBar({ onLocationSelect, onClose }: SearchBarProps) {
               onClick={handleUseCurrentLocation}
               disabled={isLocating}
               aria-label="Use my location"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400 dark:bg-blue-600 dark:hover:bg-blue-700 dark:disabled:bg-slate-700"
             >
               {isLocating ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <LocateFixed className="h-4 w-4" />}
               {isLocating ? "Finding..." : "Use my location"}
@@ -388,7 +388,7 @@ export function SearchBar({ onLocationSelect, onClose }: SearchBarProps) {
           </div>
 
           {showSuggestions ? (
-            <div className="mt-3 max-h-64 overflow-y-auto rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
+            <div className="mt-3 max-h-64 overflow-y-auto rounded-2xl border border-slate-200 bg-white p-2 shadow-sm dark:border-slate-700 dark:bg-slate-950">
               {/* Discovery loading */}
               {isDiscovering && (
                 <div className="flex items-center gap-2 px-3 py-2">
@@ -402,7 +402,7 @@ export function SearchBar({ onLocationSelect, onClose }: SearchBarProps) {
               {/* Landmark matches */}
               {hasLandmarkMatches && (
                 <>
-                  <p className="flex items-center gap-1.5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-sky-700">
+                  <p className="flex items-center gap-1.5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-sky-700 dark:text-sky-400">
                     {discoveredLandmarks.length > 0 && seededLandmarks.length === 0 && (
                       <Sparkles className="h-3 w-3" />
                     )}
@@ -419,11 +419,11 @@ export function SearchBar({ onLocationSelect, onClose }: SearchBarProps) {
                           type="button"
                           onClick={() => handleLandmarkSelect(lm)}
                           aria-label={`Select ${lm.name}`}
-                          className="w-full rounded-xl bg-sky-50 px-3 py-2 text-left transition hover:bg-sky-100 focus:bg-sky-100 focus:outline-none"
+                          className="w-full rounded-xl bg-sky-50 px-3 py-2 text-left transition hover:bg-sky-100 focus:bg-sky-100 focus:outline-none dark:bg-sky-900/30 dark:hover:bg-sky-900/50 dark:focus:bg-sky-900/50"
                         >
                           <div>
-                            <span className="text-sm font-semibold text-slate-900">{lm.name}</span>
-                            <span className="block text-xs text-slate-500">
+                            <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">{lm.name}</span>
+                            <span className="block text-xs text-slate-500 dark:text-slate-400">
                               Axis {Math.round(lm.orientationAzimuth)}° · {lm.lat.toFixed(2)}°, {lm.lng.toFixed(2)}°
                             </span>
                           </div>
@@ -432,18 +432,18 @@ export function SearchBar({ onLocationSelect, onClose }: SearchBarProps) {
                     ))}
                   </ul>
                   {(suggestions.length > 0 || isSearching) && (
-                    <div className="my-2 border-t border-slate-100" />
+                    <div className="my-2 border-t border-slate-100 dark:border-slate-700" />
                   )}
                 </>
               )}
 
               {/* Geocoding results */}
               {isSearching ? (
-                <p className="px-3 py-2 text-sm text-slate-500">Searching...</p>
+                <p className="px-3 py-2 text-sm text-slate-500 dark:text-slate-400">Searching...</p>
               ) : null}
 
               {!isSearching && searchError ? (
-                <p className="px-3 py-2 text-sm text-rose-600">{searchError}</p>
+                <p className="px-3 py-2 text-sm text-rose-600 dark:text-rose-400">{searchError}</p>
               ) : null}
 
               {!isSearching && !searchError && suggestions.length === 0 && !hasLandmarkMatches ? (

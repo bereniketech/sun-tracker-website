@@ -1,100 +1,47 @@
----
-task: 010
-feature: sun-tracker-website
-status: complete
-depends_on: [004]
----
+# Task 010: Public REST API
 
-# Task 010: Set up Supabase auth and favorites
+## Skills
+- .kit/skills/development/api-design/SKILL.md
+- .kit/skills/core/karpathy-principles/SKILL.md
+- .kit/skills/frameworks-frontend/nextjs-best-practices/SKILL.md
+- .kit/skills/data-backend/postgres-patterns/SKILL.md
 
-## Session Bootstrap
-> Load these before reading anything else. Do not load skills not listed here.
+## Agents
+- @web-backend-expert
+- @software-developer-expert
 
-Skills: /code-writing-software-development, /postgres-patterns, /security-review
-Commands: /verify, /task-handoff
+## Commands
+- /verify
+- /tdd
+- /quality-gate
+- /task-handoff
 
----
-
-## Objective
-Configure the Supabase client, create auth UI (sign in/sign up), create the `favorites` table with Row Level Security, and build the favorites panel for saving, listing, and deleting locations. Unauthenticated users are prompted to log in when trying to save.
-
----
-
-## Codebase Context
-> Pre-populated by Task Enrichment. No file reading required.
-
-### Key Code Snippets
-[greenfield — no existing files to reference]
-
-### Key Patterns in Use
-[greenfield — no existing files to reference]
-
-### Architecture Decisions Affecting This Task
-- Supabase client reads from `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- RLS policy on favorites: `auth.uid() = user_id`
-- Auth via Supabase Auth (email + social)
-
----
-
-## Handoff from Previous Task
-**Files changed by previous task:** _(none yet)_
-**Decisions made:** _(none yet)_
-**Context for this task:** _(none yet)_
-**Open questions left:** _(none yet)_
-
----
-
-## Implementation Steps
-1. Create `src/lib/supabase.ts`:
-   - Browser client: `createBrowserClient(url, anonKey)`
-   - Server client: `createServerClient(url, anonKey, { cookies })` for API routes
-2. Create SQL migration for `favorites` table:
-   - Schema from design doc
-   - RLS: `auth.uid() = user_id` for SELECT, INSERT, DELETE
-   - Save as `supabase/migrations/001_favorites.sql`
-3. Create `src/components/auth/AuthModal.tsx`:
-   - Sign in with email/password
-   - Sign up with email/password
-   - Social login buttons (Google, GitHub — configurable)
-   - Uses Supabase Auth UI or custom form
-4. Create `src/hooks/useAuth.ts`:
-   - Subscribe to auth state changes
-   - Expose: user, signIn, signUp, signOut, isLoading
-5. Create `src/components/panels/FavoritesPanel.tsx`:
-   - List saved favorites (fetch from Supabase)
-   - "Save current location" button
-   - Delete button per favorite
-   - Click favorite → `store.setLocation`
-6. Create `src/app/api/favorites/route.ts`:
-   - GET: list favorites for authenticated user
-   - POST: save new favorite (validate input)
-   - Authenticate via Supabase server client
-7. Create `src/app/api/favorites/[id]/route.ts`:
-   - DELETE: remove favorite (verify ownership)
-8. If unauthenticated user clicks "save" → open AuthModal
-
-_Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
-_Skills: /code-writing-software-development, /postgres-patterns, /security-review_
-
----
+## Overview
+Expose a public REST API endpoint at `/api/v1/sun` that returns sun position, rise/set times, and golden/blue hour windows for a given lat/lng/date. Protect it with rate limiting via Upstash Redis and provide an OpenAPI spec at `/api/docs`.
 
 ## Acceptance Criteria
-- [ ] Users can sign up and sign in with email
-- [ ] Saving a favorite persists to Supabase and appears in the list
-- [ ] Favorites list loads on page load for authenticated users
-- [ ] Delete removes the favorite from Supabase and the list
-- [ ] RLS prevents accessing other users' favorites (test via API)
-- [ ] Unauthenticated "save" opens the auth modal
-- [ ] Clicking a favorite centers the map on that location
-- [ ] All existing tests still pass
+- [ ] `src/app/api/v1/sun/route.ts` — GET handler accepts `lat`, `lng`, `date` query params; validates ranges; computes sun data using existing `lib/sun.ts`; returns JSON
+- [ ] Response schema: `{ lat, lng, date, timezone, sunrise, sunset, solarNoon, goldenHourMorning, goldenHourEvening, blueHourMorning, blueHourEvening, azimuth, elevation, dayLength }`
+- [ ] Input validation: `lat` ∈ [-90, 90], `lng` ∈ [-180, 180], `date` parseable as ISO 8601; returns 400 with descriptive error on invalid input
+- [ ] Rate limiting: 60 requests/minute per IP using Upstash Redis (`@upstash/ratelimit` + `@upstash/redis`); returns 429 with `Retry-After` header when exceeded
+- [ ] `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` added to `.env.example`
+- [ ] `public/api-spec.json` — OpenAPI 3.1 spec documenting the endpoint, request params, response schema, error codes
+- [ ] `src/app/api/docs/route.ts` — serves `api-spec.json` as JSON; optionally renders Swagger UI via HTML response
+- [ ] Unit tests for the API route (mock Upstash, test valid/invalid inputs, test rate limit response)
 - [ ] `/verify` passes
 
----
-
-## Handoff to Next Task
-> Fill via `/task-handoff` after completing this task.
-
-**Files changed:** _(fill via /task-handoff)_
-**Decisions made:** _(fill via /task-handoff)_
-**Context for next task:** _(fill via /task-handoff)_
-**Open questions:** _(fill via /task-handoff)_
+## Steps
+1. Install: `bun add @upstash/ratelimit @upstash/redis`
+2. Add `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` to `.env.example`
+3. Create `src/lib/rate-limit.ts` — initialize `Ratelimit` with `slidingWindow(60, '1 m')` strategy; export `rateLimit(ip: string)` function returning `{ success, limit, reset, remaining }`
+4. Create `src/app/api/v1/sun/route.ts`:
+   - Parse and validate `lat`, `lng`, `date` from `request.nextUrl.searchParams`
+   - Return 400 with `{ error: string }` on invalid input
+   - Call `rateLimit(request.ip ?? 'anonymous')` — return 429 with `Retry-After` header if blocked
+   - Call `computeSunData(lat, lng, new Date(date))` from `src/lib/sun.ts`
+   - Return 200 with full response JSON
+5. Add CORS headers to allow cross-origin requests (public API)
+6. Create `public/api-spec.json` — OpenAPI 3.1 YAML/JSON spec with `info`, `paths./api/v1/sun.get` with parameters, responses 200/400/429; include examples
+7. Create `src/app/api/docs/route.ts` — return `api-spec.json` content as JSON; add `Content-Type: application/json` header; optionally return a Swagger UI HTML page for GET requests with `Accept: text/html`
+8. Write `src/__tests__/api/sun-api.test.ts` — mock `rateLimit`, test valid request returns correct structure, test invalid lat returns 400, test rate limit hit returns 429
+9. Run `bun test` and `/verify`; manually test with `curl "http://localhost:3000/api/v1/sun?lat=40.71&lng=-74.00&date=2025-06-21"`
