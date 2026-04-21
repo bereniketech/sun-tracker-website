@@ -16,6 +16,7 @@ import { FadeUp, ScaleIn } from "@/components/motion";
 import { ErrorBoundary } from "@/components/error/ErrorBoundary";
 import { MapErrorFallback } from "@/components/error/MapErrorFallback";
 import { PanelErrorFallback } from "@/components/error/PanelErrorFallback";
+import { CompassPanel } from "@/components/compass/CompassPanel";
 import {
   DEFAULT_MAP_LOCATION,
   formatCoordinatePair,
@@ -85,10 +86,11 @@ export function HomePageClient() {
             </ErrorBoundary>
           </div>
 
-          {/* Day Cycle + Photo Windows shown in left col on mobile, hidden on desktop */}
+          {/* Day Cycle + Photo Windows + Compass shown in left col on mobile, hidden on desktop */}
           <div className="flex flex-col gap-4 lg:hidden">
             <DayCycle sunData={sunData} />
             <PhotoWindows sunData={sunData} />
+            <CompassPanel />
           </div>
         </FadeUp>
 
