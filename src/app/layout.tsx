@@ -10,6 +10,7 @@ import { TopBar } from "@/components/shell/top-bar";
 import { JsonLd } from "@/components/seo/json-ld";
 import { buildOrganization, buildWebSite, buildSoftwareApplication } from "@/lib/schema";
 import { SITE_NAME, SITE_DESCRIPTION, siteUrl } from "@/lib/seo-constants";
+import { OfflineMonitor } from "@/components/offline-monitor";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -65,6 +66,11 @@ export const metadata: Metadata = {
     "sun elevation",
     "sun azimuth",
   ],
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: SITE_NAME,
+  },
   openGraph: {
     siteName: SITE_NAME,
     type: "website",
@@ -100,18 +106,21 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${inter.variable}`}
       suppressHydrationWarning
     >
-      {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (
-        <head>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#f59e0b" />
+        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (
           <Script
             async
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`}
             crossOrigin="anonymous"
             strategy="afterInteractive"
           />
-        </head>
-      )}
+        )}
+      </head>
       <body className="min-h-screen flex flex-col bg-surface font-body text-on-surface">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="sun-tracker-theme">
+          <OfflineMonitor />
           <TopBar />
           <main className="flex-1 p-3 pb-20 md:p-5 md:pb-0">
             <div className="mx-auto w-full max-w-[1600px]">

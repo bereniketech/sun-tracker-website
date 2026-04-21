@@ -38,3 +38,21 @@ Implement full dark mode support using `next-themes` with Tailwind `dark:` class
 8. Audit `src/app/globals.css` — ensure CSS variables cover both light and dark values
 9. Test: create `src/__tests__/DarkModeToggle.test.tsx` — renders, clicking toggles theme, localStorage key `sun-tracker-theme` is set
 10. Run `bun test` and `/verify` to confirm all pass
+
+## Status
+COMPLETE
+
+## Completed
+2026-04-21T15:30:00Z
+
+## Implementation Summary
+Dark mode fully implemented with next-themes integration:
+- DarkModeToggle component created with sun/moon icons
+- ThemeProvider configured in root layout with system preference detection
+- Dark mode CSS variables and dark: variants applied to all key components
+- localStorage persistence via next-themes (sun-tracker-theme key)
+- FOUC prevention with suppressHydrationWarning on html element
+- Unit tests passing (3 tests)
+- Build succeeds without errors
+
+All acceptance criteria met.
