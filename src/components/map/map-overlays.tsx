@@ -11,6 +11,7 @@ import {
 } from "@/components/map/overlay-geometry";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
 import { WeatherOverlay } from "@/components/map/weather-overlay";
+import { SunHeatmapLayerContainer } from "@/components/map/SunHeatmapLayerContainer";
 import type { Coordinates, OverlayType } from "@/types/sun";
 
 const DIRECTION_LINE_DISTANCE_METERS = 5_500;
@@ -31,6 +32,7 @@ const OVERLAY_OPTIONS: Array<{ id: OverlayType; label: string }> = [
   { id: "sun-path", label: "Sun path" },
   { id: "landmark-alignment", label: "Landmark axis" },
   { id: "weather", label: "Cloud cover" },
+  { id: "sun-heatmap", label: "Sun heatmap" },
 ];
 
 function toLatLngPairs(points: Coordinates[]): Array<[number, number]> {
@@ -352,6 +354,7 @@ function LandmarkAlignmentOverlay() {
 export function MapOverlays() {
   const location = useSunTrackerStore((state) => state.location);
   const sunData = useSunTrackerStore((state) => state.sunData);
+  const activeOverlays = useSunTrackerStore((state) => state.activeOverlays);
 
   if (!location || !sunData) {
     return null;
@@ -365,6 +368,10 @@ export function MapOverlays() {
       <SunPathArc center={location} />
       <LandmarkAlignmentOverlay />
       <WeatherOverlay />
+      <SunHeatmapLayerContainer
+        location={location}
+        visible={activeOverlays.has("sun-heatmap")}
+      />
     </>
   );
 }

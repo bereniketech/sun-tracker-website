@@ -10,7 +10,8 @@ export type OverlayType =
   | "blue-hour-arc"
   | "sun-path"
   | "landmark-alignment"
-  | "weather";
+  | "weather"
+  | "sun-heatmap";
 
 export interface Landmark {
   id: string;

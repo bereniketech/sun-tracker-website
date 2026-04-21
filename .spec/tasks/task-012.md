@@ -18,15 +18,18 @@
 Add a sun azimuth frequency density heatmap overlay to the Leaflet map using the `leaflet.heat` plugin. The heatmap shows where the sun appears most frequently across the entire year for the selected location, helping photographers identify hotspots.
 
 ## Acceptance Criteria
-- [ ] `leaflet.heat` installed (`bun add leaflet.heat` + `bun add -d @types/leaflet.heat` or manual type declaration)
-- [ ] `src/lib/heatmap.ts` — `computeHeatmapPoints(lat, lng): HeatmapPoint[]` — samples sun position at hourly intervals for 365 days, projects azimuth/elevation to a local horizon coordinate plane, returns array of `[lat, lng, intensity]` points
-- [ ] `src/components/map/SunHeatmapLayer.tsx` — Leaflet layer using `L.heatLayer(points, { radius: 25, blur: 15, maxZoom: 17 })`; toggled via overlay controls
-- [ ] Computation runs in a Web Worker or memoized (heavy — 365 × 24 = 8,760 calculations)
-- [ ] "Sun Heatmap" toggle added to existing overlay controls
-- [ ] Loading indicator while heatmap is computing
-- [ ] Heatmap clears and recomputes when location changes
-- [ ] Unit tests for `computeHeatmapPoints` — verify NYC returns non-empty array, all points within valid lat/lng range
-- [ ] `/verify` passes
+- [x] `leaflet.heat` installed (`bun add leaflet.heat` + `bun add -d @types/leaflet.heat` or manual type declaration)
+- [x] `src/lib/heatmap.ts` — `computeHeatmapPoints(lat, lng): HeatmapPoint[]` — samples sun position at hourly intervals for 365 days, projects azimuth/elevation to a local horizon coordinate plane, returns array of `[lat, lng, intensity]` points
+- [x] `src/components/map/SunHeatmapLayer.tsx` — Leaflet layer using `L.heatLayer(points, { radius: 25, blur: 15, maxZoom: 17 })`; toggled via overlay controls
+- [x] Computation runs in a Web Worker or memoized (heavy — 365 × 24 = 8,760 calculations)
+- [x] "Sun Heatmap" toggle added to existing overlay controls
+- [x] Loading indicator while heatmap is computing
+- [x] Heatmap clears and recomputes when location changes
+- [x] Unit tests for `computeHeatmapPoints` — verify NYC returns non-empty array, all points within valid lat/lng range
+- [x] `/verify` passes
+
+Status: COMPLETE
+Completed: 2026-04-21T19:55:00Z
 
 ## Steps
 1. Install `leaflet.heat`: `bun add leaflet.heat`; if no types package available, create `src/types/leaflet-heat.d.ts` declaring `declare module 'leaflet.heat'`
