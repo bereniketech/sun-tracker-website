@@ -38,6 +38,7 @@ export const useSunTrackerStore = create<SunTrackerState>((set) => ({
   weatherData: null,
   weatherLoading: false,
   weatherError: null,
+  followMeActive: false,
 
   setLocation: (lat, lng, name) => {
     set((state) => ({
@@ -161,5 +162,11 @@ export const useSunTrackerStore = create<SunTrackerState>((set) => ({
         weatherError: errorMessage,
       }));
     }
+  },
+
+  setFollowMeActive: (active) => {
+    set(() => ({
+      followMeActive: active,
+    }));
   },
 }));

@@ -83,6 +83,7 @@ export interface SunTrackerState {
   weatherData: WeatherData | null;
   weatherLoading: boolean;
   weatherError: string | null;
+  followMeActive: boolean;
   setLocation: (lat: number, lng: number, name?: string) => void;
   setDateTime: (dateTime: Date) => void;
   setAnimating: (isAnimating: boolean) => void;
@@ -94,4 +95,5 @@ export interface SunTrackerState {
   togglePhotographerMode: () => void;
   setCalibration: (c: Partial<CalibrationState>) => void;
   fetchWeatherForLocation: (lat: number, lng: number) => Promise<void>;
+  setFollowMeActive: (active: boolean) => void;
 }

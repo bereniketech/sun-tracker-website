@@ -19,6 +19,9 @@ import {
 } from "@/components/map/location-utils";
 import { LayerControl, MapOverlays } from "@/components/map/map-overlays";
 import { useSunTrackerStore } from "@/store/sun-tracker-store";
+import { useGeolocation } from "@/hooks/useGeolocation";
+import { FollowMeButton } from "@/components/map/FollowMeButton";
+import { AccuracyCircle } from "@/components/map/AccuracyCircle";
 import type { Coordinates } from "@/types/sun";
 
 const pinIcon = divIcon({
@@ -86,6 +89,49 @@ function MapKeyboardShortcuts(): null {
   return null;
 }
 
+interface FollowMeMapEventsProps {
+  followMeActive: boolean;
+  onFollowMeStop: () => void;
+}
+
+function FollowMeMapEvents({ followMeActive, onFollowMeStop }: FollowMeMapEventsProps): null {
+  useMapEvents({
+    dragstart: () => {
+      if (followMeActive) {
+        onFollowMeStop();
+      }
+    },
+  });
+
+  return null;
+}
+
+interface FollowMeControllerProps {
+  position: GeolocationPosition | null;
+  followMeActive: boolean;
+}
+
+function FollowMeController({ position, followMeActive }: FollowMeControllerProps): null {
+  const map = useMap();
+  const setLocation = useSunTrackerStore((state) => state.setLocation);
+
+  useEffect(() => {
+    if (!position || !followMeActive) {
+      return;
+    }
+
+    const { latitude, longitude } = position.coords;
+
+    // Update store location (which also updates sun data)
+    setLocation(latitude, longitude);
+
+    // Smooth pan to new position
+    map.panTo([latitude, longitude], { animate: true });
+  }, [position, followMeActive, map, setLocation]);
+
+  return null;
+}
+
 function extractMarkerCoordinates(event: LeafletEvent): Coordinates {
   const marker = event.target as LeafletMarker;
   const latLng = marker.getLatLng();
@@ -100,6 +146,11 @@ export function LeafletMap() {
   const location = useSunTrackerStore((state) => state.location);
   const locationName = useSunTrackerStore((state) => state.locationName);
   const setLocation = useSunTrackerStore((state) => state.setLocation);
+  const followMeActive = useSunTrackerStore((state) => state.followMeActive);
+  const setFollowMeActive = useSunTrackerStore((state) => state.setFollowMeActive);
+
+  const { position, startWatching, stopWatching } = useGeolocation();
+
   const mapShellRef = useRef<HTMLDivElement | null>(null);
   const [isFallbackFullscreen, setIsFallbackFullscreen] = useState(false);
   const [isNativeFullscreen, setIsNativeFullscreen] = useState(false);
@@ -148,6 +199,11 @@ export function LeafletMap() {
 
   const handleLocationSelect = (lat: number, lng: number): void => {
     setLocation(lat, lng, formatPinnedLocationName(lat, lng));
+  };
+
+  const handleFollowMeStop = () => {
+    stopWatching();
+    setFollowMeActive(false);
   };
 
   const toggleFullscreen = async (): Promise<void> => {
@@ -200,7 +256,10 @@ export function LeafletMap() {
             </button>
           </div>
         </div>
-
+        <FollowMeButton
+          onFollowMeStart={startWatching}
+          onFollowMeStop={handleFollowMeStop}
+        />
       </div>
 
       <div
@@ -248,6 +307,9 @@ export function LeafletMap() {
           <MapViewportController center={center} />
           <MapKeyboardShortcuts />
           <LocationEventHandlers onLocationSelect={handleLocationSelect} />
+          <FollowMeMapEvents followMeActive={followMeActive} onFollowMeStop={handleFollowMeStop} />
+          <FollowMeController position={position} followMeActive={followMeActive} />
+          <AccuracyCircle position={position} />
           <Marker
             position={[center.lat, center.lng]}
             draggable
