@@ -47,12 +47,17 @@ interface MockRequest {
   headers: Headers;
 }
 
-function createMockRequest(url: string, ip: string = "127.0.0.1"): MockRequest {
+function createMockRequest(url: string, ipOrHeaders?: string | Headers): MockRequest {
+  const headers = ipOrHeaders instanceof Headers ? ipOrHeaders : new Headers();
+  if (typeof ipOrHeaders === "string" && ipOrHeaders) {
+    headers.set("x-real-ip", ipOrHeaders);
+  }
+
   return {
     url,
     nextUrl: new URL(url, "http://localhost:3000"),
-    ip,
-    headers: new Headers(),
+    ip: typeof ipOrHeaders === "string" ? ipOrHeaders : undefined,
+    headers,
   } as MockRequest;
 }
 
@@ -310,12 +315,10 @@ describe("GET /api/v1/sun", () => {
       expect(mockRateLimit).toHaveBeenCalledWith(testIp);
     });
 
-    it("should use anonymous IP when request.ip is undefined", async () => {
+    it("should use anonymous IP when no IP headers are present", async () => {
       const request = createMockRequest(
-        "http://localhost:3000/api/v1/sun?lat=0&lng=0&date=2025-06-21",
-        ""
+        "http://localhost:3000/api/v1/sun?lat=0&lng=0&date=2025-06-21"
       );
-      (request as unknown as MockRequest).ip = undefined;
 
       await GET(request as unknown as Request);
 

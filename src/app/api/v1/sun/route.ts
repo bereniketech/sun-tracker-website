@@ -143,10 +143,16 @@ export async function GET(request: NextRequest): Promise<NextResponse<SunApiResp
   }
 
   // Apply rate limiting
-  const ip =
-    request.headers.get("x-forwarded-for")?.split(",")[0] ||
-    request.headers.get("x-real-ip") ||
-    "anonymous";
+  const forwardedFor = request.headers.get("x-forwarded-for");
+  const realIp = request.headers.get("x-real-ip");
+  let ip: string;
+  if (forwardedFor) {
+    ip = forwardedFor.split(",")[0].trim();
+  } else if (realIp) {
+    ip = realIp;
+  } else {
+    ip = "anonymous";
+  }
   const rateLimitResponse = await rateLimit(ip);
 
   if (!rateLimitResponse.success) {
@@ -178,7 +184,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<SunApiResp
 
   try {
     const sunData = computeSunData(coordsValidation.lat, coordsValidation.lng, dateValidation.date);
-    const response = formatSunResponse(coordsValidation.lat, coordsValidation.lng, dateStr, sunData);
+    const response = formatSunResponse(coordsValidation.lat, coordsValidation.lng, dateStr || "", sunData);
 
     return NextResponse.json<SunApiResponse>(response, {
       status: 200,
