@@ -1,0 +1,294 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Sun Tracker API",
+    "version": "1.0.0",
+    "description": "Public REST API for computing solar position, rise/set times, and golden/blue hour windows.",
+    "contact": {
+      "name": "Sun Tracker",
+      "url": "https://sun-tracker-website.example.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://sun-tracker-website.example.com",
+      "description": "Production server"
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "Development server"
+    }
+  ],
+  "paths": {
+    "/api/v1/sun": {
+      "get": {
+        "operationId": "getSunData",
+        "summary": "Get solar data for a location and date",
+        "description": "Computes sun position, rise/set times, golden hour, and blue hour windows for a given latitude, longitude, and date.",
+        "parameters": [
+          {
+            "name": "lat",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            },
+            "description": "Latitude in degrees (-90 to 90)",
+            "example": 40.7128
+          },
+          {
+            "name": "lng",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
+            "description": "Longitude in degrees (-180 to 180)",
+            "example": -74.006
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "ISO 8601 date/time string",
+            "example": "2025-06-21T12:00:00Z"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with sun data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SunDataResponse"
+                },
+                "example": {
+                  "lat": 40.7128,
+                  "lng": -74.006,
+                  "date": "2025-06-21T12:00:00Z",
+                  "timezone": "UTC-5",
+                  "sunrise": "2025-06-21T04:45:12.000Z",
+                  "sunset": "2025-06-21T20:30:45.000Z",
+                  "solarNoon": "2025-06-21T12:38:00.000Z",
+                  "goldenHourMorning": {
+                    "start": "2025-06-21T04:45:12.000Z",
+                    "end": "2025-06-21T05:45:30.000Z"
+                  },
+                  "goldenHourEvening": {
+                    "start": "2025-06-21T19:30:15.000Z",
+                    "end": "2025-06-21T20:30:45.000Z"
+                  },
+                  "blueHourMorning": {
+                    "start": "2025-06-21T04:15:00.000Z",
+                    "end": "2025-06-21T04:45:12.000Z"
+                  },
+                  "blueHourEvening": {
+                    "start": "2025-06-21T20:30:45.000Z",
+                    "end": "2025-06-21T21:00:30.000Z"
+                  },
+                  "azimuth": 94.32,
+                  "elevation": 45.67,
+                  "dayLength": 57393
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "examples": {
+                  "invalidLat": {
+                    "value": {
+                      "error": "lat must be between -90 and 90"
+                    }
+                  },
+                  "invalidDate": {
+                    "value": {
+                      "error": "date must be a valid ISO 8601 date string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds to wait before retrying"
+              },
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Total requests allowed per minute"
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests remaining in current window"
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Unix timestamp when rate limit resets"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Rate limit exceeded"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "Failed to compute sun data"
+                }
+              }
+            }
+          }
+        },
+        "x-rateLimit": {
+          "limit": 60,
+          "window": "1 minute",
+          "strategy": "sliding window per IP"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SunDataResponse": {
+        "type": "object",
+        "required": [
+          "lat",
+          "lng",
+          "date",
+          "timezone",
+          "sunrise",
+          "sunset",
+          "solarNoon",
+          "goldenHourMorning",
+          "goldenHourEvening",
+          "blueHourMorning",
+          "blueHourEvening",
+          "azimuth",
+          "elevation",
+          "dayLength"
+        ],
+        "properties": {
+          "lat": {
+            "type": "number",
+            "description": "Latitude of the location"
+          },
+          "lng": {
+            "type": "number",
+            "description": "Longitude of the location"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Request date in ISO 8601 format"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Approximate timezone offset based on longitude"
+          },
+          "sunrise": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time of sunrise in UTC"
+          },
+          "sunset": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time of sunset in UTC"
+          },
+          "solarNoon": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time of solar noon in UTC"
+          },
+          "goldenHourMorning": {
+            "$ref": "#/components/schemas/TimeWindow"
+          },
+          "goldenHourEvening": {
+            "$ref": "#/components/schemas/TimeWindow"
+          },
+          "blueHourMorning": {
+            "$ref": "#/components/schemas/TimeWindow"
+          },
+          "blueHourEvening": {
+            "$ref": "#/components/schemas/TimeWindow"
+          },
+          "azimuth": {
+            "type": "number",
+            "description": "Current sun azimuth in degrees (0-360, clockwise from north)"
+          },
+          "elevation": {
+            "type": "number",
+            "description": "Current sun elevation angle in degrees (-90 to 90)"
+          },
+          "dayLength": {
+            "type": "integer",
+            "description": "Length of the day in seconds"
+          }
+        }
+      },
+      "TimeWindow": {
+        "type": "object",
+        "required": ["start", "end"],
+        "properties": {
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Start time in UTC"
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time",
+            "description": "End time in UTC"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message"
+          }
+        }
+      }
+    }
+  }
+}
