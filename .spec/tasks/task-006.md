@@ -29,20 +29,26 @@ Use the `DeviceOrientationEvent` API to display a live compass needle that follo
 - [ ] `/verify` passes
 
 ## Steps
-1. Create `src/hooks/useDeviceOrientation.ts`:
-   - Feature detect: `'DeviceOrientationEvent' in window`
-   - iOS permission check: if `typeof DeviceOrientationEvent.requestPermission === 'function'`, call it and handle `'granted'` / `'denied'`
-   - Add event listener for `'deviceorientationabsolute'` (fall back to `'deviceorientation'` with `webkitCompassHeading`)
-   - Return `{ heading: number | null, supported: boolean, permissionState: 'unknown' | 'granted' | 'denied' }`
-   - Clean up listener on unmount
-2. Create `src/components/compass/CompassPermissionPrompt.tsx` — button that calls `requestPermission` on iOS; rendered conditionally when `permissionState === 'unknown'` on iOS
-3. Create `src/components/compass/CompassNeedle.tsx`:
-   - SVG compass rose with N/S/E/W labels
-   - Red needle SVG element rotated by `heading` degrees using `style={{ transform: \`rotate(\${heading}deg)\` }}`
-   - Framer Motion `animate={{ rotate: heading }}` for smooth interpolation
-4. Add `directionLocked` state and a lock toggle button in the compass component
-5. Compute bearing to sun: import `sunData.azimuth` from Zustand store; `bearingToSun = (sunData.azimuth - heading + 360) % 360`; display with `cardinalDirection(bearingToSun)` helper
-6. Create `src/components/compass/CompassPanel.tsx` — wraps CompassNeedle + permission prompt + bearing display; shown as a floating card on mobile, hidden on `lg:` breakpoint and above
-7. Add `CompassPanel` to main page layout
-8. Test: `src/__tests__/hooks/useDeviceOrientation.test.ts` — mock `window.DeviceOrientationEvent`, dispatch synthetic events, verify heading updates; verify cleanup
-9. Run `bun test` and `/verify`
+1. ✅ Create `src/hooks/useDeviceOrientation.ts`:
+   - ✅ Feature detect: `'DeviceOrientationEvent' in window`
+   - ✅ iOS permission check: if `typeof DeviceOrientationEvent.requestPermission === 'function'`, call it and handle `'granted'` / `'denied'`
+   - ✅ Add event listener for `'deviceorientationabsolute'` (fall back to `'deviceorientation'` with `webkitCompassHeading`)
+   - ✅ Return `{ heading: number | null, supported: boolean, permissionState: 'unknown' | 'granted' | 'denied' }`
+   - ✅ Clean up listener on unmount
+2. ✅ Create `src/components/compass/CompassPermissionPrompt.tsx` — button that calls `requestPermission` on iOS; rendered conditionally when `permissionState === 'unknown'` on iOS
+3. ✅ Create `src/components/compass/CompassNeedle.tsx`:
+   - ✅ SVG compass rose with N/S/E/W labels
+   - ✅ Red needle SVG element rotated by `heading` degrees using `style={{ transform: \`rotate(\${heading}deg)\` }}`
+   - ✅ Framer Motion `animate={{ rotate: heading }}` for smooth interpolation
+4. ✅ Add `directionLocked` state and a lock toggle button in the compass component
+5. ✅ Compute bearing to sun: import `sunData.azimuth` from Zustand store; `bearingToSun = (sunData.azimuth - heading + 360) % 360`; display with `cardinalDirection(bearingToSun)` helper
+6. ✅ Create `src/components/compass/CompassPanel.tsx` — wraps CompassNeedle + permission prompt + bearing display; shown as a floating card on mobile, hidden on `lg:` breakpoint and above
+7. ✅ Add `CompassPanel` to main page layout
+8. ✅ Test: `src/__tests__/hooks/useDeviceOrientation.test.ts` — mock `window.DeviceOrientationEvent`, dispatch synthetic events, verify heading updates; verify cleanup
+9. ✅ Run `bun test` and `/verify`
+
+## Status
+COMPLETE
+
+## Completed
+2026-04-21T16:45:00Z

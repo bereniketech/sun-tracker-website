@@ -9,7 +9,7 @@ import { LandmarkAlignmentPanel } from "@/components/panels/landmark-alignment-p
 import { LocationComparison } from "@/components/panels/location-comparison";
 
 import { SeasonalInsights } from "@/components/panels/seasonal-insights";
-
+import { SolarPlannerPanel } from "@/components/panels/solar-planner-panel";
 import { SkyPathDiagram } from "@/components/panels/sky-path-diagram";
 import { ShadowInfo } from "@/components/panels/shadow-info";
 import { SunDataDisplay } from "@/components/panels/sun-data-display";
@@ -158,6 +158,7 @@ export function InfoPanel() {
             <SeasonalInsights />
           </div>
         </details>
+        <SolarPlannerPanel />
         <ShadowInfo />
       </div>
       </aside>
